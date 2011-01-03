@@ -1,0 +1,138 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+  <l:layout>
+    <st:include it="${it.owner}" page="sidepanel.jelly" />
+    <l:main-panel>
+<style type="text/css">
+#main-panel {
+
+    margin: auto;
+    background: #343434;
+    font-family: Helvetica, Arial, Sans;
+
+}
+p {
+    text-align: center;
+    color: #fff;
+}
+
+.result {
+    float: left;
+    margin: 5px;
+    padding: 6px;
+    background: #fff;
+    -webkit-border-radius: 6px;  
+    -moz-border-radius: 6px; 
+    -webkit-box-shadow: 1px 1px 4px rgba(0,0,0,.5); 
+    -moz-box-shadow: 1px 1px 4px rgba(0,0,0,.5); 
+    opacity: 1;
+    cursor: pointer;
+}
+
+.passed, .failed {
+    width: 150px;
+    height: 140px;
+    -webkit-border-radius: 6px; 
+    -moz-border-radius: 6px;    
+    padding: 10px;
+    text-align: center;
+    display: block;
+    display: table-cell; 
+    vertical-align:middle;
+    -webkit-box-shadow: 0 0 2px rgba(0,0,0,.5); 
+    -moz-box-shadow: 0 0 2px rgba(0,0,0,.5); 
+    color: rgba(0,0,0,.8);
+    text-decoration: none;
+}
+
+.passed {
+    background: #90CB5F;
+}
+
+.failed {
+    background: #E75152;
+}
+
+.result {
+    text-shadow: 0 0 6px rgba(255,255,255,.7);
+    font-size: 18px;
+}
+
+.result em {
+    display: block;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    text-shadow: 0 0 6px rgba(255,255,255,.7);
+}
+
+h1 {
+    display: block !important;
+    padding: 0;
+    margin: 0;
+    width: auto !important;
+    height: auto !important;
+}
+
+h1 em {
+    display: inline !important;
+}
+
+.revLink {
+    clear: both;
+    display: block;
+    font-size: 20px;
+    padding: 10px;
+    color: gold;
+}
+
+ul {
+    list-style: none;
+    margin: 20px 0 0 0;
+    padding: 5px;
+}
+
+li {
+    margin-bottom: 5px;
+    border: 2px solid #fff;
+    padding: 0 !important;
+}
+
+li a {
+    color: rgba(0,0,0,.8);
+    text-decoration: none;
+    text-shadow: 0 0 6px rgba(255,255,255,.7);
+    font-weight: bold;
+    display: block;
+    padding: 10px;
+}
+
+li.log {
+    background: #4D92D4;
+}
+
+li, li.passed, li.failed {
+    display: block !important;
+    width: auto !important;
+    height: auto !important;
+    text-align: left;
+}
+</style>
+
+      <div class="result" id="title"><h1 class="passed">Play Auto-Test Results</h1></div>
+<a class="revLink" href="" /> 
+<ul>
+    <li class="passed log">
+        <a href="${it.applicationlog}">application.log</a>
+    </li>
+<j:forEach var="testresult" items="${it.testResults}">
+        <li class="passed">
+            <a href="test-result/BasicTest.class.passed.html">${testresult}</a>
+        </li>
+        </j:forEach>
+</ul>
+
+    </l:main-panel>
+  </l:layout>
+
+</j:jelly>
