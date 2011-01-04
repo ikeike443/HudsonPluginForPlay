@@ -72,10 +72,10 @@ public class PlayTestResultPublisher extends Publisher {
 			if(waitFor==0){
 				FilePath[] files = build.getProject().getWorkspace().list("test-result/*");
 				FilePath root = new FilePath(build.getRootDir());
-	            FilePath target = new FilePath(root, "test-result/index.html");
-	            //TODO ファイル読み込みを真面目に書く。多分これじゃだめじゃね
-	            File file = new File("src/main/resources/ikeike443/PlayTestResultPublisher/index.html");
-				new FilePath(file).copyTo(target);
+//	            FilePath target = new FilePath(root, "test-result/index.html");
+//	            //TODO ファイル読み込みを真面目に書く。多分これじゃだめじゃね
+//	            File file = new File("src/main/resources/ikeike443/PlayTestResultPublisher/index.html");
+//				new FilePath(file).copyTo(target);
 				for (FilePath filePath : files) {
 					filePath.copyTo(new FilePath(root, "test-result/"+filePath.getName()));
 				}

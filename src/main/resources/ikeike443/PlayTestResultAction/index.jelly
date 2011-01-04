@@ -126,8 +126,8 @@ li, li.passed, li.failed {
         <a href="${it.applicationlog}">application.log</a>
     </li>
 <j:forEach var="testresult" items="${it.testResults}">
-        <li class="passed">
-            <a href="test-result/BasicTest.class.passed.html">${testresult}</a>
+        <li class="${testresult.status}">
+            <a href="test-result/${testresult.uri}">${testresult.name}</a>
         </li>
         </j:forEach>
 </ul>
