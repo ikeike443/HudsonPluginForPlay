@@ -44,7 +44,7 @@ public class PlayTestResultAction implements Action{
 	 * @see hudson.model.Action#getIconFileName()
 	 */
 	public String getIconFileName() {
-		return "/plugin/hipsample4/favicon.png";
+		return "/plugin/play-autotest-plugin/favicon.png";
 	}
 
 	/* (non-Javadoc)
