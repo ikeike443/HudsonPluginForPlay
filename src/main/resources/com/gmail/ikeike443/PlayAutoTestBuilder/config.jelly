@@ -9,7 +9,7 @@
     Creates a text field that shows the value of the "name" property.
     When submitted, it will be passed to the corresponding constructor parameter.
   -->
-  <f:entry title="Name" field="name">
-    <f:textbox />
+  <f:entry title="Play path" field="playpath_job">
+    <f:textbox name="play_path_job" value="${descriptor.path()}" />
   </f:entry>
 </j:jelly>

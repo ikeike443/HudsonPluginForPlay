@@ -1,7 +1,7 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 
   <l:layout>
-    <st:include it="${it.owner}" page="sidepanel.jelly" />
+<st:include it="${it.owner}" page="sidepanel.jelly" />
     <l:main-panel>
 <style type="text/css">
 #main-panel {
@@ -119,7 +119,7 @@ li, li.passed, li.failed {
 }
 </style>
 
-      <div class="result" id="title"><h1 class="passed">Play Auto-Test Results</h1></div>
+      <div class="result" id="title"><h1 class="${it.statusatall}">${it.appName}</h1></div>
 <a class="revLink" href="" /> 
 <ul>
     <li class="passed log">
