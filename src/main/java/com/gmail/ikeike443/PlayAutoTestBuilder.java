@@ -24,27 +24,12 @@ import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
 /**
- * Sample {@link Builder}.
- *
- * <p>
- * When the user configures the project and enables this builder,
- * {@link DescriptorImpl#newInstance(StaplerRequest)} is invoked
- * and a new {@link PlayAutoTestBuilder} is created. The created
- * instance is persisted to the project configuration XML by using
- * XStream, so this allows you to use instance fields (like {@link #name})
- * to remember the configuration.
- *
- * <p>
- * When a build is performed, the {@link #perform(AbstractBuild, Launcher, BuildListener)} method
- * will be invoked. 
- *
- * @author Kohsuke Kawaguchi
+ * @author ikeike443
  */
 public class PlayAutoTestBuilder extends Builder{
 
     private final String play_path_job;
 
-    // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
     public PlayAutoTestBuilder(String play_path_job) {
         this.play_path_job = play_path_job;
@@ -59,10 +44,7 @@ public class PlayAutoTestBuilder extends Builder{
 
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
-    	// this is where you 'build' the project
-		// since this is a dummy, we just say 'hello world' and call that a build
 		String playpath = null;
-		// this also shows how you can consult the global configuration of the builder
 		if(getDescriptor().path()!= null){
 			playpath = getDescriptor().path();
 		}else{
@@ -112,9 +94,6 @@ public class PlayAutoTestBuilder extends Builder{
 		}
 	}
 
-    // overrided for better type safety.
-    // if your plugin doesn't really define any property on Descriptor,
-    // you don't have to do this.
     @Override
     public DescriptorImpl getDescriptor() {
         return (DescriptorImpl)super.getDescriptor();
@@ -167,12 +146,7 @@ public class PlayAutoTestBuilder extends Builder{
 
 		@Override
 		public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
-			// To persist global configuration information,
-			// set that to properties and call save().
 			path = formData.getString("play_path");
-			// ^Can also use req.bindJSON(this, formData);
-			//  (easier when there are many fields; need set* methods for this, like setUseFrench)
-
 			save();
 			return super.configure(req,formData);
 		}

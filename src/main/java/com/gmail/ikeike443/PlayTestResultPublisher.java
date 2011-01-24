@@ -19,26 +19,9 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
 /**
- * Sample {@link Builder}.
- *
- * <p>
- * When the user configures the project and enables this builder,
- * {@link DescriptorImpl#newInstance(StaplerRequest)} is invoked
- * and a new {@link PlayTestResultPublisher} is created. The created
- * instance is persisted to the project configuration XML by using
- * XStream, so this allows you to use instance fields (like {@link #name})
- * to remember the configuration.
- *
- * <p>
- * When a build is performed, the {@link #perform(AbstractBuild, Launcher, BuildListener)} method
- * will be invoked. 
- *
- * @author Kohsuke Kawaguchi
+ * @author ikeike443
  */
 public class PlayTestResultPublisher extends Publisher {
-
-
-	// Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
 	@DataBoundConstructor
 	public PlayTestResultPublisher() {
 	}
@@ -46,10 +29,6 @@ public class PlayTestResultPublisher extends Publisher {
 
 	@Override
 	public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
-		// this is where you 'build' the project
-		// since this is a dummy, we just say 'hello world' and call that a build
-
-
 		try {
 
 			FilePath[] files = build.getProject().getWorkspace().list("test-result/*");
@@ -71,7 +50,6 @@ public class PlayTestResultPublisher extends Publisher {
 			return true;
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
@@ -79,13 +57,9 @@ public class PlayTestResultPublisher extends Publisher {
 	}
 
 	public BuildStepMonitor getRequiredMonitorService() {
-		// TODO Auto-generated method stub
 		return BuildStepMonitor.NONE;
 	}
 
-	// overrided for better type safety.
-	// if your plugin doesn't really define any property on Descriptor,
-	// you don't have to do this.
 	@Override
 	public DescriptorImpl getDescriptor() {
 		return (DescriptorImpl)super.getDescriptor();

@@ -19,11 +19,15 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				
+
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
-					
+					<encoding>UTF-8</encoding>
+					<verbose>true</verbose>
+					<fork>true</fork>
+					<executable>${JAVA_HOME}/bin/javac</executable>
+					<compilerVersion>1.6.0</compilerVersion>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -33,8 +37,17 @@
 		artifacts that we need -->
 	<repositories>
 		<repository>
+			<id>mavencentralrepo</id>
+			<url>http://repo1.maven.org/maven2/</url>
+		</repository>
+		<repository>
 			<id>m.g.o-public</id>
 			<url>http://maven.glassfish.org/content/groups/public/</url>
+		</repository>
+
+		<repository>
+			<id>infradna</id>
+			<url>http://download.java.net/maven/2/</url>
 		</repository>
 	</repositories>
 
