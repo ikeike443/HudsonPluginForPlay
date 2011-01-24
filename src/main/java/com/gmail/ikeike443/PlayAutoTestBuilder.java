@@ -1,6 +1,7 @@
 package com.gmail.ikeike443;
 import hudson.Extension;
 import hudson.Launcher;
+import hudson.Proc;
 import hudson.model.BuildListener;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
@@ -8,12 +9,8 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
 
 import javax.servlet.ServletException;
 
@@ -28,22 +25,23 @@ import org.kohsuke.stapler.StaplerRequest;
  */
 public class PlayAutoTestBuilder extends Builder{
 
-    private final String play_path_job;
+	private final String play_cmd;
 
-    @DataBoundConstructor
-    public PlayAutoTestBuilder(String play_path_job) {
-        this.play_path_job = play_path_job;
-    }
+	@DataBoundConstructor
+	public PlayAutoTestBuilder(String play_cmd) {
+		this.play_cmd = play_cmd;
+	}
 
-    /**
-     * We'll use this from the <tt>config.jelly</tt>.
-     */
-    public String getPlay_path_job() {
-        return play_path_job;
-    }
+	/**
+	 * We'll use this from the <tt>config.jelly</tt>.
+	 */
+	public String getPlay_cmd() {
+		return play_cmd;
+	}
 
-    @Override
-    public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
 		String playpath = null;
 		if(getDescriptor().path()!= null){
 			playpath = getDescriptor().path();
@@ -51,22 +49,20 @@ public class PlayAutoTestBuilder extends Builder{
 			listener.getLogger().println("play path is null");
 			return false;
 		}
-		if(play_path_job != null){
+/*		if(play_path_job != null){
 			playpath = play_path_job;
-		}
+		}*/
 		listener.getLogger().println("playpath is "+playpath);
-        try {
-        	String cmd = playpath + "play auto-test "+build.getWorkspace().toString();
-        	listener.getLogger().println(cmd);
-        	ProcessBuilder pb = new ProcessBuilder(playpath+"play","auto-test",build.getWorkspace().toString());
-        	Process ps = pb.start();
-			printInputStream(ps.getInputStream(), listener.getLogger());	
-			int waitFor = ps.waitFor();
-					
-			if(waitFor==0){
+		try {
+			String cmd = playpath + " " + play_cmd +" " /*"play auto-test "*/+build.getWorkspace().toString();
+			listener.getLogger().println(cmd);
+			Proc proc = launcher.launch(cmd, new String[0],listener.getLogger(),build.getWorkspace());
+			int exitcode = proc.join();	
+
+			if(exitcode == 0){
 				//check test-result
 				if(new File(build.getWorkspace().toString()+"/test-result/result.passed").exists()){
-					
+
 					return true;
 				}else{
 					return false;
@@ -79,36 +75,24 @@ public class PlayAutoTestBuilder extends Builder{
 			e.printStackTrace();
 			return false;
 		}
-		
-    }
-	static void printInputStream(InputStream is,PrintStream logger) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(is));
-		try {
-			for (;;) {
-				String line = br.readLine();
-				if (line == null) break;
-				logger.println(line);
-			}
-		} finally {
-			br.close();
-		}
+
 	}
 
-    @Override
-    public DescriptorImpl getDescriptor() {
-        return (DescriptorImpl)super.getDescriptor();
-    }
+	@Override
+	public DescriptorImpl getDescriptor() {
+		return (DescriptorImpl)super.getDescriptor();
+	}
 
-    /**
-     * Descriptor for {@link PlayAutoTestBuilder}. Used as a singleton.
-     * The class is marked as public so that it can be accessed from views.
-     *
-     * <p>
-     * See <tt>views/hudson/plugins/hello_world/HelloWorldBuilder/*.jelly</tt>
-     * for the actual HTML fragment for the configuration screen.
-     */
-    @Extension // this marker indicates Hudson that this is an implementation of an extension point.
-    public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
+	/**
+	 * Descriptor for {@link PlayAutoTestBuilder}. Used as a singleton.
+	 * The class is marked as public so that it can be accessed from views.
+	 *
+	 * <p>
+	 * See <tt>views/hudson/plugins/hello_world/HelloWorldBuilder/*.jelly</tt>
+	 * for the actual HTML fragment for the configuration screen.
+	 */
+	@Extension // this marker indicates Hudson that this is an implementation of an extension point.
+	public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 		/**
 		 * To persist global configuration information,
 		 * simply store it in a field and call save().
@@ -150,6 +134,7 @@ public class PlayAutoTestBuilder extends Builder{
 			save();
 			return super.configure(req,formData);
 		}
+
 
 		/**
 		 * This method returns true if the global configuration says we should speak French.

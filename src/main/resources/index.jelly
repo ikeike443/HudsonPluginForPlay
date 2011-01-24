@@ -4,5 +4,6 @@
   Since we don't really have anything dynamic here, let's just use static HTML. 
 -->
 <div>
-  This plugin is a sample plugin for play auto-test
+  Hudson plugin for Play! framework.<br />
+  It enables hudson to run play command and to generate test-result view per build looks like calimoucho.
 </div>
