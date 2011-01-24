@@ -12,6 +12,8 @@ Then target/play-autotest-plugin.hpi created, copy it to hudson plugins director
 
 bc. cp target/play-autotest-plugin.hpi /path/to/hudson/plugins/
 
+And then, you should restart hudson.
+
 bc. /etc/init.d/hudson restart
 
 That's all.
