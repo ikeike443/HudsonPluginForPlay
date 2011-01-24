@@ -11,7 +11,7 @@
 
 	<groupId>com.gmail.ikeike443</groupId>
 	<artifactId>play-autotest-plugin</artifactId>
-	<name>HudsonPluginForPlay</name>
+	<name>play-autotest-plugin</name>
 	<version>0.0.1</version>
 	<packaging>hpi</packaging>
 	<build>
