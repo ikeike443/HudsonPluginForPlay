@@ -4,16 +4,29 @@
 	<parent>
 		<groupId>org.jvnet.hudson.plugins</groupId>
 		<artifactId>plugin</artifactId>
-		<version>1.377</version><!-- which version of Hudson is this plugin built 
+		<version>1.388</version><!-- which version of Hudson is this plugin built 
 			against? -->
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<groupId>com.gmail.ikeike443</groupId>
 	<artifactId>play-autotest-plugin</artifactId>
-	<name>play-autotest-plugin</name>
-	<version>0.0.1</version>
+	<name>playframework-plugin</name>
+	<version>0.0.1-SNAPSHOT</version>
 	<packaging>hpi</packaging>
+	<url>http://wiki.hudson-ci.org/display/HUDSON/play-plugin</url>
+  <distributionManagement>
+   <repository>
+    <id>java.net-m2-repository</id>
+    <url>http://maven.hudson-labs.org:8081/content/repositories/releases/</url>
+   </repository>
+  </distributionManagement>
+  <developers>
+    <developer>
+      <id>ikeike443</id>
+      <name>Takafumi Ikeda</name>
+      <email>ikeike443@gmail.com</email>
+    </developer>
+  </developers>
 	<build>
 		<plugins>
 			<plugin>
@@ -30,6 +43,12 @@
 					<compilerVersion>1.6.0</compilerVersion>
 				</configuration>
 			</plugin>
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+        <configuration>
+          <goals>deploy</goals>
+        </configuration>
+      </plugin>
 		</plugins>
 	</build>
 
@@ -58,5 +77,10 @@
 		</pluginRepository>
 	</pluginRepositories>
 
+<scm>
+<connection>scm:git:git://github.com:hudson/play-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:hudson/play-plugin.git</developerConnection>
+    <url>https://github.com/hudson/play-plugin</url>
+  </scm>
 
 </project>
