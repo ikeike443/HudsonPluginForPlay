@@ -9,8 +9,7 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 import javax.servlet.ServletException;
 
@@ -62,9 +61,18 @@ public class PlayAutoTestBuilder extends Builder{
 			if(exitcode == 0){
 				//check test-result
 				if(new File(build.getWorkspace().toString()+"/test-result/result.passed").exists()){
-
 					return true;
 				}else{
+					File applicationLog = new File(build.getWorkspace().toString()+"/test-result/application.log");
+					if(applicationLog.exists()){
+						byte[] buffer = new byte[2000];
+						FileInputStream inputStream = new FileInputStream(applicationLog);
+						int bytesRead = 0;
+						while((bytesRead = inputStream.read(buffer)) > 0) {
+							listener.getLogger().write(buffer,0, bytesRead);
+						}
+						listener.getLogger().flush();
+					}
 					return false;
 				}
 			}else{
