@@ -60,10 +60,16 @@ public class PlayTestResultAction implements Action{
 	public String getUrlName() {
 		return "playTestResult";
 	}
-
+	public boolean getApplicationlogExists(){
+		return new File(owner.getRootDir()+"/test-result/application.log").exists();
+	}
 
 	public String getApplicationlog(){
-		return "test-result/application.log";
+		if(new File(owner.getRootDir()+"/test-result/application.log").exists()){
+			return "test-result/application.log";
+		}else{
+			return "";
+		}
 	}
 	public List<PlayTestResult> getTestResults(){
 		List<PlayTestResult> rt = new ArrayList<PlayTestResult>();

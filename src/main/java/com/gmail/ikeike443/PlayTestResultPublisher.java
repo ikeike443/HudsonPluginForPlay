@@ -36,7 +36,6 @@ public class PlayTestResultPublisher extends Publisher {
 			for (FilePath filePath : files) {
 				filePath.copyTo(new FilePath(root, "test-result/"+filePath.getName()));
 			}
-			//TODO 例外。リファクタリング。
 			Properties conf = new Properties();
 			InputStream inputStream = new FileInputStream(new File(
 					build.getWorkspace()+"/conf/application.conf"));
@@ -47,6 +46,7 @@ public class PlayTestResultPublisher extends Publisher {
 			act.setAppName(conf.getProperty("application.name"));
 			build.addAction(act);
 			inputStream.close();
+			
 			return true;
 
 		} catch (Exception e) {
