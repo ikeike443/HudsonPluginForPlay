@@ -8,5 +8,4 @@ Get it from Jenkins repository through Jenkins plugin manager.
 
 h2. How to use
 
-Please see:
-http://wiki.hudson-ci.org/display/HUDSON/play-plugin 
+Please see "this plugin page":http://wiki.hudson-ci.org/display/HUDSON/play-plugin 
