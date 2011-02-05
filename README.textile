@@ -1,23 +1,12 @@
-h1. Hudson plugin for Play framework
+h1. Jenkins plugin for Play framework
 
-It enables hudson to run play commands and to generate test-result view per build looks like Calimoucho - Play! CI server.
+It enables Jenkins to run play commands and to generate test-result view per build looks like Calimoucho - Play! CI server.
 
 h2. Getting Started
 
-to build:
+Get it from Jenkins repository through Jenkins plugin manager.
 
-bc. mvn package
+h2. How to use
 
-Then target/play-autotest-plugin.hpi created, copy it to hudson plugins directory.
-
-bc. cp target/play-autotest-plugin.hpi /path/to/hudson/plugins/
-
-And then, you should restart hudson.
-
-bc. /etc/init.d/hudson restart
-
-That's all.
-
-h2. Or...
-
-Get it from Hudson repository through hudson plugin management UI. 
+Please see:
+http://wiki.hudson-ci.org/display/HUDSON/play-plugin 
