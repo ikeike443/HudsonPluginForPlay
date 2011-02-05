@@ -1,8 +1,10 @@
 package com.gmail.ikeike443;
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Proc;
 import hudson.model.BuildListener;
+import hudson.model.Result;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.tasks.BuildStepDescriptor;
@@ -42,6 +44,21 @@ public class PlayAutoTestBuilder extends Builder{
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
+		//clean up
+		try {
+			FilePath[] files = build.getProject().getWorkspace().list("test-result/*");
+			for (FilePath filePath : files) {
+				filePath.delete();
+			}
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+
 		String playpath = null;
 		if(getDescriptor().path()!= null){
 			playpath = getDescriptor().path();
@@ -49,12 +66,16 @@ public class PlayAutoTestBuilder extends Builder{
 			listener.getLogger().println("play path is null");
 			return false;
 		}
-/*		if(play_path_job != null){
-			playpath = play_path_job;
-		}*/
-		listener.getLogger().println("playpath is "+playpath);
+
+		listener.getLogger().println("play path is "+playpath);
+		if( ! "auto-test".equals(play_cmd) ){
+			listener.getLogger().println("play command '"+play_cmd+"' you set is not supported at this version. 'auto-test' is always available.");
+			System.out.println("play command '"+play_cmd+"' you set is not supported at this version. 'auto-test' is always available.");
+			return false;
+		}
 		try {
-			String cmd = playpath + " " + play_cmd +" " /*"play auto-test "*/+build.getWorkspace().toString();
+
+			String cmd = playpath + " " + play_cmd +" "+build.getWorkspace().toString();
 			listener.getLogger().println(cmd);
 			Proc proc = launcher.launch(cmd, new String[0],listener.getLogger(),build.getWorkspace());
 			int exitcode = proc.join();	
@@ -62,10 +83,10 @@ public class PlayAutoTestBuilder extends Builder{
 			if(exitcode == 0){
 				//check test-result
 				if(new File(build.getWorkspace().toString()+"/test-result/result.passed").exists()){
-
 					return true;
 				}else{
-					return false;
+					build.setResult(Result.UNSTABLE);
+					return true;
 				}
 			}else{
 				listener.getLogger().println("play test failed");
@@ -117,6 +138,7 @@ public class PlayAutoTestBuilder extends Builder{
 		public FormValidation doCheckName(@QueryParameter String value) throws IOException, ServletException {
 			if(value.length()==0)
 				return FormValidation.error("Please set path to play");
+
 			return FormValidation.ok();
 		}
 
