@@ -93,6 +93,10 @@ public class PlayAutoTestBuilder extends Builder{
 	 */
 	@Extension // this marker indicates Hudson that this is an implementation of an extension point.
 	public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
+		public DescriptorImpl(){
+			super();
+			load();
+		}
 		/**
 		 * To persist global configuration information,
 		 * simply store it in a field and call save().
