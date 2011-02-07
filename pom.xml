@@ -13,12 +13,19 @@
 	<version>0.0.3-SNAPSHOT</version>
 	<packaging>hpi</packaging>
 	<url>http://wiki.jenkins-ci.org/display/HUDSON/play-plugin</url>
-  <distributionManagement>
+ <!-- <distributionManagement>
    <repository>
     <id>java.net-m2-repository</id>
     <url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
    </repository>
+  </distributionManagement>-->
+ <distributionManagement>
+    <repository>
+      <id>maven.jenkins-ci.org</id>
+      <url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
+    </repository>
   </distributionManagement>
+
   <developers>
     <developer>
       <id>ikeike443</id>
