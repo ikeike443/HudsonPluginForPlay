@@ -12,11 +12,11 @@
 	<name>playframework-plugin</name>
 	<version>0.0.3-SNAPSHOT</version>
 	<packaging>hpi</packaging>
-	<url>http://wiki.hudson-ci.org/display/HUDSON/play-plugin</url>
+	<url>http://wiki.jenkins-ci.org/display/HUDSON/play-plugin</url>
   <distributionManagement>
    <repository>
     <id>java.net-m2-repository</id>
-    <url>http://maven.hudson-labs.org:8081/content/repositories/releases/</url>
+    <url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
    </repository>
   </distributionManagement>
   <developers>
@@ -77,9 +77,9 @@
 	</pluginRepositories>
 
 <scm>
-<connection>scm:git:git://github.com:hudson/play-plugin.git</connection>
-    <developerConnection>scm:git:git@github.com:hudson/play-plugin.git</developerConnection>
-    <url>https://github.com/hudson/play-plugin</url>
+<connection>scm:git:git://github.com:jenkinsci/play-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:jenkinsci/play-plugin.git</developerConnection>
+    <url>https://github.com/jenkinsci/play-plugin</url>
   </scm>
 
 </project>
