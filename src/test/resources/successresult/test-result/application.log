@@ -1,0 +1,11 @@
+07 2 2011 14:14:55,470 INFO  ~ Starting /home/ikeda/workspace/HudsonPluginForPlay/work/jobs/test/workspace
+07 2 2011 14:14:55,473 INFO  ~ Module scala is available (/home/ikeda/play-1.1/modules/scala-0.8)
+07 2 2011 14:14:55,473 INFO  ~ Module cobertura is available (/home/ikeda/play-1.1/modules/cobertura-2.1)
+07 2 2011 14:14:56,800 WARN  ~ Actually play.tmp is set to null. Set it to play.tmp=none
+07 2 2011 14:14:56,805 WARN  ~ You're running Play! in DEV mode
+07 2 2011 14:14:57,198 INFO  ~ Listening for HTTP on port 9000 (Waiting a first request to start) ...
+07 2 2011 14:15:06,365 WARN  ~ No line number information found for class controllers.Application.  Perhaps you need to compile with debug=true?
+07 2 2011 14:15:07,874 INFO  ~ Connected to jdbc:hsqldb:mem:playembed
+07 2 2011 14:15:08,071 INFO  ~ Application 'playscala' is now started !
+07 2 2011 14:15:24,715 INFO  ~ Cobertura plugin: generating test coverage report
+07 2 2011 14:15:26,855 INFO  ~ Test coverage report has been generated: file:/home/ikeda/workspace/HudsonPluginForPlay/work/jobs/test/workspace/test-result/code-coverage/index.html

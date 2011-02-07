@@ -47,15 +47,13 @@ public class PlayAutoTestBuilder extends Builder{
 		//clean up
 		try {
 			FilePath[] files = build.getProject().getWorkspace().list("test-result/*");
+			
 			for (FilePath filePath : files) {
 				filePath.delete();
 			}
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
 		}
 		
 

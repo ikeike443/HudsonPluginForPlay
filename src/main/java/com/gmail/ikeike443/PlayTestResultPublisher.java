@@ -40,19 +40,20 @@ public class PlayTestResultPublisher extends Publisher {
 			InputStream inputStream = new FileInputStream(new File(
 					build.getWorkspace()+"/conf/application.conf"));
 			conf.load(inputStream);
-
+			
 			PlayTestResultAction act = new PlayTestResultAction(build);
 			act.setPassed(new FilePath(root, "test-result/result.passed").exists());
-			act.setAppName(conf.getProperty("application.name"));
+			act.setAppName(conf.getProperty("application.name"));//TODO set default name
 			build.addAction(act);
-			inputStream.close();
+
+			inputStream.close();//TODO move down to correct space
 			
 			return true;
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
-		}
+		} 
 
 	}
 
