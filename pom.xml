@@ -14,16 +14,17 @@
 	<packaging>hpi</packaging>
 	<url>http://wiki.jenkins-ci.org/display/HUDSON/play-plugin</url>
   <distributionManagement>
-   <repositories>
+<!--   <repositories>
     <repository>
       <id>maven.jenkins-ci.org</id>
       <url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
     </repository>
-  <repository>
+-->  
+   <repository>
     <id>java.net-m2-repository</id>
     <url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
    </repository>
-   </repositories>
+   <!--</repositories>-->
   </distributionManagement>
 
   <developers>
