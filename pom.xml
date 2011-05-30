@@ -12,7 +12,7 @@
 	<name>playframework-plugin</name>
 	<version>0.0.5-SNAPSHOT</version>
 	<packaging>hpi</packaging>
-	<url>http://wiki.jenkins-ci.org/display/JENKINS/play-plugin</url>
+	<url>https://wiki.jenkins-ci.org/display/JENKINS/play-plugin</url>
   <distributionManagement>
 <!--   <repositories>
     <repository>
@@ -26,7 +26,6 @@
    </repository>
    <!--</repositories>-->
   </distributionManagement>
-
   <developers>
     <developer>
       <id>ikeike443</id>
