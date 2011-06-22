@@ -28,10 +28,12 @@ import org.kohsuke.stapler.StaplerRequest;
 public class PlayAutoTestBuilder extends Builder{
 
 	private final String play_cmd;
+	private final String play_path;
 
 	@DataBoundConstructor
-	public PlayAutoTestBuilder(String play_cmd) {
+	public PlayAutoTestBuilder(String play_cmd, String play_path) {
 		this.play_cmd = play_cmd;
+		this.play_path = play_path;
 	}
 
 	/**
@@ -41,6 +43,10 @@ public class PlayAutoTestBuilder extends Builder{
 		return play_cmd;
 	}
 
+	public String getPlay_path() {
+		return play_path;
+	}
+	
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
@@ -58,7 +64,9 @@ public class PlayAutoTestBuilder extends Builder{
 		
 
 		String playpath = null;
-		if(getDescriptor().path()!= null){
+		if(play_path != null || play_path.length() > 0) {
+			playpath = play_path;
+		} else if(getDescriptor().path()!= null){
 			playpath = getDescriptor().path();
 		}else{
 			listener.getLogger().println("play path is null");
