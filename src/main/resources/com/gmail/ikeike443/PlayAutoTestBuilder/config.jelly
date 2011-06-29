@@ -2,4 +2,7 @@
   <f:entry title="Play command" field="play_cmd" help="/plugin/play-autotest-plugin/help-cmd.html">
     <f:textbox name="play_cmd"/>
   </f:entry>
+  <f:entry title="JVM options" field="java_opts">
+    <f:textbox name="java_opts"/>
+  </f:entry>
 </j:jelly>

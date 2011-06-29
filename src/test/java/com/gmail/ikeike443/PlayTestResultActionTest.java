@@ -29,7 +29,7 @@ public class PlayTestResultActionTest extends HudsonTestCase {
 	@Test
 	public void testTestResultIsOK() throws Exception {
 		FreeStyleProject pj = createFreeStyleProject("testsuccess");
-		pj.getBuildersList().add(new PlayAutoTestBuilder("auto-test"));
+		pj.getBuildersList().add(new PlayAutoTestBuilder("auto-test", "-Xmx1024"));
 		FreeStyleBuild build = pj.scheduleBuild2(0).get();//must be failure but don't care
 		System.out.println(build.getDisplayName()+" completed");
 		//setup
@@ -61,7 +61,7 @@ public class PlayTestResultActionTest extends HudsonTestCase {
 	@Test
 	public void testTestResultIsNG() throws Exception {
 		FreeStyleProject pj = createFreeStyleProject("testfailure");
-		pj.getBuildersList().add(new PlayAutoTestBuilder("auto-test"));
+		pj.getBuildersList().add(new PlayAutoTestBuilder("auto-test", "-Xmx1024"));
 		FreeStyleBuild build = pj.scheduleBuild2(0).get();//must be failure but don't care
 		System.out.println(build.getDisplayName()+" completed");
 		//setup

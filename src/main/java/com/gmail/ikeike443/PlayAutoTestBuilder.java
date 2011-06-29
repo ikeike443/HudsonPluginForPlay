@@ -28,10 +28,12 @@ import org.kohsuke.stapler.StaplerRequest;
 public class PlayAutoTestBuilder extends Builder{
 
 	private final String play_cmd;
+	private final String java_opts;
 
 	@DataBoundConstructor
-	public PlayAutoTestBuilder(String play_cmd) {
+	public PlayAutoTestBuilder(String play_cmd, String java_opts) {
 		this.play_cmd = play_cmd;
+		this.java_opts = java_opts;
 	}
 
 	/**
@@ -39,6 +41,13 @@ public class PlayAutoTestBuilder extends Builder{
 	 */
 	public String getPlay_cmd() {
 		return play_cmd;
+	}
+
+	/**
+	 * We'll use this from the <tt>config.jelly</tt>.
+	 */
+	public String getJava_opts() {
+		return java_opts;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -73,7 +82,7 @@ public class PlayAutoTestBuilder extends Builder{
 		}
 		try {
 
-			String cmd = playpath + " " + play_cmd +" "+build.getWorkspace().toString();
+			String cmd = playpath + " " + play_cmd + " " + build.getWorkspace().toString() + " " + java_opts;
 			listener.getLogger().println(cmd);
 			Proc proc = launcher.launch(cmd, new String[0],listener.getLogger(),build.getWorkspace());
 			int exitcode = proc.join();	
