@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.jvnet.hudson.plugins</groupId>
+		<groupId>org.jenkins-ci.plugins</groupId>
 		<artifactId>plugin</artifactId>
-		<version>1.388</version><!-- which version of Hudson is this plugin built 
+		<version>1.415</version><!-- which version of Hudson is this plugin built 
 			against? -->
 		<relativePath>../pom.xml</relativePath>
 	</parent>
@@ -12,7 +12,7 @@
 	<name>playframework-plugin</name>
 	<version>0.0.5-SNAPSHOT</version>
 	<packaging>hpi</packaging>
-	<url>http://wiki.jenkins-ci.org/display/JENKINS/play-plugin</url>
+	<url>https://wiki.jenkins-ci.org/display/JENKINS/play-plugin</url>
   <distributionManagement>
 <!--   <repositories>
     <repository>
@@ -26,7 +26,6 @@
    </repository>
    <!--</repositories>-->
   </distributionManagement>
-
   <developers>
     <developer>
       <id>ikeike443</id>
