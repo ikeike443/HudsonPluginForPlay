@@ -34,7 +34,7 @@ public class PlayAutoTestBuilderTest extends HudsonTestCase {
 	public void testPlayPathIsNull() throws Exception {
 
 		FreeStyleProject pj = createFreeStyleProject("playpathisnull");
-		pj.getBuildersList().add(new PlayAutoTestBuilder("auto-test"));
+		pj.getBuildersList().add(new PlayAutoTestBuilder("auto-test", null));
 		FreeStyleBuild build = pj.scheduleBuild2(0).get();
 		System.out.println(build.getDisplayName()+" completed");
 
