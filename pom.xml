@@ -1,29 +1,29 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.jenkins-ci.plugins</groupId>
+		<groupId>org.jvnet.hudson.plugins</groupId>
 		<artifactId>plugin</artifactId>
-		<version>1.415</version><!-- which version of Hudson is this plugin built 
+		<version>1.388</version><!-- which version of Hudson is this plugin built 
 			against? -->
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>play-autotest-plugin</artifactId>
 	<name>playframework-plugin</name>
-	<version>0.0.5-SNAPSHOT</version>
+	<version>0.0.8-SNAPSHOT</version>
 	<packaging>hpi</packaging>
 	<url>https://wiki.jenkins-ci.org/display/JENKINS/play-plugin</url>
   <distributionManagement>
-<!--   <repositories>
+<!--   <repositories>-->
     <repository>
       <id>maven.jenkins-ci.org</id>
       <url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
     </repository>
--->  
-   <repository>
+  
+<!--  <repository>
     <id>java.net-m2-repository</id>
     <url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
-   </repository>
+   </repository>-->
    <!--</repositories>-->
   </distributionManagement>
   <developers>
