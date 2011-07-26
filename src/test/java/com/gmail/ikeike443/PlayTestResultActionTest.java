@@ -3,23 +3,18 @@
  */
 package com.gmail.ikeike443;
 
+import hudson.FilePath;
+import hudson.model.FreeStyleBuild;
+import hudson.model.FreeStyleProject;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Properties;
 
-import hudson.FilePath;
-import hudson.model.FreeStyleBuild;
-import hudson.model.FreeStyleProject;
-import hudson.model.Result;
-
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
-
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 /**
  * @author ikeda
@@ -29,7 +24,7 @@ public class PlayTestResultActionTest extends HudsonTestCase {
 	@Test
 	public void testTestResultIsOK() throws Exception {
 		FreeStyleProject pj = createFreeStyleProject("testsuccess");
-		pj.getBuildersList().add(new PlayAutoTestBuilder("auto-test", null));
+		pj.getBuildersList().add(new PlayAutoTestBuilder("auto-test",null,null,null,null, null));
 		FreeStyleBuild build = pj.scheduleBuild2(0).get();//must be failure but don't care
 		System.out.println(build.getDisplayName()+" completed");
 		//setup
@@ -61,7 +56,7 @@ public class PlayTestResultActionTest extends HudsonTestCase {
 	@Test
 	public void testTestResultIsNG() throws Exception {
 		FreeStyleProject pj = createFreeStyleProject("testfailure");
-		pj.getBuildersList().add(new PlayAutoTestBuilder("auto-test", null));
+		pj.getBuildersList().add(new PlayAutoTestBuilder("auto-test",null,null,null,null, null));
 		FreeStyleBuild build = pj.scheduleBuild2(0).get();//must be failure but don't care
 		System.out.println(build.getDisplayName()+" completed");
 		//setup
