@@ -121,13 +121,19 @@ public class PlayAutoTestBuilder extends Builder{
 
 		listener.getLogger().println("play path is "+playpath);
 
+        FilePath workDir = build.getWorkspace();
+        String application_path = ((PlayAutoTestJobProperty)build.getProject().getProperty(PlayAutoTestJobProperty.class)).getApplication_path();
+        if (application_path!= null && application_path.length() > 0) {
+            workDir = build.getWorkspace().child(application_path);
+        }
+
 		try {
 			for(String play_cmd : this.play_cmds){
 				if(play_cmd!=null && play_cmd.length()==0) continue;	
 				String[] cmds= play_cmd.split(" ",2);
-				String cmd = playpath + " " + cmds[0] +" "+build.getWorkspace().toString()+" "+(cmds.length>=2? cmds[1]:"");
+				String cmd = playpath + " " + cmds[0] +" "+workDir.toString()+" "+(cmds.length>=2? cmds[1]:"");
 				listener.getLogger().println(cmd);
-				Proc proc = launcher.launch(cmd, new String[0],listener.getLogger(),build.getWorkspace());
+				Proc proc = launcher.launch(cmd, new String[0],listener.getLogger(),workDir);
 				int exitcode = proc.join();
 				this.exitcodes.put(play_cmd, (exitcode==0? "Done":"Fail"));
 				
@@ -140,7 +146,7 @@ public class PlayAutoTestBuilder extends Builder{
 				
 				if("auto-test".equalsIgnoreCase(play_cmd)){
 					//check test-result
-					if(! new File(build.getWorkspace().toString()+"/test-result/result.passed").exists()){
+					if(! new File(workDir.toString()+"/test-result/result.passed").exists()){
 						build.setResult(Result.UNSTABLE);
 					}
 				}
