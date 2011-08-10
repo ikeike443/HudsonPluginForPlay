@@ -28,15 +28,20 @@ public class PlayTestResultPublisher extends Publisher {
 	@Override
 	public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
 		try {
+            FilePath workDir = build.getWorkspace();
+            String application_path = ((PlayAutoTestJobProperty)build.getProject().getProperty(PlayAutoTestJobProperty.class)).getApplication_path();
+            if (application_path!= null && application_path.length() > 0) {
+                workDir = build.getWorkspace().child(application_path);
+            }
 
-			FilePath[] files = build.getProject().getWorkspace().list("test-result/*");
+			FilePath[] files = workDir.list("test-result/*");
 			FilePath root = new FilePath(build.getRootDir());
 			for (FilePath filePath : files) {
 				filePath.copyTo(new FilePath(root, "test-result/"+filePath.getName()));
 			}
 			Properties conf = new Properties();
 			InputStream inputStream = new FileInputStream(new File(
-					build.getWorkspace()+"/conf/application.conf"));
+					workDir+"/conf/application.conf"));
 			conf.load(inputStream);
 			
 			PlayTestResultAction act = new PlayTestResultAction(build);
