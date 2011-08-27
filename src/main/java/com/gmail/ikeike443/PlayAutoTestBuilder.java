@@ -147,7 +147,7 @@ public class PlayAutoTestBuilder extends Builder{
                 }
 
                 String[] cmds= play_cmd.split(" ",2);
-                String cmd = playpath + " " + cmds[0] +" "+workDir.toString()+" "+(cmds.length>=2? cmds[1]:"");
+                String cmd = playpath + " " + cmds[0] +" \""+workDir.toString()+"\" "+(cmds.length>=2? cmds[1]:"");
 
                 listener.getLogger().println("Executing " + cmd);
                 Proc proc = launcher.launch(cmd, new String[0],listener.getLogger(),workDir);
