@@ -1,7 +1,5 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-    <f:optionalBlock title="Play! application path" name="play" checked="${instance.application_path!=null}" help="/plugin/play-autotest-plugin/help-application-path.html">
-        <f:entry title="path" field="application_path">
-            <f:textbox />
-        </f:entry>
-    </f:optionalBlock>
+    <f:entry title="Play! Application Path (leave empty for default)" field="application_path" help="/plugin/play-autotest-plugin/help-application-path.html">
+        <f:textbox/>
+    </f:entry>
 </j:jelly>

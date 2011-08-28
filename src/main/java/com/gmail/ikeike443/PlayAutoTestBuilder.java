@@ -129,25 +129,32 @@ public class PlayAutoTestBuilder extends Builder{
         FilePath workDir = build.getWorkspace();
         String application_path = ((PlayAutoTestJobProperty)build.getProject().getProperty(PlayAutoTestJobProperty.class)).getApplication_path();
         if (application_path!= null && application_path.length() > 0) {
+            listener.getLogger().println("Application path set to: "+ application_path);
             workDir = build.getWorkspace().child(application_path);
         }
 
         try {
             for(String play_cmd : this.play_cmds){
                 if(play_cmd!=null && play_cmd.length()==0) continue;
-                // Substitute parameters
-                listener.getLogger().println("Substituting job parameters from " + play_cmd);
+                
+                String cmd = "";
                 ParametersAction param = build.getAction(hudson.model.ParametersAction.class);
-                List<ParameterValue> values = param.getParameters();
-                if (values != null) {
-                    for (ParameterValue value : values) {
-                        String v = value.createVariableResolver(build).resolve(value.getName());
-                        play_cmd = play_cmd.replace("${" + value.getName() + "}", v);
+                if (param == null) {
+                    cmd = playpath + " " + play_cmd + " " + workDir.toString();
+                } else {
+                    // Substitute parameters
+                    listener.getLogger().println("Substituting job parameters from " + play_cmd);
+                    List<ParameterValue> values = param.getParameters();
+                    if (values != null) {
+                        for (ParameterValue value : values) {
+                            String v = value.createVariableResolver(build).resolve(value.getName());
+                            play_cmd = play_cmd.replace("${" + value.getName() + "}", v);
+                        }
                     }
-                }
 
-                String[] cmds= play_cmd.split(" ",2);
-                String cmd = playpath + " " + cmds[0] +" "+workDir.toString()+" "+(cmds.length>=2? cmds[1]:"");
+                    String[] cmds= play_cmd.split(" ",2);
+                    cmd = playpath + " " + cmds[0] +" "+workDir.toString()+" "+(cmds.length>=2? cmds[1]:"");
+                }
 
                 listener.getLogger().println("Executing " + cmd);
                 Proc proc = launcher.launch(cmd, new String[0],listener.getLogger(),workDir);
