@@ -122,7 +122,7 @@ public class PlayAutoTestBuilder extends Builder{
 		listener.getLogger().println("play path is "+playpath);
 
         FilePath workDir = build.getWorkspace();
-        String application_path = ((PlayAutoTestJobProperty)build.getProject().getProperty(PlayAutoTestJobProperty.class)).getApplication_path();
+        String application_path = ((PlayAutoTestJobProperty)build.getProject().getProperty(PlayAutoTestJobProperty.class)).getApplicationPath();
         if (application_path!= null && application_path.length() > 0) {
             workDir = build.getWorkspace().child(application_path);
         }
