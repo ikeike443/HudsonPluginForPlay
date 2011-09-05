@@ -26,13 +26,14 @@ public class PlayTestResultPublisher extends Publisher {
 
 
 	@Override
-	public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
+	public boolean perform(@SuppressWarnings("rawtypes") AbstractBuild build, Launcher launcher, BuildListener listener) {
 		try {
-            FilePath workDir = build.getWorkspace();
-            String application_path = ((PlayAutoTestJobProperty)build.getProject().getProperty(PlayAutoTestJobProperty.class)).getApplicationPath();
-            if (application_path!= null && application_path.length() > 0) {
-                workDir = build.getWorkspace().child(application_path);
-            }
+			FilePath workDir = build.getWorkspace();
+			@SuppressWarnings("unchecked")
+			String application_path = ((PlayAutoTestJobProperty)build.getProject().getProperty(PlayAutoTestJobProperty.class)).getApplicationPath();
+			if (application_path!= null && application_path.length() > 0) {
+				workDir = build.getWorkspace().child(application_path);
+			}
 
 			FilePath[] files = workDir.list("test-result/*");
 			FilePath root = new FilePath(build.getRootDir());
@@ -43,14 +44,14 @@ public class PlayTestResultPublisher extends Publisher {
 			InputStream inputStream = new FileInputStream(new File(
 					workDir+"/conf/application.conf"));
 			conf.load(inputStream);
-			
+
 			PlayTestResultAction act = new PlayTestResultAction(build);
 			act.setPassed(new FilePath(root, "test-result/result.passed").exists());
 			act.setAppName(conf.getProperty("application.name"));//TODO set default name
 			build.addAction(act);
 
 			inputStream.close();//TODO move down to correct space
-			
+
 			return true;
 
 		} catch (Exception e) {
@@ -81,7 +82,7 @@ public class PlayTestResultPublisher extends Publisher {
 	public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
 		@Override
-		public boolean isApplicable(Class<? extends AbstractProject> jobType) {
+		public boolean isApplicable(@SuppressWarnings("rawtypes") Class<? extends AbstractProject> jobType) {
 			return true;
 		}
 
