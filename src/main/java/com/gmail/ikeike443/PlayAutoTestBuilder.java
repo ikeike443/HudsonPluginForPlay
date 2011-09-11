@@ -4,9 +4,11 @@ import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Proc;
 import hudson.model.BuildListener;
+import hudson.model.ParameterValue;
 import hudson.model.Result;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.model.ParametersAction;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
@@ -39,17 +41,16 @@ public class PlayAutoTestBuilder extends Builder{
 	private final List<String> play_cmds;
 	private final String play_path;
 
-	private Map<String,String> exitcodes = new HashMap<String, String>();
-
 	@SuppressWarnings("serial")
 	@DataBoundConstructor
-	public PlayAutoTestBuilder( 
-			final String play_cmd, 
+	public PlayAutoTestBuilder(
+			final String play_cmd,
 			final String play_cmd2,
 			final String play_cmd3,
 			final String play_cmd4,
 			final String play_cmd5,
 			final String play_path) {
+		System.out.println("Creating play auto test builder");
 		this.play_cmd  = ensureCommandString(play_cmd);
 		this.play_cmd2 = ensureCommandString(play_cmd2);
 		this.play_cmd3 = ensureCommandString(play_cmd3);
@@ -63,12 +64,13 @@ public class PlayAutoTestBuilder extends Builder{
 			add(ensureCommandString(play_cmd4));
 			add(ensureCommandString(play_cmd5));
 		}};
+		System.out.println("Commands: " + play_cmds);
 		this.play_path = play_path;
 	}
 	String ensureCommandString(String command){
 		return (command!=null && command.trim().length()>0)? command:"";
 	}
-	
+
 
 	/**
 	 * We'll use this from the <tt>config.jelly</tt>.
@@ -93,9 +95,9 @@ public class PlayAutoTestBuilder extends Builder{
 		return play_path;
 	}
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings({ "deprecation" })
 	@Override
-	public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
+	public boolean perform(@SuppressWarnings("rawtypes") AbstractBuild build, Launcher launcher, BuildListener listener) {
 		//clean up
 		try {
 			FilePath[] files = build.getProject().getWorkspace().list("test-result/*");
@@ -107,6 +109,9 @@ public class PlayAutoTestBuilder extends Builder{
 			e.printStackTrace();
 			return false;
 		}
+
+		// This maps stored the executed commands and the results
+		Map<String,String> exitcodes = new HashMap<String, String>();
 
 		//build playpath
 		String playpath = null;
@@ -121,26 +126,50 @@ public class PlayAutoTestBuilder extends Builder{
 
 		listener.getLogger().println("play path is "+playpath);
 
+		FilePath workDir = build.getWorkspace();
+		@SuppressWarnings("unchecked")
+		String application_path = ((PlayAutoTestJobProperty)build.getProject().getProperty(PlayAutoTestJobProperty.class)).getApplicationPath();
+		if (application_path!= null && application_path.length() > 0) {
+			workDir = build.getWorkspace().child(application_path);
+		}
+
 		try {
 			for(String play_cmd : this.play_cmds){
-				if(play_cmd!=null && play_cmd.length()==0) continue;	
-				String[] cmds= play_cmd.split(" ",2);
-				String cmd = playpath + " " + cmds[0] +" "+build.getWorkspace().toString()+" "+(cmds.length>=2? cmds[1]:"");
-				listener.getLogger().println(cmd);
-				Proc proc = launcher.launch(cmd, new String[0],listener.getLogger(),build.getWorkspace());
-				int exitcode = proc.join();
-				this.exitcodes.put(play_cmd, (exitcode==0? "Done":"Fail"));
+				if(play_cmd!=null && play_cmd.length()==0) continue;
 				
+				// Substitute parameters
+				ParametersAction param = build.getAction(hudson.model.ParametersAction.class);
+				if(param!=null){
+					listener.getLogger().println("Substituting job parameters from " + play_cmd);
+					List<ParameterValue> values = param.getParameters();
+					if (values != null) {
+						for (ParameterValue value : values) {
+							String v = value.createVariableResolver(build).resolve(value.getName());
+							play_cmd = play_cmd.replace("${" + value.getName() + "}", v);
+						}
+					}
+				}
+
+
+				String[] cmds= play_cmd.split(" ",2);
+				String cmd = playpath + " " + cmds[0] +" \""+workDir.toString()+"\" "+(cmds.length>=2? cmds[1]:"");
+
+				listener.getLogger().println("Executing " + cmd);
+				Proc proc = launcher.launch(cmd, new String[0],listener.getLogger(),workDir);
+				int exitcode = proc.join();
+
+				exitcodes.put(play_cmd, (exitcode==0? "Done":"Fail"));
+
 				if(exitcode!=0) {
 					listener.getLogger().println("****************************************************");
 					listener.getLogger().println("* ERROR!!! while executing "+play_cmd);
 					listener.getLogger().println("****************************************************");
 					return false;
 				}
-				
-				if("auto-test".equalsIgnoreCase(play_cmd)){
+
+				if(play_cmd!=null && play_cmd.matches("(auto-test.*)")){
 					//check test-result
-					if(! new File(build.getWorkspace().toString()+"/test-result/result.passed").exists()){
+					if(! new File(workDir.toString()+"/test-result/result.passed").exists()){
 						build.setResult(Result.UNSTABLE);
 					}
 				}
@@ -150,7 +179,7 @@ public class PlayAutoTestBuilder extends Builder{
 			for(Map.Entry<String, String> rec : exitcodes.entrySet()){
 				listener.getLogger().println("  "+rec.getKey()+": "+rec.getValue());
 			}
-			return exitcodes.containsValue("Fail")? false : true; 
+			return exitcodes.containsValue("Fail")? false : true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -201,8 +230,8 @@ public class PlayAutoTestBuilder extends Builder{
 			return FormValidation.ok();
 		}
 
-		public boolean isApplicable(Class<? extends AbstractProject> aClass) {
-			// indicates that this builder can be used with all kinds of project types 
+		public boolean isApplicable(@SuppressWarnings("rawtypes") Class<? extends AbstractProject> aClass) {
+			// indicates that this builder can be used with all kinds of project types
 			return true;
 		}
 

@@ -30,4 +30,11 @@ public class PlayAutoTestBuilderTest extends HudsonTestCase {
 		
 		assertEquals(Result.FAILURE,build.getResult());
 	}
+	
+	/*TODO write more tests
+	 * about path with spaces
+	 * about parameter value
+	 * about applicationpath
+	 */
+	
 }
