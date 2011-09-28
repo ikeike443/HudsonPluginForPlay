@@ -40,9 +40,9 @@ public class PlayTestResultPublisher extends Publisher {
 			for (FilePath filePath : files) {
 				filePath.copyTo(new FilePath(root, "test-result/"+filePath.getName()));
 			}
+
 			Properties conf = new Properties();
-			InputStream inputStream = new FileInputStream(new File(
-					workDir+"/conf/application.conf"));
+			InputStream inputStream = new FilePath(workDir, "conf/application.conf").read();
 			conf.load(inputStream);
 
 			PlayTestResultAction act = new PlayTestResultAction(build);
