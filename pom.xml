@@ -9,7 +9,7 @@
 
 	<artifactId>play-autotest-plugin</artifactId>
 	<name>playframework-plugin</name>
-	<version>0.0.12-SNAPSHOT</version>
+	<version>0.0.13-SNAPSHOT</version>
 	<packaging>hpi</packaging>
 	<url>https://wiki.jenkins-ci.org/display/JENKINS/play-plugin</url>
 	<distributionManagement>
