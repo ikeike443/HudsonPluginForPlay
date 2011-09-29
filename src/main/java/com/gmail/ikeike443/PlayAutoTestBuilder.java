@@ -128,7 +128,8 @@ public class PlayAutoTestBuilder extends Builder{
 
 		FilePath workDir = build.getWorkspace();
 		@SuppressWarnings("unchecked")
-		String application_path = ((PlayAutoTestJobProperty)build.getProject().getProperty(PlayAutoTestJobProperty.class)).getApplicationPath();
+                PlayAutoTestJobProperty playJobProperty = (PlayAutoTestJobProperty)build.getProject().getProperty(PlayAutoTestJobProperty.class);
+		String application_path = playJobProperty!=null? playJobProperty.getApplicationPath() : null;
 		if (application_path!= null && application_path.length() > 0) {
 			workDir = build.getWorkspace().child(application_path);
 		}
