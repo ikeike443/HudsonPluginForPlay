@@ -168,7 +168,7 @@ public class PlayAutoTestBuilder extends Builder{
 					return false;
 				}
 
-				if(play_cmd!=null && play_cmd.matches("(auto-test.*)")){
+				if(play_cmd!=null && play_cmd.matches("(auto-?test.*)")){
 					//check test-result
 					if(! new FilePath(workDir, "test-result/result.passed").exists()){
 						build.setResult(Result.UNSTABLE);
