@@ -13,7 +13,6 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -114,7 +113,7 @@ public class PlayAutoTestBuilder extends Builder{
 		Map<String,String> exitcodes = new HashMap<String, String>();
 
 		//build playpath
-		String playpath = null;
+		String playpath;
 		if(play_path != null && play_path.length() > 0) {
 			playpath = play_path;
 		} else if(getDescriptor().path()!= null){
@@ -137,7 +136,7 @@ public class PlayAutoTestBuilder extends Builder{
 		try {
 			for(String play_cmd : this.play_cmds){
 				if(play_cmd!=null && play_cmd.length()==0) continue;
-				
+
 				// Substitute parameters
 				ParametersAction param = build.getAction(hudson.model.ParametersAction.class);
 				if(param!=null){
@@ -152,11 +151,14 @@ public class PlayAutoTestBuilder extends Builder{
 				}
 
 
-				String[] cmds= play_cmd.split(" ",2);
-				String cmd = playpath + " " + cmds[0] +" \""+workDir.toString()+"\" "+(cmds.length>=2? cmds[1]:"");
+                String[] cmds = play_cmd.split(" ", 2);
+                Launcher.ProcStarter procStarter = launcher.new ProcStarter();
+                procStarter.cmds(playpath, cmds[0], workDir.toString(), (cmds.length >= 2 ? cmds[1] : ""));
+                procStarter.stdout(listener.getLogger());
+                procStarter.pwd(workDir);
+                procStarter.envs(build.getEnvironment(listener));
 
-				listener.getLogger().println("Executing " + cmd);
-				Proc proc = launcher.launch(cmd, new String[0],listener.getLogger(),workDir);
+                Proc proc = launcher.launch(procStarter);
 				int exitcode = proc.join();
 
 				exitcodes.put(play_cmd, (exitcode==0? "Done":"Fail"));
@@ -180,6 +182,7 @@ public class PlayAutoTestBuilder extends Builder{
 			for(Map.Entry<String, String> rec : exitcodes.entrySet()){
 				listener.getLogger().println("  "+rec.getKey()+": "+rec.getValue());
 			}
+
 			return exitcodes.containsValue("Fail")? false : true;
 		} catch (Exception e) {
 			e.printStackTrace();
