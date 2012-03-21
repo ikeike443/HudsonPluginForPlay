@@ -33,7 +33,7 @@ import org.kohsuke.stapler.StaplerRequest;
  */
 public class PlayAutoTestBuilder extends Builder{
 
-	private final String play_cmd1;
+	private final String play_cmd;
 	private final String play_cmd2;
 	private final String play_cmd3;
 	private final String play_cmd4;
@@ -54,14 +54,14 @@ public class PlayAutoTestBuilder extends Builder{
     @SuppressWarnings("serial")
 	@DataBoundConstructor
 	public PlayAutoTestBuilder(
-			final String play_cmd1,
+			final String play_cmd,
 			final String play_cmd2,
 			final String play_cmd3,
 			final String play_cmd4,
 			final String play_cmd5,
 			final String play_path) {
 		System.out.println("Creating play auto test builder");
-		this.play_cmd1 = ensureCommandString(play_cmd1);
+		this.play_cmd = ensureCommandString(play_cmd);
 		this.play_cmd2 = ensureCommandString(play_cmd2);
 		this.play_cmd3 = ensureCommandString(play_cmd3);
 		this.play_cmd4 = ensureCommandString(play_cmd4);
@@ -226,7 +226,7 @@ public class PlayAutoTestBuilder extends Builder{
 
     List<String> nonEmptyCommands() {
         List<String> commands =  new ArrayList<String>(5);
-        addIfNotEmpty(this.play_cmd1, commands);
+        addIfNotEmpty(this.play_cmd, commands);
         addIfNotEmpty(this.play_cmd2, commands);
         addIfNotEmpty(this.play_cmd3, commands);
         addIfNotEmpty(this.play_cmd4, commands);
@@ -237,8 +237,8 @@ public class PlayAutoTestBuilder extends Builder{
     /**
      * We'll use this from the <tt>config.jelly</tt>.
      */
-    public String getPlay_cmd1() {
-        return play_cmd1;
+    public String getPlay_cmd() {
+        return play_cmd;
     }
     public String getPlay_cmd2() {
         return play_cmd2;
