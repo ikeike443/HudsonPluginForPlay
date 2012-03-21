@@ -13,8 +13,8 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,10 +38,20 @@ public class PlayAutoTestBuilder extends Builder{
 	private final String play_cmd3;
 	private final String play_cmd4;
 	private final String play_cmd5;
-	private final List<String> play_cmds;
+	private List<String> play_cmds;
 	private final String play_path;
+    private PrintStream logger;
 
-	@SuppressWarnings("serial")
+    // This maps stored the executed commands and the results
+    private Map<String, String> exitcodes;
+    private AbstractBuild build;
+    private Launcher launcher;
+    private BuildListener listener;
+
+    private String playpath;
+    private FilePath workDir;
+
+    @SuppressWarnings("serial")
 	@DataBoundConstructor
 	public PlayAutoTestBuilder(
 			final String play_cmd,
@@ -51,144 +61,202 @@ public class PlayAutoTestBuilder extends Builder{
 			final String play_cmd5,
 			final String play_path) {
 		System.out.println("Creating play auto test builder");
-		this.play_cmd  = ensureCommandString(play_cmd);
+		this.play_cmd = ensureCommandString(play_cmd);
 		this.play_cmd2 = ensureCommandString(play_cmd2);
 		this.play_cmd3 = ensureCommandString(play_cmd3);
 		this.play_cmd4 = ensureCommandString(play_cmd4);
 		this.play_cmd5 = ensureCommandString(play_cmd5);
-
-		this.play_cmds = new ArrayList<String>(){{
-			add(ensureCommandString(play_cmd));
-			add(ensureCommandString(play_cmd2));
-			add(ensureCommandString(play_cmd3));
-			add(ensureCommandString(play_cmd4));
-			add(ensureCommandString(play_cmd5));
-		}};
-		System.out.println("Commands: " + play_cmds);
 		this.play_path = play_path;
 	}
-	String ensureCommandString(String command){
-		return (command!=null && command.trim().length()>0)? command:"";
-	}
-
-
-	/**
-	 * We'll use this from the <tt>config.jelly</tt>.
-	 */
-	public String getPlay_cmd() {
-		return play_cmd;
-	}
-	public String getPlay_cmd2() {
-		return play_cmd2;
-	}
-	public String getPlay_cmd3() {
-		return play_cmd3;
-	}
-	public String getPlay_cmd4() {
-		return play_cmd4;
-	}
-	public String getPlay_cmd5() {
-		return play_cmd5;
-	}
-
-	public String getPlay_path() {
-		return play_path;
-	}
-
-	@SuppressWarnings({ "deprecation" })
+    @SuppressWarnings({ "deprecation" })
 	@Override
 	public boolean perform(@SuppressWarnings("rawtypes") AbstractBuild build, Launcher launcher, BuildListener listener) {
-		//clean up
-		try {
-			FilePath[] files = build.getProject().getWorkspace().list("test-result/*");
+        this.build = build;
+        this.launcher = launcher;
+        this.listener = listener;
+        logger = listener.getLogger();
+        exitcodes = new HashMap<String, String>();
+        this.play_cmds = nonEmptyCommands();
 
-			for (FilePath filePath : files) {
-				filePath.delete();
-			}
-		} catch (Exception e) {
+        try {
+            cleanUpTestResult();
+            setPlaypath(buildPlayPath());
+            setWorkDir(buildWorkDir());
+
+            for (String playCommand : this.play_cmds) {
+                String command = substituteParameters(playCommand);
+                execute(command);
+                treatPlayAutoTestSpecially(command);
+            }
+
+            logResults();
+            return !exitcodes.containsValue("Fail");
+        } catch (Exception e) {
 			e.printStackTrace();
-			return false;
-		}
-
-		// This maps stored the executed commands and the results
-		Map<String,String> exitcodes = new HashMap<String, String>();
-
-		//build playpath
-		String playpath = null;
-		if(play_path != null && play_path.length() > 0) {
-			playpath = play_path;
-		} else if(getDescriptor().path()!= null){
-			playpath = getDescriptor().path();
-		}else{
-			listener.getLogger().println("play path is null");
-			return false;
-		}
-
-		listener.getLogger().println("play path is "+playpath);
-
-		FilePath workDir = build.getWorkspace();
-		@SuppressWarnings("unchecked")
-                PlayAutoTestJobProperty playJobProperty = (PlayAutoTestJobProperty)build.getProject().getProperty(PlayAutoTestJobProperty.class);
-		String application_path = playJobProperty!=null? playJobProperty.getApplicationPath() : null;
-		if (application_path!= null && application_path.length() > 0) {
-			workDir = build.getWorkspace().child(application_path);
-		}
-
-		try {
-			for(String play_cmd : this.play_cmds){
-				if(play_cmd!=null && play_cmd.length()==0) continue;
-				
-				// Substitute parameters
-				ParametersAction param = build.getAction(hudson.model.ParametersAction.class);
-				if(param!=null){
-					listener.getLogger().println("Substituting job parameters from " + play_cmd);
-					List<ParameterValue> values = param.getParameters();
-					if (values != null) {
-						for (ParameterValue value : values) {
-							String v = value.createVariableResolver(build).resolve(value.getName());
-							play_cmd = play_cmd.replace("${" + value.getName() + "}", v);
-						}
-					}
-				}
-
-
-				String[] cmds= play_cmd.split(" ",2);
-				String cmd = playpath + " " + cmds[0] +" \""+workDir.toString()+"\" "+(cmds.length>=2? cmds[1]:"");
-
-				listener.getLogger().println("Executing " + cmd);
-				Proc proc = launcher.launch(cmd, new String[0],listener.getLogger(),workDir);
-				int exitcode = proc.join();
-
-				exitcodes.put(play_cmd, (exitcode==0? "Done":"Fail"));
-
-				if(exitcode!=0) {
-					listener.getLogger().println("****************************************************");
-					listener.getLogger().println("* ERROR!!! while executing "+play_cmd);
-					listener.getLogger().println("****************************************************");
-					return false;
-				}
-
-				if(play_cmd!=null && play_cmd.matches("(auto-test.*)")){
-					//check test-result
-					if(! new FilePath(workDir, "test-result/result.passed").exists()){
-						build.setResult(Result.UNSTABLE);
-					}
-				}
-			}
-
-			listener.getLogger().println("Each commands' results:");
-			for(Map.Entry<String, String> rec : exitcodes.entrySet()){
-				listener.getLogger().println("  "+rec.getKey()+": "+rec.getValue());
-			}
-			return exitcodes.containsValue("Fail")? false : true;
-		} catch (Exception e) {
-			e.printStackTrace();
+            e.printStackTrace(logger);
 			return false;
 		}
 
 	}
 
-	@Override
+    private void cleanUpTestResult() {
+        try {
+            FilePath[] files = build.getProject().getSomeWorkspace().list("test-result/*");
+            for (FilePath filePath : files) {
+                filePath.delete();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error while deleting files in dir 'test-result'", e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Error while deleting files in dir 'test-result'", e);
+        }
+    }
+
+    String buildPlayPath() {
+        //build playpath
+        String playpath = null;
+        if (play_path != null && play_path.length() > 0) {
+            playpath = play_path;
+        } else if (getDescriptor().path() != null) {
+            playpath = getDescriptor().path();
+        }
+        logger.println("play path is " + playpath);
+        if (playpath == null) {
+            throw new RuntimeException("Play path is null");
+        }
+        return playpath;
+    }
+
+    private FilePath buildWorkDir() {
+        FilePath workDir = build.getWorkspace();
+        @SuppressWarnings("unchecked")
+        PlayAutoTestJobProperty playJobProperty = (PlayAutoTestJobProperty) build.getProject()
+                .getProperty(PlayAutoTestJobProperty.class);
+        String application_path = playJobProperty != null ? playJobProperty.getApplicationPath() : null;
+        if (application_path != null && application_path.length() > 0) {
+            workDir = build.getWorkspace().child(application_path);
+        }
+        return workDir;
+    }
+
+    private String substituteParameters(String playCommand) {
+        // Substitute parameters
+        ParametersAction param = build.getAction(ParametersAction.class);
+        if (param != null) {
+            logger.println("Substituting job parameters from " + playCommand);
+            List<ParameterValue> values = param.getParameters();
+            if (values != null) {
+                for (ParameterValue value : values) {
+                    String v = value.createVariableResolver(build).resolve(value.getName());
+                    playCommand = playCommand.replace("${" + value.getName() + "}", v);
+                }
+            }
+        }
+        return playCommand;
+    }
+
+    private int execute(String playCommand) throws IOException, InterruptedException {
+        String[] cmds = playCommand.split(" ", 2);
+        Launcher.ProcStarter procStarter = setupProcStarter(cmds);
+        logCommand(cmds);
+        Proc proc = launcher.launch(procStarter);
+        int exitcode = proc.join();
+        exitcodes.put(playCommand, (exitcode == 0 ? "Done" : "Fail"));
+        if (exitcode != 0) {
+            logger.println("****************************************************");
+            logger.println("* ERROR!!! while executing command: '" + playCommand + "', exitcode: " + exitcode);
+            logger.println("****************************************************");
+            throw new RuntimeException("Error while executing '" + playCommand + "'");
+        }
+        return exitcode;
+    }
+
+    private Launcher.ProcStarter setupProcStarter(String[] cmds) throws IOException, InterruptedException {
+        Launcher.ProcStarter procStarter = launcher.new ProcStarter();
+        procStarter.cmds(playpath, cmds[0], workDir.toString(), (cmds.length >= 2 ? cmds[1] : ""));
+        procStarter.stdout(logger);
+        procStarter.pwd(workDir);
+        procStarter.envs(build.getEnvironment(listener));
+        return procStarter;
+    }
+
+    private void logCommand(String[] cmds) {
+        String cmd = playpath + " " + cmds[0] + " \"" + workDir.toString() + "\" "
+                + (cmds.length >= 2 ? cmds[1] : "");
+        logger.println("Executing " + cmd);
+    }
+
+    private void treatPlayAutoTestSpecially(String playCommand) throws IOException, InterruptedException {
+        if (playCommand != null && playCommand.matches("(auto-test.*)")) {
+            //check test-result
+            if (!new FilePath(workDir, "test-result/result.passed").exists()) {
+                build.setResult(Result.UNSTABLE);
+            }
+        }
+    }
+
+    private void logResults() {
+        logger.println("Each commands' results:");
+        for (Map.Entry<String, String> rec : exitcodes.entrySet()) {
+            logger.println("  " + rec.getKey() + ": " + rec.getValue());
+        }
+    }
+
+    public void setPlaypath(String playpath) {
+        this.playpath = playpath;
+    }
+
+    public void setWorkDir(FilePath workDir) {
+        this.workDir = workDir;
+    }
+
+    String ensureCommandString(String command) {
+        return isNullOrEmpty(command) ? "" : command.trim();
+    }
+
+    List<String> nonEmptyCommands() {
+        List<String> commands =  new ArrayList<String>(5);
+        addIfNotEmpty(this.play_cmd, commands);
+        addIfNotEmpty(this.play_cmd2, commands);
+        addIfNotEmpty(this.play_cmd3, commands);
+        addIfNotEmpty(this.play_cmd4, commands);
+        addIfNotEmpty(this.play_cmd5, commands);
+        return commands;
+    }
+
+    void addIfNotEmpty(String command, List<String> commands) {
+        if(!isNullOrEmpty(command)) {
+            commands.add(command.trim());
+        }
+    }
+
+    boolean isNullOrEmpty(String command) {
+        return command == null || command.trim().length() == 0;
+    }
+    /**
+     * We'll use this from the <tt>config.jelly</tt>.
+     */
+    public String getPlay_cmd() {
+        return play_cmd;
+    }
+    public String getPlay_cmd2() {
+        return play_cmd2;
+    }
+    public String getPlay_cmd3() {
+        return play_cmd3;
+    }
+    public String getPlay_cmd4() {
+        return play_cmd4;
+    }
+    public String getPlay_cmd5() {
+        return play_cmd5;
+    }
+
+    public String getPlay_path() {
+        return play_path;
+    }
+
+    @Override
 	public DescriptorImpl getDescriptor() {
 		return (DescriptorImpl)super.getDescriptor();
 	}
