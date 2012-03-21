@@ -38,7 +38,7 @@ public class PlayAutoTestBuilder extends Builder{
 	private final String play_cmd3;
 	private final String play_cmd4;
 	private final String play_cmd5;
-	private final List<String> play_cmds;
+	private List<String> play_cmds;
 	private final String play_path;
     private PrintStream logger;
 
@@ -66,7 +66,6 @@ public class PlayAutoTestBuilder extends Builder{
 		this.play_cmd3 = ensureCommandString(play_cmd3);
 		this.play_cmd4 = ensureCommandString(play_cmd4);
 		this.play_cmd5 = ensureCommandString(play_cmd5);
-        this.play_cmds = nonEmptyCommands();
 		this.play_path = play_path;
 	}
     @SuppressWarnings({ "deprecation" })
@@ -77,6 +76,7 @@ public class PlayAutoTestBuilder extends Builder{
         this.listener = listener;
         logger = listener.getLogger();
         exitcodes = new HashMap<String, String>();
+        this.play_cmds = nonEmptyCommands();
 
         try {
             cleanUpTestResult();
@@ -164,7 +164,7 @@ public class PlayAutoTestBuilder extends Builder{
         exitcodes.put(playCommand, (exitcode == 0 ? "Done" : "Fail"));
         if (exitcode != 0) {
             logger.println("****************************************************");
-            logger.println("* ERROR!!! while executing " + playCommand);
+            logger.println("* ERROR!!! while executing command: '" + playCommand + "', exitcode: " + exitcode);
             logger.println("****************************************************");
             throw new RuntimeException("Error while executing '" + playCommand + "'");
         }
@@ -210,18 +210,8 @@ public class PlayAutoTestBuilder extends Builder{
         this.workDir = workDir;
     }
 
-    void addIfNotEmpty(String command, List<String> commands) {
-        if(!isNullOrEmpty(command)) {
-            commands.add(command);
-        }
-    }
-
     String ensureCommandString(String command) {
         return isNullOrEmpty(command) ? "" : command.trim();
-    }
-
-    boolean isNullOrEmpty(String command) {
-        return command == null || command.trim().length() == 0;
     }
 
     List<String> nonEmptyCommands() {
@@ -234,6 +224,15 @@ public class PlayAutoTestBuilder extends Builder{
         return commands;
     }
 
+    void addIfNotEmpty(String command, List<String> commands) {
+        if(!isNullOrEmpty(command)) {
+            commands.add(command.trim());
+        }
+    }
+
+    boolean isNullOrEmpty(String command) {
+        return command == null || command.trim().length() == 0;
+    }
     /**
      * We'll use this from the <tt>config.jelly</tt>.
      */
