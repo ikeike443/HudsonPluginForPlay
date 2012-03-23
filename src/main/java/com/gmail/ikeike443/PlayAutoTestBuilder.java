@@ -181,7 +181,7 @@ public class PlayAutoTestBuilder extends Builder {
     }
 
     private void treatPlayAutoTestSpecially(String playCommand) throws IOException, InterruptedException {
-        if (playCommand != null && playCommand.matches("(auto-test.*)")) {
+        if (playCommand != null && playCommand.matches("(auto-?test.*)")) {
             //check test-result
             if (!new FilePath(workDir, "test-result/result.passed").exists()) {
                 build.setResult(Result.UNSTABLE);
