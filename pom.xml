@@ -1,85 +1,86 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.jenkins-ci.plugins</groupId>
-		<artifactId>plugin</artifactId>
-		<version>1.409</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.jenkins-ci.plugins</groupId>
+        <artifactId>plugin</artifactId>
+        <version>1.409</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
-	<artifactId>play-autotest-plugin</artifactId>
-	<name>playframework-plugin</name>
-	<version>0.0.13-SNAPSHOT</version>
-	<packaging>hpi</packaging>
-	<url>https://wiki.jenkins-ci.org/display/JENKINS/play-plugin</url>
-	<distributionManagement>
-		<repository>
-			<id>maven.jenkins-ci.org</id>
-			<url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
-		</repository>
+    <artifactId>play-autotest-plugin</artifactId>
+    <name>playframework-plugin</name>
+    <version>0.0.13-SNAPSHOT</version>
+    <packaging>hpi</packaging>
+    <url>https://wiki.jenkins-ci.org/display/JENKINS/play-plugin</url>
+    <distributionManagement>
+        <repository>
+            <id>maven.jenkins-ci.org</id>
+            <url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
+        </repository>
 
-	</distributionManagement>
-	<developers>
-		<developer>
-			<id>ikeike443</id>
-			<name>Takafumi Ikeda</name>
-			<email>ikeike443@gmail.com</email>
-		</developer>
-	</developers>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
+    </distributionManagement>
+    <developers>
+        <developer>
+            <id>ikeike443</id>
+            <name>Takafumi Ikeda</name>
+            <email>ikeike443@gmail.com</email>
+        </developer>
+    </developers>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
 
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-					<encoding>UTF-8</encoding>
-					<verbose>true</verbose>
-					<fork>true</fork>
-					<!-- <executable>${JAVA_HOME}/bin/javac</executable> -->
-					<compilerVersion>1.6.0</compilerVersion>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-release-plugin</artifactId>
-				<configuration>
-					<goals>deploy</goals>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <encoding>UTF-8</encoding>
+                    <verbose>true</verbose>
+                    <fork>true</fork>
+                    <!-- <executable>${JAVA_HOME}/bin/javac</executable> -->
+                    <compilerVersion>1.6.0</compilerVersion>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <goals>deploy</goals>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
-	<!-- get every artifact through maven.glassfish.org, which proxies all the 
-		artifacts that we need -->
-	<repositories>
-		<repository>
-			<id>mavencentralrepo</id>
-			<url>http://repo1.maven.org/maven2/</url>
-		</repository>
-		<repository>
-			<id>m.g.o-public</id>
-			<url>http://maven.glassfish.org/content/groups/public/</url>
-		</repository>
+    <!-- get every artifact through maven.glassfish.org, which proxies all the
+         artifacts that we need -->
+    <repositories>
+        <repository>
+            <id>mavencentralrepo</id>
+            <url>http://repo1.maven.org/maven2/</url>
+        </repository>
+        <repository>
+            <id>m.g.o-public</id>
+            <url>http://maven.glassfish.org/content/groups/public/</url>
+        </repository>
 
-		<repository>
-			<id>infradna</id>
-			<url>http://download.java.net/maven/2/</url>
-		</repository>
-	</repositories>
+        <repository>
+            <id>infradna</id>
+            <url>http://download.java.net/maven/2/</url>
+        </repository>
+    </repositories>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>m.g.o-public</id>
-			<url>http://maven.glassfish.org/content/groups/public/</url>
-		</pluginRepository>
-	</pluginRepositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>m.g.o-public</id>
+            <url>http://maven.glassfish.org/content/groups/public/</url>
+        </pluginRepository>
+    </pluginRepositories>
 
-	<scm>
-		<connection>scm:git:git://github.com:jenkinsci/play-plugin.git</connection>
-		<developerConnection>scm:git:git@github.com:jenkinsci/play-plugin.git</developerConnection>
-		<url>https://github.com/jenkinsci/play-plugin</url>
-	</scm>
+    <scm>
+        <connection>scm:git:git://github.com:jenkinsci/play-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:jenkinsci/play-plugin.git</developerConnection>
+        <url>https://github.com/jenkinsci/play-plugin</url>
+    </scm>
 
 </project>
