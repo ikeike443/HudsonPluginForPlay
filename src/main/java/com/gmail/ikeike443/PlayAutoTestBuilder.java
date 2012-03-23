@@ -44,6 +44,7 @@ public class PlayAutoTestBuilder extends Builder {
     private String playpath;
     private FilePath workDir;
 
+
     @SuppressWarnings("serial")
     @DataBoundConstructor
     public PlayAutoTestBuilder(
@@ -107,6 +108,7 @@ public class PlayAutoTestBuilder extends Builder {
     }
 
     String buildPlayPath() {
+
         //build playpath
         String playpath = null;
         if (play_path != null && play_path.length() > 0) {
