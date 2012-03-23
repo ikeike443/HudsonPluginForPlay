@@ -16,6 +16,9 @@
   	<f:textbox name="play_cmd5"/>
   </f:entry>
 
+    <f:entry title="Mark build as failed instead of unstable if tests do not pass" field="failOnTestNotPassing">
+        <f:checkbox name="failOnTestNotPassing" />
+    </f:entry>
   <f:advanced>
     <f:entry title="Play path override" field="play_path" help="/plugin/play-autotest-plugin/help-path-override.html">
       <f:textbox name="play_path"/>

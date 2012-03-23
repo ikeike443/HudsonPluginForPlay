@@ -41,6 +41,8 @@ public class PlayAutoTestBuilder extends Builder{
 	private final List<String> play_cmds;
 	private final String play_path;
 
+    private final boolean failOnTestNotPassing;
+
 	@SuppressWarnings("serial")
 	@DataBoundConstructor
 	public PlayAutoTestBuilder(
@@ -49,13 +51,16 @@ public class PlayAutoTestBuilder extends Builder{
 			final String play_cmd3,
 			final String play_cmd4,
 			final String play_cmd5,
-			final String play_path) {
-		System.out.println("Creating play auto test builder");
+			final String play_path,
+            final boolean failOnTestNotPassing) {
+
+        System.out.println("Creating play auto test builder");
 		this.play_cmd  = ensureCommandString(play_cmd);
 		this.play_cmd2 = ensureCommandString(play_cmd2);
 		this.play_cmd3 = ensureCommandString(play_cmd3);
 		this.play_cmd4 = ensureCommandString(play_cmd4);
 		this.play_cmd5 = ensureCommandString(play_cmd5);
+        this.failOnTestNotPassing = failOnTestNotPassing;
 
 		this.play_cmds = new ArrayList<String>(){{
 			add(ensureCommandString(play_cmd));
@@ -94,6 +99,9 @@ public class PlayAutoTestBuilder extends Builder{
 	public String getPlay_path() {
 		return play_path;
 	}
+    public boolean getFailOnTestNotPassing() {
+        return failOnTestNotPassing;
+    }
 
 	@SuppressWarnings({ "deprecation" })
 	@Override
@@ -171,7 +179,11 @@ public class PlayAutoTestBuilder extends Builder{
 				if(play_cmd!=null && play_cmd.matches("(auto-?test.*)")){
 					//check test-result
 					if(! new FilePath(workDir, "test-result/result.passed").exists()){
-						build.setResult(Result.UNSTABLE);
+                        if (failOnTestNotPassing) {
+                            build.setResult(Result.FAILURE);
+                        } else {
+                            build.setResult(Result.UNSTABLE);
+                        }
 					}
 				}
 			}
