@@ -13,8 +13,8 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -156,8 +156,29 @@ public class PlayAutoTestBuilder extends Builder{
 				String cmd = playpath + " " + cmds[0] +" \""+workDir.toString()+"\" "+(cmds.length>=2? cmds[1]:"");
 
 				listener.getLogger().println("Executing " + cmd);
-				Proc proc = launcher.launch(cmd, new String[0],listener.getLogger(),workDir);
-				int exitcode = proc.join();
+//				Proc proc = launcher.launch(cmd, new String[0],listener.getLogger(),workDir);
+//				int exitcode = proc.join();
+				
+				Proc proc = launcher.launch().cmds(playpath, "test").pwd(workDir).writeStdin().stdout(listener.getLogger()).stderr(listener.getLogger()).start();
+		        PrintStream ps = new PrintStream(proc.getStdin());
+		        
+//		        Proc proc = launcher.launch().cmds(cmds).envs(env).writeStdin().stdout(listener.getLogger()).stderr(listener.getLogger()).start();
+//		        PrintStream ps = new PrintStream(proc.getStdin());
+				
+//				ps.println(call);
+//		        ps.flush();
+//
+//		        ps.println("echo %errorlevel%");
+//		        ps.flush();
+//
+//		        ps.println("exit %errorlevel%");
+//		        ps.flush();
+		        
+		        int exitcode = proc.join();
+//
+		        System.out.println("EXITCODE########### " + exitcode);
+				
+				
 
 				exitcodes.put(play_cmd, (exitcode==0? "Done":"Fail"));
 
