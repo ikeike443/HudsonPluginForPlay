@@ -1,4 +1,5 @@
 package com.gmail.ikeike443;
+
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -31,64 +32,49 @@ import org.kohsuke.stapler.StaplerRequest;
 /**
  * @author ikeike443
  */
-public class PlayAutoTestBuilder extends Builder{
+public class PlayAutoTestBuilder extends Builder {
 
+	private final String projectPath;
+	private final String addParameters;
 	private final String play_cmd;
-	private final String play_cmd2;
-	private final String play_cmd3;
-	private final String play_cmd4;
-	private final String play_cmd5;
 	private final List<String> play_cmds;
 	private final String play_path;
 
 	@SuppressWarnings("serial")
 	@DataBoundConstructor
-	public PlayAutoTestBuilder(
-			final String play_cmd,
-			final String play_cmd2,
-			final String play_cmd3,
-			final String play_cmd4,
-			final String play_cmd5,
+	public PlayAutoTestBuilder(final String projectPath,
+			final String addParameters, final String play_cmd,
 			final String play_path) {
 		System.out.println("Creating play auto test builder");
-		this.play_cmd  = ensureCommandString(play_cmd);
-		this.play_cmd2 = ensureCommandString(play_cmd2);
-		this.play_cmd3 = ensureCommandString(play_cmd3);
-		this.play_cmd4 = ensureCommandString(play_cmd4);
-		this.play_cmd5 = ensureCommandString(play_cmd5);
+		this.projectPath = projectPath;
+		this.addParameters = addParameters;
+		this.play_cmd = play_cmd;
 
-		this.play_cmds = new ArrayList<String>(){{
-			add(ensureCommandString(play_cmd));
-			add(ensureCommandString(play_cmd2));
-			add(ensureCommandString(play_cmd3));
-			add(ensureCommandString(play_cmd4));
-			add(ensureCommandString(play_cmd5));
-		}};
+		this.play_cmds = new ArrayList<String>() {
+			{
+				add(projectPath);
+				add(addParameters);
+				add(play_cmd);
+			}
+		};
 		System.out.println("Commands: " + play_cmds);
 		this.play_path = play_path;
 	}
-	String ensureCommandString(String command){
-		return (command!=null && command.trim().length()>0)? command:"";
+
+	public String getProjectPath() {
+		return projectPath;
 	}
 
+	public String getAddParameters() {
+		return addParameters;
+	}
 
-	/**
-	 * We'll use this from the <tt>config.jelly</tt>.
-	 */
+	public List<String> getPlay_cmds() {
+		return play_cmds;
+	}
+
 	public String getPlay_cmd() {
 		return play_cmd;
-	}
-	public String getPlay_cmd2() {
-		return play_cmd2;
-	}
-	public String getPlay_cmd3() {
-		return play_cmd3;
-	}
-	public String getPlay_cmd4() {
-		return play_cmd4;
-	}
-	public String getPlay_cmd5() {
-		return play_cmd5;
 	}
 
 	public String getPlay_path() {
@@ -97,10 +83,12 @@ public class PlayAutoTestBuilder extends Builder{
 
 	@SuppressWarnings({ "deprecation" })
 	@Override
-	public boolean perform(@SuppressWarnings("rawtypes") AbstractBuild build, Launcher launcher, BuildListener listener) {
-		//clean up
+	public boolean perform(@SuppressWarnings("rawtypes") AbstractBuild build,
+			Launcher launcher, BuildListener listener) {
+		// clean up
 		try {
-			FilePath[] files = build.getProject().getWorkspace().list("test-result/*");
+			FilePath[] files = build.getProject().getWorkspace()
+					.list("test-result/*");
 
 			for (FilePath filePath : files) {
 				filePath.delete();
@@ -111,97 +99,114 @@ public class PlayAutoTestBuilder extends Builder{
 		}
 
 		// This maps stored the executed commands and the results
-		Map<String,String> exitcodes = new HashMap<String, String>();
+		Map<String, String> exitcodes = new HashMap<String, String>();
 
-		//build playpath
+		// build playpath
 		String playpath = null;
-		if(play_path != null && play_path.length() > 0) {
+		if (play_path != null && play_path.length() > 0) {
 			playpath = play_path;
-		} else if(getDescriptor().path()!= null){
+		} else if (getDescriptor().path() != null) {
 			playpath = getDescriptor().path();
-		}else{
+		} else {
 			listener.getLogger().println("play path is null");
 			return false;
 		}
 
-		listener.getLogger().println("play path is "+playpath);
+		listener.getLogger().println("play path is " + playpath);
 
 		FilePath workDir = build.getWorkspace();
 		@SuppressWarnings("unchecked")
-                PlayAutoTestJobProperty playJobProperty = (PlayAutoTestJobProperty)build.getProject().getProperty(PlayAutoTestJobProperty.class);
-		String application_path = playJobProperty!=null? playJobProperty.getApplicationPath() : null;
-		if (application_path!= null && application_path.length() > 0) {
+		PlayAutoTestJobProperty playJobProperty = (PlayAutoTestJobProperty) build
+				.getProject().getProperty(PlayAutoTestJobProperty.class);
+		String application_path = playJobProperty != null ? playJobProperty
+				.getApplicationPath() : null;
+		if (application_path != null && application_path.length() > 0) {
 			workDir = build.getWorkspace().child(application_path);
 		}
 
 		try {
-			for(String play_cmd : this.play_cmds){
-				if(play_cmd!=null && play_cmd.length()==0) continue;
-				
+			for (String play_cmd : this.play_cmds) {
+				if (play_cmd != null && play_cmd.length() == 0)
+					continue;
+
 				// Substitute parameters
-				ParametersAction param = build.getAction(hudson.model.ParametersAction.class);
-				if(param!=null){
-					listener.getLogger().println("Substituting job parameters from " + play_cmd);
+				ParametersAction param = build
+						.getAction(hudson.model.ParametersAction.class);
+				if (param != null) {
+					listener.getLogger().println(
+							"Substituting job parameters from " + play_cmd);
 					List<ParameterValue> values = param.getParameters();
 					if (values != null) {
 						for (ParameterValue value : values) {
-							String v = value.createVariableResolver(build).resolve(value.getName());
-							play_cmd = play_cmd.replace("${" + value.getName() + "}", v);
+							String v = value.createVariableResolver(build)
+									.resolve(value.getName());
+							play_cmd = play_cmd.replace("${" + value.getName()
+									+ "}", v);
 						}
 					}
 				}
 
-
-				String[] cmds= play_cmd.split(" ",2);
-				String cmd = playpath + " " + cmds[0] +" \""+workDir.toString()+"\" "+(cmds.length>=2? cmds[1]:"");
+				String[] cmds = play_cmd.split(" ", 2);
+				String cmd = playpath + " " + cmds[0] + " \""
+						+ workDir.toString() + "\" "
+						+ (cmds.length >= 2 ? cmds[1] : "");
 
 				listener.getLogger().println("Executing " + cmd);
-//				Proc proc = launcher.launch(cmd, new String[0],listener.getLogger(),workDir);
-//				int exitcode = proc.join();
-				
-				Proc proc = launcher.launch().cmds(playpath, "test").pwd(workDir).writeStdin().stdout(listener.getLogger()).stderr(listener.getLogger()).start();
-		        PrintStream ps = new PrintStream(proc.getStdin());
-		        
-//		        Proc proc = launcher.launch().cmds(cmds).envs(env).writeStdin().stdout(listener.getLogger()).stderr(listener.getLogger()).start();
-//		        PrintStream ps = new PrintStream(proc.getStdin());
-				
-//				ps.println(call);
-//		        ps.flush();
-//
-//		        ps.println("echo %errorlevel%");
-//		        ps.flush();
-//
-//		        ps.println("exit %errorlevel%");
-//		        ps.flush();
-		        
-		        int exitcode = proc.join();
-//
-		        System.out.println("EXITCODE########### " + exitcode);
-				
-				
+				// Proc proc = launcher.launch(cmd, new
+				// String[0],listener.getLogger(),workDir);
+				// int exitcode = proc.join();
 
-				exitcodes.put(play_cmd, (exitcode==0? "Done":"Fail"));
+				Proc proc = launcher.launch().cmds(playpath, "test")
+						.pwd(workDir).writeStdin().stdout(listener.getLogger())
+						.stderr(listener.getLogger()).start();
+				PrintStream ps = new PrintStream(proc.getStdin());
 
-				if(exitcode!=0) {
-					listener.getLogger().println("****************************************************");
-					listener.getLogger().println("* ERROR!!! while executing "+play_cmd);
-					listener.getLogger().println("****************************************************");
+				// Proc proc =
+				// launcher.launch().cmds(cmds).envs(env).writeStdin().stdout(listener.getLogger()).stderr(listener.getLogger()).start();
+				// PrintStream ps = new PrintStream(proc.getStdin());
+
+				// ps.println(call);
+				// ps.flush();
+				//
+				// ps.println("echo %errorlevel%");
+				// ps.flush();
+				//
+				// ps.println("exit %errorlevel%");
+				// ps.flush();
+
+				int exitcode = proc.join();
+				//
+				System.out.println("EXITCODE########### " + exitcode);
+
+				exitcodes.put(play_cmd, (exitcode == 0 ? "Done" : "Fail"));
+
+				if (exitcode != 0) {
+					listener.getLogger()
+							.println(
+									"****************************************************");
+					listener.getLogger().println(
+							"* ERROR!!! while executing " + play_cmd);
+					listener.getLogger()
+							.println(
+									"****************************************************");
 					return false;
 				}
 
-				if(play_cmd!=null && play_cmd.matches("(auto-test.*)")){
-					//check test-result
-					if(! new FilePath(workDir, "test-result/result.passed").exists()){
+				if (play_cmd != null && play_cmd.matches("(auto-test.*)")) {
+					// check test-result
+					if (!new FilePath(workDir, "test-result/result.passed")
+							.exists()) {
 						build.setResult(Result.UNSTABLE);
 					}
 				}
 			}
 
 			listener.getLogger().println("Each commands' results:");
-			for(Map.Entry<String, String> rec : exitcodes.entrySet()){
-				listener.getLogger().println("  "+rec.getKey()+": "+rec.getValue());
+			for (Map.Entry<String, String> rec : exitcodes.entrySet()) {
+				listener.getLogger().println(
+						"  " + rec.getKey() + ": " + rec.getValue());
 			}
-			return exitcodes.containsValue("Fail")? false : true;
+			return exitcodes.containsValue("Fail") ? false : true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -211,27 +216,31 @@ public class PlayAutoTestBuilder extends Builder{
 
 	@Override
 	public DescriptorImpl getDescriptor() {
-		return (DescriptorImpl)super.getDescriptor();
+		return (DescriptorImpl) super.getDescriptor();
 	}
 
 	/**
-	 * Descriptor for {@link PlayAutoTestBuilder}. Used as a singleton.
-	 * The class is marked as public so that it can be accessed from views.
-	 *
+	 * Descriptor for {@link PlayAutoTestBuilder}. Used as a singleton. The
+	 * class is marked as public so that it can be accessed from views.
+	 * 
 	 * <p>
 	 * See <tt>views/hudson/plugins/hello_world/HelloWorldBuilder/*.jelly</tt>
 	 * for the actual HTML fragment for the configuration screen.
 	 */
-	@Extension // this marker indicates Hudson that this is an implementation of an extension point.
-	public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
-		public DescriptorImpl(){
+	@Extension
+	// this marker indicates Hudson that this is an implementation of an
+	// extension point.
+	public static final class DescriptorImpl extends
+			BuildStepDescriptor<Builder> {
+		public DescriptorImpl() {
 			super();
 			load();
 		}
+
 		/**
-		 * To persist global configuration information,
-		 * simply store it in a field and call save().
-		 *
+		 * To persist global configuration information, simply store it in a
+		 * field and call save().
+		 * 
 		 * <p>
 		 * If you don't want fields to be persisted, use <tt>transient</tt>.
 		 */
@@ -239,21 +248,24 @@ public class PlayAutoTestBuilder extends Builder{
 
 		/**
 		 * Performs on-the-fly validation of the form field 'name'.
-		 *
+		 * 
 		 * @param value
-		 *      This parameter receives the value that the user has typed.
-		 * @return
-		 *      Indicates the outcome of the validation. This is sent to the browser.
+		 *            This parameter receives the value that the user has typed.
+		 * @return Indicates the outcome of the validation. This is sent to the
+		 *         browser.
 		 */
-		public FormValidation doCheckName(@QueryParameter String value) throws IOException, ServletException {
-			if(value.length()==0)
+		public FormValidation doCheckName(@QueryParameter String value)
+				throws IOException, ServletException {
+			if (value.length() == 0)
 				return FormValidation.error("Please set path to play");
 
 			return FormValidation.ok();
 		}
 
-		public boolean isApplicable(@SuppressWarnings("rawtypes") Class<? extends AbstractProject> aClass) {
-			// indicates that this builder can be used with all kinds of project types
+		public boolean isApplicable(
+				@SuppressWarnings("rawtypes") Class<? extends AbstractProject> aClass) {
+			// indicates that this builder can be used with all kinds of project
+			// types
 			return true;
 		}
 
@@ -261,23 +273,23 @@ public class PlayAutoTestBuilder extends Builder{
 		 * This human readable name is used in the configuration screen.
 		 */
 		public String getDisplayName() {
-			return "Play!";
+			return "Invoke Play!Framework";
 		}
 
 		@Override
-		public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
+		public boolean configure(StaplerRequest req, JSONObject formData)
+				throws FormException {
 			path = formData.getString("play_path");
 			save();
-			return super.configure(req,formData);
+			return super.configure(req, formData);
 		}
 
-
 		/**
-		 * This method returns true if the global configuration says we should speak French.
+		 * This method returns true if the global configuration says we should
+		 * speak French.
 		 */
 		public String path() {
 			return path;
 		}
 	}
 }
-
