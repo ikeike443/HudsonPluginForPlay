@@ -38,22 +38,6 @@ public final class PlayInstallation extends ToolInstallation implements NodeSpec
 		super(name, home, properties);
 	}
 	
-	public String getPlayExe() {
-		return getHome() + "/play";
-	}
-	
-	private static PlayInstallation[] getInstallations(Descriptor descriptor) {
-		PlayInstallation[] installations = null;
-		try {
-			installations = descriptor.getInstallations();
-		} catch (NullPointerException e) {
-			installations = new PlayInstallation[0];
-		}
-		
-		return installations;
-	}
-	
-	
 	@Override
 	public PlayInstallation forEnvironment(EnvVars environment) {
 		return new PlayInstallation(getName(), environment.expand(getHome()), getProperties().toList());

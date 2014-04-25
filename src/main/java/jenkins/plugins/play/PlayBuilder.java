@@ -3,25 +3,18 @@
  */
 package jenkins.plugins.play;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import jenkins.model.Jenkins;
 
-import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
 import hudson.Extension;
-import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Proc;
 import hudson.model.AbstractBuild;
@@ -37,7 +30,7 @@ import hudson.util.FormValidation;
  */
 public class PlayBuilder extends Builder {
 
-	private final String playToolName;
+	private final String playToolHome;
 
 	private final String projectPath;
 
@@ -67,11 +60,11 @@ public class PlayBuilder extends Builder {
 	 * @param overwriteParam
 	 */
 	@DataBoundConstructor
-	public PlayBuilder(String playToolName, String projectPath,
+	public PlayBuilder(String playToolHome, String projectPath,
 			boolean playClean, boolean playTest, boolean playTestOnly,
 			String testOnlyClass, boolean playPackage, boolean playPublish,
 			boolean playDist, String additionalParam, boolean overwriteParam) {
-		this.playToolName = playToolName;
+		this.playToolHome = playToolHome;
 		this.projectPath = projectPath;
 		this.playClean = playClean;
 		this.playTest = playTest;
@@ -85,10 +78,10 @@ public class PlayBuilder extends Builder {
 	}
 
 	/**
-	 * @return the playToolName
+	 * @return the playToolHome
 	 */
-	public String getPlayToolName() {
-		return playToolName;
+	public String getPlayToolHome() {
+		return playToolHome;
 	}
 
 	/**
@@ -160,6 +153,13 @@ public class PlayBuilder extends Builder {
 	public final boolean isOverwriteParam() {
 		return overwriteParam;
 	}
+	
+	/**
+	 * @return the playToolHome
+	 */
+	public String getPlayExecutable() {
+		return playToolHome + "/play";
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -169,14 +169,6 @@ public class PlayBuilder extends Builder {
 	@Override
 	public PlayDescriptor getDescriptor() {
 		return (PlayDescriptor) super.getDescriptor();
-	}
-
-	public PlayInstallation getPlayTool() {
-		for (PlayInstallation playTool : getDescriptor().getInstallations()) {
-			if (playToolName != null && playToolName.equals(playTool.getName()))
-				return playTool;
-		}
-		return null;
 	}
 
 	/**
@@ -240,10 +232,10 @@ public class PlayBuilder extends Builder {
 		printConfiguration(listener.getLogger());
 
 		// Create file from play path String
-		File playFile = new File(this.getPlayTool().getPlayExe());
+		File playExecutable = new File(this.getPlayExecutable());
 
 		// Check if play executable exists
-		if (!playFile.exists()) {
+		if (!playExecutable.exists()) {
 			listener.getLogger().println("ERROR! Play executable not found!");
 			return false;
 		}
@@ -261,7 +253,7 @@ public class PlayBuilder extends Builder {
 
 		Proc proc = launcher
 				.launch()
-				.cmds(playFile,
+				.cmds(playExecutable,
 						commandParameters.toArray(new String[commandParameters
 								.size()])).pwd(this.getProjectPath())
 				.writeStdin().stdout(listener.getLogger())
@@ -288,6 +280,10 @@ public class PlayBuilder extends Builder {
 			return "Invoke Play!Framework";
 		}
 
+		/**
+		 * This method is required by the interface to list Play installations
+		 * @return Array of Play installations
+		 */
 		public PlayInstallation[] getInstallations() {
 			return Jenkins.getInstance()
 					.getDescriptorByType(PlayInstallation.Descriptor.class)
@@ -304,8 +300,7 @@ public class PlayBuilder extends Builder {
 		}
 
 		public FormValidation doCheckProjectPath(
-				@QueryParameter String projectPath,
-				@QueryParameter String playToolName) {
+				@QueryParameter String projectPath) {
 
 			// If field is empty, call the required validator
 			if (projectPath.isEmpty())
@@ -321,8 +316,10 @@ public class PlayBuilder extends Builder {
 		}
 
 		public FormValidation doValidateProject(
-				@QueryParameter String playToolName,
+				@QueryParameter String playToolHome,
 				@QueryParameter String projectPath) {
+			
+			String playExecutable = playToolHome + "/play";
 
 			// If the field is empty or invalid, silently return OK, because the
 			// validation is already performed by the doCheckProjectPath method.
@@ -333,14 +330,8 @@ public class PlayBuilder extends Builder {
 			if (!projectPathDir.exists())
 				return FormValidation.ok();
 
-			// The used tool installation is required to check the information
-			// about the project
-			PlayInstallation playInstallation = Jenkins.getInstance()
-					.getDescriptorByType(PlayInstallation.Descriptor.class)
-					.getInstallation(playToolName);
-
 			// Check if play executable exists
-			File playFile = new File(playInstallation.getPlayExe());
+			File playFile = new File(playExecutable);
 			if (!playFile.exists()) {
 				return FormValidation
 						.error("Cannot validate project! The assigned Play!Framework installation is invalid!");
@@ -348,7 +339,7 @@ public class PlayBuilder extends Builder {
 
 			// Generate informational content for the user
 			String aboutProject = ProjectDetails.formattedInfo(
-					playInstallation.getPlayExe(), projectPath);
+					playExecutable, projectPath);
 
 			// Oops, there is no information. Project isn't a Play project.
 			if (aboutProject == null)
@@ -361,8 +352,7 @@ public class PlayBuilder extends Builder {
 	private void printConfiguration(PrintStream logger) {
 
 		logger.println("Build Configuration" + "\n\tPLAY_HOME : "
-				+ this.getPlayTool().getPlayExe() + "["
-				+ this.getPlayToolName() + "]" + "\n\tProject path : "
+				+ this.getPlayToolHome() + "\n\tProject path : "
 				+ this.getProjectPath() + "\n\tClean only : "
 				+ (this.isPlayClean() ? "yes" : "no") + "\n\tTest only : "
 				+ (this.isPlayTest() ? "yes" : "no")

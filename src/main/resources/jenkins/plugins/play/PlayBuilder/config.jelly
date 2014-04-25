@@ -7,10 +7,10 @@
 		<j:if test="${!empty(descriptor.installations)}">
 
 			<f:entry title="${%Play!Framework Installation}">
-				<select class="setting-input" name="playToolName">
+				<select class="setting-input" name="playToolHome">
 					<j:forEach var="inst" items="${descriptor.installations}">
 						<f:option selected="${inst.name==instance.playToolName}"
-							value="${inst.name}">${inst.name} (${inst.home})</f:option>
+							value="${inst.home}">${inst.name} (${inst.home})</f:option>
 					</j:forEach>
 				</select>
 			</f:entry>
@@ -20,7 +20,7 @@
 				<f:textbox />
 			</f:entry>
 			<f:validateButton title="${%Validate project}"
-				progress="${%Validating...}" method="validateProject" with="playToolName,projectPath" />
+				progress="${%Validating...}" method="validateProject" with="playToolHome,projectPath" />
 				
 			<f:entry title="Mode">
 
