@@ -33,13 +33,13 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.7</source>
+					<target>1.7</target>
 					<encoding>UTF-8</encoding>
 					<verbose>true</verbose>
 					<fork>true</fork>
 					<!-- <executable>${JAVA_HOME}/bin/javac</executable> -->
-					<compilerVersion>1.6.0</compilerVersion>
+					<compilerVersion>1.7.0</compilerVersion>
 				</configuration>
 			</plugin>
 			<plugin>
