@@ -97,13 +97,16 @@ public final class PlayInstallation extends ToolInstallation implements NodeSpec
         }
 		
 		public PlayInstallation getInstallation(String name) {
+			
+			if (name == null || name.isEmpty())
+				return null;
+			
 			for (PlayInstallation i: getInstallations()) {
 				if (i.getName().equals(name))
 					return i;
 			}
-			if (name.length() > 0) {
-				LOGGER.log(Level.WARNING, "Invalid play installation: ", name);
-			}
+			
+			LOGGER.log(Level.WARNING, "Invalid play installation: ", name);
 			return null;
 		}
 	}
