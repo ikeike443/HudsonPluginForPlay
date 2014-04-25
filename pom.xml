@@ -7,9 +7,9 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>play-autotest-plugin</artifactId>
-	<name>playframework-plugin</name>
-	<version>0.0.13-SNAPSHOT</version>
+	<artifactId>play-plugin</artifactId>
+	<name>Play!Framework plugin</name>
+	<version>0.1.0</version>
 	<packaging>hpi</packaging>
 	<url>https://wiki.jenkins-ci.org/display/JENKINS/play-plugin</url>
 	<distributionManagement>
@@ -21,9 +21,9 @@
 	</distributionManagement>
 	<developers>
 		<developer>
-			<id>ikeike443</id>
-			<name>Takafumi Ikeda</name>
-			<email>ikeike443@gmail.com</email>
+			<id>rafaelrezend</id>
+			<name>Rafael Rezende</name>
+			<email>rafaelrezend@gmail.com</email>
 		</developer>
 	</developers>
 	<build>
@@ -82,4 +82,5 @@
 		<url>https://github.com/jenkinsci/play-plugin</url>
 	</scm>
 
+	<description>This plugin allows Jenkins to execute several actions available in the Play!Framework command-line.</description>
 </project>
