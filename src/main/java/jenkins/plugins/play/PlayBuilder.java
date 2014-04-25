@@ -1,7 +1,7 @@
 /**
  * 
  */
-package jenkins.plugins;
+package jenkins.plugins.play;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -44,9 +44,9 @@ public class PlayBuilder extends Builder {
 	private final boolean playClean;
 
 	private final boolean playTest;
-	
+
 	private final boolean playTestOnly;
-	
+
 	private final String testOnlyClass;
 
 	private boolean playPackage;
@@ -68,9 +68,9 @@ public class PlayBuilder extends Builder {
 	 */
 	@DataBoundConstructor
 	public PlayBuilder(String playToolName, String projectPath,
-			boolean playClean, boolean playTest, boolean playTestOnly, String testOnlyClass, boolean playPackage,
-			boolean playPublish, boolean playDist, String additionalParam,
-			boolean overwriteParam) {
+			boolean playClean, boolean playTest, boolean playTestOnly,
+			String testOnlyClass, boolean playPackage, boolean playPublish,
+			boolean playDist, String additionalParam, boolean overwriteParam) {
 		this.playToolName = playToolName;
 		this.projectPath = projectPath;
 		this.playClean = playClean;
@@ -111,7 +111,7 @@ public class PlayBuilder extends Builder {
 	public final boolean isPlayTest() {
 		return playTest;
 	}
-	
+
 	/**
 	 * @return the playTestOnly
 	 */
@@ -201,12 +201,13 @@ public class PlayBuilder extends Builder {
 		// Add test parameter
 		if (isPlayTest())
 			commandParameters.add(PlayCommands.PLAY_TEST);
-		
+
 		// Add test-only parameter
 		if (isPlayTestOnly()) {
 			// Validate the class parameter
 			if (!getTestOnlyClass().isEmpty())
-				commandParameters.add("\"" + PlayCommands.PLAY_TEST_ONLY + " " + getTestOnlyClass() + "\"");
+				commandParameters.add("\"" + PlayCommands.PLAY_TEST_ONLY + " "
+						+ getTestOnlyClass() + "\"");
 		}
 
 		// Add package parameter
@@ -240,7 +241,7 @@ public class PlayBuilder extends Builder {
 
 		// Create file from play path String
 		File playFile = new File(this.getPlayTool().getPlayExe());
-		
+
 		// Check if play executable exists
 		if (!playFile.exists()) {
 			listener.getLogger().println("ERROR! Play executable not found!");
@@ -284,7 +285,7 @@ public class PlayBuilder extends Builder {
 
 		@Override
 		public String getDisplayName() {
-			return "Play!Framework";
+			return "Invoke Play!Framework";
 		}
 
 		public PlayInstallation[] getInstallations() {
@@ -305,6 +306,7 @@ public class PlayBuilder extends Builder {
 		public FormValidation doCheckProjectPath(
 				@QueryParameter String projectPath,
 				@QueryParameter String playToolName) {
+
 			// If field is empty, call the required validator
 			if (projectPath.isEmpty())
 				return FormValidation.validateRequired(projectPath);
@@ -314,22 +316,41 @@ public class PlayBuilder extends Builder {
 			if (!projectPathDir.exists())
 				return FormValidation.error("Project path has not been found!");
 
+			return FormValidation.ok();
+
+		}
+
+		public FormValidation doValidateProject(
+				@QueryParameter String playToolName,
+				@QueryParameter String projectPath) {
+
+			// If the field is empty or invalid, silently return OK, because the
+			// validation is already performed by the doCheckProjectPath method.
+			if (projectPath.isEmpty())
+				return FormValidation.ok();
+
+			File projectPathDir = new File(projectPath);
+			if (!projectPathDir.exists())
+				return FormValidation.ok();
+
 			// The used tool installation is required to check the information
 			// about the project
 			PlayInstallation playInstallation = Jenkins.getInstance()
 					.getDescriptorByType(PlayInstallation.Descriptor.class)
 					.getInstallation(playToolName);
-			
-			
+
 			// Check if play executable exists
 			File playFile = new File(playInstallation.getPlayExe());
 			if (!playFile.exists()) {
-				return FormValidation.error("Cannot validate project! The assigned Play!Framework installation is invalid!");
+				return FormValidation
+						.error("Cannot validate project! The assigned Play!Framework installation is invalid!");
 			}
 
+			// Generate informational content for the user
 			String aboutProject = ProjectDetails.formattedInfo(
 					playInstallation.getPlayExe(), projectPath);
 
+			// Oops, there is no information. Project isn't a Play project.
 			if (aboutProject == null)
 				return FormValidation.error("Not a Play!Framework project!");
 

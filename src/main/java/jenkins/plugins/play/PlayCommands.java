@@ -1,4 +1,4 @@
-package jenkins.plugins;
+package jenkins.plugins.play;
 
 public final class PlayCommands {
 	

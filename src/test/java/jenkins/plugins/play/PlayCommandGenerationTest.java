@@ -1,7 +1,7 @@
 /**
  * 
  */
-package jenkins.plugins;
+package jenkins.plugins.play;
 
 import org.junit.Test;
 

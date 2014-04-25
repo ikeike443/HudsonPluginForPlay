@@ -10,15 +10,18 @@
 				<select class="setting-input" name="playToolName">
 					<j:forEach var="inst" items="${descriptor.installations}">
 						<f:option selected="${inst.name==instance.playToolName}"
-							value="${inst.name}">${inst.name}</f:option>
+							value="${inst.name}">${inst.name} (${inst.home})</f:option>
 					</j:forEach>
 				</select>
 			</f:entry>
 
 			<f:entry title="${%Project path}" field="projectPath"
-				description="Path relative to the build workspace">
+				description="Absolute path or relative to the build workspace">
 				<f:textbox />
 			</f:entry>
+			<f:validateButton title="${%Validate project}"
+				progress="${%Validating...}" method="validateProject" with="playToolName,projectPath" />
+				
 			<f:entry title="Mode">
 
 				<f:entry title="${%Additional Behaviours}">
