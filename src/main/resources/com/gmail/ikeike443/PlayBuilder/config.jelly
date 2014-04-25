@@ -1,0 +1,81 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+	xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+	<f:entry>
+
+		<j:if test="${!empty(descriptor.installations)}">
+
+			<f:entry title="${%Play!Framework Installation}">
+				<select class="setting-input" name="playToolName">
+					<j:forEach var="inst" items="${descriptor.installations}">
+						<f:option selected="${inst.name==instance.playToolName}"
+							value="${inst.name}">${inst.name}</f:option>
+					</j:forEach>
+				</select>
+			</f:entry>
+
+			<f:entry title="${%Project path}" field="projectPath"
+				description="Path relative to the build workspace">
+				<f:textbox />
+			</f:entry>
+			<f:entry title="Mode">
+
+				<f:entry title="${%Additional Behaviours}">
+					<!-- TODO: switch to <f:repeatableHeteroList field="extensions"> -->
+					<f:hetero-list name="extensions" items="${instance.extensions}"
+						descriptors="${descriptor.getExtensionDescriptors()}" hasHeader="true" />
+				</f:entry>
+
+				<f:entry field="playClean">
+					<f:checkbox title="${%Clean}" />
+				</f:entry>
+				<f:entry field="playTest">
+					<f:checkbox title="${%Test}" />
+				</f:entry>
+				<f:entry field="playPackage">
+					<f:checkbox title="${%Generate artifact}" />
+				</f:entry>
+
+				<f:optionalBlock field="playTestOnly" title="${%Test-only}">
+					<f:entry field="testOnlyClass" title="${%JUnit identifier}">
+						<f:textbox />
+					</f:entry>
+				</f:optionalBlock>
+
+				<f:entry field="playPublish"
+					description="Repository must be specified in the build file.">
+					<f:checkbox title="${%Publish artifact to repository}" />
+				</f:entry>
+				<f:entry field="playDist">
+					<f:checkbox title="${%Build an Akka kernel project}" />
+				</f:entry>
+			</f:entry>
+
+			<f:entry title="${%Additional parameters}" field="additionalParam">
+				<f:textbox />
+			</f:entry>
+			<f:entry field="overwriteParam">
+				<f:checkbox title="${%Overwrite Mode with Additional parameters}" />
+			</f:entry>
+
+		</j:if>
+
+		<j:if test="${empty(descriptor.installations)}">
+			<div>
+				<p style="color:red">
+					<b>
+						No Play!Framework tools configured.
+					</b>
+				</p>
+				<p>
+					Please provide at least one Play!Framework tool in the Jenkins
+					global
+					configuration.
+				</p>
+			</div>
+		</j:if>
+
+	</f:entry>
+
+</j:jelly>
