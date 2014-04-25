@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.gmail.ikeike443;
+package jenkins.plugins;
 
 import java.io.IOException;
 import java.util.List;

@@ -1,8 +1,9 @@
 /**
  * 
  */
-package com.gmail.ikeike443;
+package jenkins.plugins;
 
+import jenkins.plugins.PlayAutoTestBuilder;
 import hudson.model.FreeStyleBuild;
 import hudson.model.Result;
 import hudson.model.FreeStyleProject;

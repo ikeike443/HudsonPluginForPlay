@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.gmail.ikeike443;
+package jenkins.plugins;
 
 import hudson.FilePath;
 import hudson.model.FreeStyleBuild;
@@ -12,6 +12,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+
+import jenkins.plugins.PlayAutoTestBuilder;
+import jenkins.plugins.PlayTestResultAction;
 
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;

@@ -1,4 +1,4 @@
-package com.gmail.ikeike443;
+package jenkins.plugins;
 
 public final class PlayCommands {
 	

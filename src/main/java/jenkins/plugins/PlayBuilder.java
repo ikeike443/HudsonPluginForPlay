@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.gmail.ikeike443;
+package jenkins.plugins;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -240,7 +240,7 @@ public class PlayBuilder extends Builder {
 
 		// Create file from play path String
 		File playFile = new File(this.getPlayTool().getPlayExe());
-
+		
 		// Check if play executable exists
 		if (!playFile.exists()) {
 			listener.getLogger().println("ERROR! Play executable not found!");
@@ -319,6 +319,13 @@ public class PlayBuilder extends Builder {
 			PlayInstallation playInstallation = Jenkins.getInstance()
 					.getDescriptorByType(PlayInstallation.Descriptor.class)
 					.getInstallation(playToolName);
+			
+			
+			// Check if play executable exists
+			File playFile = new File(playInstallation.getPlayExe());
+			if (!playFile.exists()) {
+				return FormValidation.error("Cannot validate project! The assigned Play!Framework installation is invalid!");
+			}
 
 			String aboutProject = ProjectDetails.formattedInfo(
 					playInstallation.getPlayExe(), projectPath);
