@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jenkins.model.Jenkins;
+import jenkins.plugins.play.extensions.PlayExtension;
+import jenkins.plugins.play.extensions.PlayExtensionDescriptor;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
@@ -17,11 +19,14 @@ import org.kohsuke.stapler.QueryParameter;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.Proc;
+import hudson.Util;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
+import hudson.model.Saveable;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import hudson.util.DescribableList;
 import hudson.util.FormValidation;
 
 /**
@@ -51,6 +56,11 @@ public class PlayBuilder extends Builder {
 	private String additionalParam;
 
 	private boolean overwriteParam;
+	
+	/**
+     * All the configured extensions attached to this.
+     */
+    private DescribableList<PlayExtension,PlayExtensionDescriptor> extensions;
 
 	/**
 	 * @param projectPath
@@ -63,7 +73,7 @@ public class PlayBuilder extends Builder {
 	public PlayBuilder(String playToolHome, String projectPath,
 			boolean playClean, boolean playTest, boolean playTestOnly,
 			String testOnlyClass, boolean playPackage, boolean playPublish,
-			boolean playDist, String additionalParam, boolean overwriteParam) {
+			boolean playDist, String additionalParam, boolean overwriteParam, List<PlayExtension> extensions) {
 		this.playToolHome = playToolHome;
 		this.projectPath = projectPath;
 		this.playClean = playClean;
@@ -75,6 +85,7 @@ public class PlayBuilder extends Builder {
 		this.playDist = playDist;
 		this.additionalParam = additionalParam;
 		this.overwriteParam = overwriteParam;
+		this.extensions = new DescribableList<PlayExtension, PlayExtensionDescriptor>(Saveable.NOOP,Util.fixNull(extensions));
 	}
 
 	/**
@@ -160,6 +171,13 @@ public class PlayBuilder extends Builder {
 	public String getPlayExecutable() {
 		return playToolHome + "/play";
 	}
+	
+	/**
+     * @return list of extensions
+     */
+    public DescribableList<PlayExtension, PlayExtensionDescriptor> getExtensions() {
+        return extensions;
+    }
 
 	/*
 	 * (non-Javadoc)
@@ -279,6 +297,10 @@ public class PlayBuilder extends Builder {
 		public String getDisplayName() {
 			return "Invoke Play!Framework";
 		}
+		
+		public List<PlayExtensionDescriptor> getExtensionDescriptors() {
+            return PlayExtensionDescriptor.all();
+        }
 
 		/**
 		 * This method is required by the interface to list Play installations
