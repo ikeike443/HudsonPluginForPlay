@@ -4,19 +4,24 @@
 package jenkins.plugins.play.extensions;
 
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.QueryParameter;
 
 import hudson.Extension;
+import hudson.util.FormValidation;
 
 /**
  * @author rafaelrezende
  *
  */
-public class PlayTest extends PlayExtension {
+public class PlayTestOnly extends PlayExtension {
 	
-	private String command = "test";
+	private final static String command = "test";
+	
+	private final String testOnlyId; 
 	
 	@DataBoundConstructor
-	public PlayTest() {
+	public PlayTestOnly(String testOnlyId) {
+		this.testOnlyId = testOnlyId;
 	}
 	
 	/**
@@ -26,11 +31,22 @@ public class PlayTest extends PlayExtension {
 		return command;
 	}
 	
+	/**
+	 * @return the testOnlyName
+	 */
+	public final String getTestOnlyId() {
+		return testOnlyId;
+	}
+
 	@Extension
     public static class DescriptorImpl extends PlayExtensionDescriptor {
         @Override
         public String getDisplayName() {
-            return "Test project";
+            return "Execute single test case";
+        }
+        
+        public FormValidation doCheckTestOnlyId (@QueryParameter String testOnlyId) {
+        	return FormValidation.validateRequired(testOnlyId);
         }
     }
 }

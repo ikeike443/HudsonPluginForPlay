@@ -268,6 +268,10 @@ public class PlayBuilder extends Builder {
 		}
 
 		List<String> commandParameters = generatePlayParameters();
+		
+		for (PlayExtension playExt : this.extensions) {
+			listener.getLogger().println(playExt.getCommand());
+		}
 
 		Proc proc = launcher
 				.launch()

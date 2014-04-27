@@ -11,4 +11,8 @@ import hudson.model.AbstractDescribableImpl;
  */
 public abstract class PlayExtension extends AbstractDescribableImpl<PlayExtension>{
 	
+	public String getCommand() {
+		return null;
+	}
+	
 }
