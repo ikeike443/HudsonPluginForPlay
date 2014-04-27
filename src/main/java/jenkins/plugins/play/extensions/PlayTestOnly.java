@@ -15,7 +15,7 @@ import hudson.util.FormValidation;
  */
 public class PlayTestOnly extends PlayExtension {
 	
-	private final static String command = "test";
+	private final static String command = "test-only";
 	
 	private final String parameter; 
 	
