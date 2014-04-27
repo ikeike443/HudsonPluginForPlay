@@ -17,11 +17,11 @@ public class PlayTestOnly extends PlayExtension {
 	
 	private final static String command = "test";
 	
-	private final String testOnlyId; 
+	private final String parameter; 
 	
 	@DataBoundConstructor
-	public PlayTestOnly(String testOnlyId) {
-		this.testOnlyId = testOnlyId;
+	public PlayTestOnly(String parameter) {
+		this.parameter = parameter;
 	}
 	
 	/**
@@ -34,8 +34,8 @@ public class PlayTestOnly extends PlayExtension {
 	/**
 	 * @return the testOnlyName
 	 */
-	public final String getTestOnlyId() {
-		return testOnlyId;
+	public final String getParameter() {
+		return parameter;
 	}
 
 	@Extension
@@ -45,8 +45,8 @@ public class PlayTestOnly extends PlayExtension {
             return "Execute single test case";
         }
         
-        public FormValidation doCheckTestOnlyId (@QueryParameter String testOnlyId) {
-        	return FormValidation.validateRequired(testOnlyId);
+        public FormValidation doCheckParameter (@QueryParameter String parameter) {
+        	return FormValidation.validateRequired(parameter);
         }
     }
 }

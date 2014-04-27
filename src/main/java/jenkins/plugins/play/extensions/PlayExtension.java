@@ -15,4 +15,8 @@ public abstract class PlayExtension extends AbstractDescribableImpl<PlayExtensio
 		return null;
 	}
 	
+	public String getParameter() {
+		return "";
+	}
+	
 }

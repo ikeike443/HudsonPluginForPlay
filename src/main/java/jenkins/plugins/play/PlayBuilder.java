@@ -56,11 +56,11 @@ public class PlayBuilder extends Builder {
 	private String additionalParam;
 
 	private boolean overwriteParam;
-	
+
 	/**
-     * All the configured extensions attached to this.
-     */
-    private DescribableList<PlayExtension,PlayExtensionDescriptor> extensions;
+	 * All the configured extensions attached to this.
+	 */
+	private DescribableList<PlayExtension, PlayExtensionDescriptor> extensions;
 
 	/**
 	 * @param projectPath
@@ -73,7 +73,8 @@ public class PlayBuilder extends Builder {
 	public PlayBuilder(String playToolHome, String projectPath,
 			boolean playClean, boolean playTest, boolean playTestOnly,
 			String testOnlyClass, boolean playPackage, boolean playPublish,
-			boolean playDist, String additionalParam, boolean overwriteParam, List<PlayExtension> extensions) {
+			boolean playDist, String additionalParam, boolean overwriteParam,
+			List<PlayExtension> extensions) {
 		this.playToolHome = playToolHome;
 		this.projectPath = projectPath;
 		this.playClean = playClean;
@@ -85,7 +86,8 @@ public class PlayBuilder extends Builder {
 		this.playDist = playDist;
 		this.additionalParam = additionalParam;
 		this.overwriteParam = overwriteParam;
-		this.extensions = new DescribableList<PlayExtension, PlayExtensionDescriptor>(Saveable.NOOP,Util.fixNull(extensions));
+		this.extensions = new DescribableList<PlayExtension, PlayExtensionDescriptor>(
+				Saveable.NOOP, Util.fixNull(extensions));
 	}
 
 	/**
@@ -164,20 +166,20 @@ public class PlayBuilder extends Builder {
 	public final boolean isOverwriteParam() {
 		return overwriteParam;
 	}
-	
+
 	/**
 	 * @return the playToolHome
 	 */
 	public String getPlayExecutable() {
 		return playToolHome + "/play";
 	}
-	
+
 	/**
-     * @return list of extensions
-     */
-    public DescribableList<PlayExtension, PlayExtensionDescriptor> getExtensions() {
-        return extensions;
-    }
+	 * @return list of extensions
+	 */
+	public DescribableList<PlayExtension, PlayExtensionDescriptor> getExtensions() {
+		return extensions;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -203,6 +205,27 @@ public class PlayBuilder extends Builder {
 		// characters from the output.
 		String noColorFormatting = "-Dsbt.log.noformat=true";
 		commandParameters.add(noColorFormatting);
+
+		// add extension actions to command-line one by one
+		for (PlayExtension playExt : this.extensions) {
+
+			// Every command parameter is surrounded by quotes, have them
+			// additional parameters or not.
+			// HOWEVER, the launcher already adds single quotes automatically
+			// whenever the parameter is composed of two or more strings.
+			// Therefore, no need to add the quotes here.
+			String commandPattern = "%s %s";
+			String command = String.format(commandPattern,
+					playExt.getCommand(), playExt.getParameter());
+
+			System.out.println("########  " + command);
+			// Add generated parameter to the array of parameters
+			commandParameters.add(command);
+		}
+
+		for (String string : commandParameters) {
+			System.out.println("#### " + string);
+		}
 
 		// Add clean parameter
 		if (isPlayClean())
@@ -268,10 +291,6 @@ public class PlayBuilder extends Builder {
 		}
 
 		List<String> commandParameters = generatePlayParameters();
-		
-		for (PlayExtension playExt : this.extensions) {
-			listener.getLogger().println(playExt.getCommand());
-		}
 
 		Proc proc = launcher
 				.launch()
@@ -301,13 +320,14 @@ public class PlayBuilder extends Builder {
 		public String getDisplayName() {
 			return "Invoke Play!Framework";
 		}
-		
+
 		public List<PlayExtensionDescriptor> getExtensionDescriptors() {
-            return PlayExtensionDescriptor.all();
-        }
+			return PlayExtensionDescriptor.all();
+		}
 
 		/**
 		 * This method is required by the interface to list Play installations
+		 * 
 		 * @return Array of Play installations
 		 */
 		public PlayInstallation[] getInstallations() {
@@ -344,7 +364,7 @@ public class PlayBuilder extends Builder {
 		public FormValidation doValidateProject(
 				@QueryParameter String playToolHome,
 				@QueryParameter String projectPath) {
-			
+
 			String playExecutable = playToolHome + "/play";
 
 			// If the field is empty or invalid, silently return OK, because the
@@ -364,8 +384,8 @@ public class PlayBuilder extends Builder {
 			}
 
 			// Generate informational content for the user
-			String aboutProject = ProjectDetails.formattedInfo(
-					playExecutable, projectPath);
+			String aboutProject = ProjectDetails.formattedInfo(playExecutable,
+					projectPath);
 
 			// Oops, there is no information. Project isn't a Play project.
 			if (aboutProject == null)
