@@ -1,14 +1,13 @@
-Jenkins plugin for Play framework
+Play!Framework plugin for Jenkins
 =================================
 
-It enables Jenkins to run play commands and to generate test-result view per build looks like Calimoucho - Play! CI server.
+This plugin allows Jenkins to execute several actions available in the Play!Framework command-line.
 
-Getting Started
----------------
+Release
+-------
 
-Get it from Jenkins repository through Jenkins plugin manager.
+This plugin will be (hopefully) available in the Jenkins plugin hub very soon.
 
-How to use
-----------
 
-Please see "this plugin page":http://wiki.jenkins-ci.org/display/JENKINS/play-plugin
+[Jenkinslogo]: http://jenkins-ci.org/sites/default/files/images/headshot.png
+[Playlogo]: http://www.playframework.com/assets/images/logos/normal-mini.png
