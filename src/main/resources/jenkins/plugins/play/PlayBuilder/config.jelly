@@ -22,45 +22,15 @@
 			<f:validateButton title="${%Validate project}"
 				progress="${%Validating...}" method="validateProject" with="playToolHome,projectPath" />
 				
-			<f:entry title="Mode">
+			<f:entry title="${%Parameters}" field="additionalParam">
+				<f:textbox />
+			</f:entry>
 
-				<f:entry title="${%Additional Behaviours}">
+				<f:entry title="${%Goals}">
 					<!-- TODO: switch to <f:repeatableHeteroList field="extensions"> -->
 					<f:hetero-list name="extensions" items="${instance.extensions}"
 						descriptors="${descriptor.getExtensionDescriptors()}" hasHeader="true" />
 				</f:entry>
-
-				<f:entry field="playClean">
-					<f:checkbox title="${%Clean}" />
-				</f:entry>
-				<f:entry field="playTest">
-					<f:checkbox title="${%Test}" />
-				</f:entry>
-				<f:entry field="playPackage">
-					<f:checkbox title="${%Generate artifact}" />
-				</f:entry>
-
-				<f:optionalBlock field="playTestOnly" title="${%Test-only}">
-					<f:entry field="testOnlyClass" title="${%JUnit identifier}">
-						<f:textbox />
-					</f:entry>
-				</f:optionalBlock>
-
-				<f:entry field="playPublish"
-					description="Repository must be specified in the build file.">
-					<f:checkbox title="${%Publish artifact to repository}" />
-				</f:entry>
-				<f:entry field="playDist">
-					<f:checkbox title="${%Build an Akka kernel project}" />
-				</f:entry>
-			</f:entry>
-
-			<f:entry title="${%Additional parameters}" field="additionalParam">
-				<f:textbox />
-			</f:entry>
-			<f:entry field="overwriteParam">
-				<f:checkbox title="${%Overwrite Mode with Additional parameters}" />
-			</f:entry>
 
 		</j:if>
 

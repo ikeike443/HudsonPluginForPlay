@@ -18,7 +18,7 @@ import org.apache.commons.lang.StringUtils;
  * This class keeps the formatting parameters of the project information shown
  * in the Jenkins job configuration.
  */
-public final class ProjectDetails {
+public final class ValidateProject {
 
 	/** Opening tag of the paragraphs shown in the project information */
 	private static final String P_FORMAT = "<p style=\"color:green; margin-left:10px; margin-top:-5px; font-size:10px;\">";
@@ -86,6 +86,11 @@ public final class ProjectDetails {
 		try {
 			String line;
 			while ((line = bisr.readLine()) != null) {
+				// If the String contains information about "resolving" dependencies, skip it.
+				if (line.contains("Resolving"))
+					continue;
+				
+				// Otherwise...
 				// The [info] tag from Play output and the whitespaces at the
 				// beginning and the end of String should be removed.
 				lines.add(P_FORMAT + line.replace("[info]", "").trim()

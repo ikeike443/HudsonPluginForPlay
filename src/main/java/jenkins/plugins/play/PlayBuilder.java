@@ -5,7 +5,6 @@ package jenkins.plugins.play;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,23 +38,7 @@ public class PlayBuilder extends Builder {
 
 	private final String projectPath;
 
-	private final boolean playClean;
-
-	private final boolean playTest;
-
-	private final boolean playTestOnly;
-
-	private final String testOnlyClass;
-
-	private boolean playPackage;
-
-	private boolean playPublish;
-
-	private boolean playDist;
-
 	private String additionalParam;
-
-	private boolean overwriteParam;
 
 	/**
 	 * All the configured extensions attached to this.
@@ -71,25 +54,15 @@ public class PlayBuilder extends Builder {
 	 */
 	@DataBoundConstructor
 	public PlayBuilder(String playToolHome, String projectPath,
-			boolean playClean, boolean playTest, boolean playTestOnly,
-			String testOnlyClass, boolean playPackage, boolean playPublish,
-			boolean playDist, String additionalParam, boolean overwriteParam,
+			String additionalParam,
 			List<PlayExtension> extensions) {
 		this.playToolHome = playToolHome;
 		this.projectPath = projectPath;
-		this.playClean = playClean;
-		this.playTest = playTest;
-		this.playTestOnly = playTestOnly;
-		this.testOnlyClass = testOnlyClass;
-		this.playPackage = playPackage;
-		this.playPublish = playPublish;
-		this.playDist = playDist;
 		this.additionalParam = additionalParam;
-		this.overwriteParam = overwriteParam;
 		this.extensions = new DescribableList<PlayExtension, PlayExtensionDescriptor>(
 				Saveable.NOOP, Util.fixNull(extensions));
 	}
-
+	
 	/**
 	 * @return the playToolHome
 	 */
@@ -105,66 +78,10 @@ public class PlayBuilder extends Builder {
 	}
 
 	/**
-	 * @return the playClean
-	 */
-	public final boolean isPlayClean() {
-		return playClean;
-	}
-
-	/**
-	 * @return the playTest
-	 */
-	public final boolean isPlayTest() {
-		return playTest;
-	}
-
-	/**
-	 * @return the playTestOnly
-	 */
-	public final boolean isPlayTestOnly() {
-		return playTestOnly;
-	}
-
-	/**
-	 * @return the testOnlyClass
-	 */
-	public final String getTestOnlyClass() {
-		return testOnlyClass;
-	}
-
-	/**
-	 * @return the playPackage
-	 */
-	public final boolean isPlayPackage() {
-		return playPackage;
-	}
-
-	/**
-	 * @return the playPublish
-	 */
-	public final boolean isPlayPublish() {
-		return playPublish;
-	}
-
-	/**
-	 * @return the playDist
-	 */
-	public final boolean isPlayDist() {
-		return playDist;
-	}
-
-	/**
 	 * @return the additionalParam
 	 */
 	public final String getAdditionalParam() {
 		return additionalParam;
-	}
-
-	/**
-	 * @return the overwriteParam
-	 */
-	public final boolean isOverwriteParam() {
-		return overwriteParam;
 	}
 
 	/**
@@ -227,34 +144,6 @@ public class PlayBuilder extends Builder {
 			System.out.println("#### " + string);
 		}
 
-		// Add clean parameter
-		if (isPlayClean())
-			commandParameters.add(PlayCommands.PLAY_CLEAN);
-
-		// Add test parameter
-		if (isPlayTest())
-			commandParameters.add(PlayCommands.PLAY_TEST);
-
-		// Add test-only parameter
-		if (isPlayTestOnly()) {
-			// Validate the class parameter
-			if (!getTestOnlyClass().isEmpty())
-				commandParameters.add("\"" + PlayCommands.PLAY_TEST_ONLY + " "
-						+ getTestOnlyClass() + "\"");
-		}
-
-		// Add package parameter
-		if (isPlayPackage())
-			commandParameters.add(PlayCommands.PLAY_PACKAGE);
-
-		// Add distribute parameter
-		if (isPlayDist())
-			commandParameters.add(PlayCommands.PLAY_DIST);
-
-		// Add publish parameter
-		if (isPlayPublish())
-			commandParameters.add(PlayCommands.PLAY_PUBLISH);
-
 		return commandParameters;
 	}
 
@@ -268,9 +157,6 @@ public class PlayBuilder extends Builder {
 	@Override
 	public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
 			BuildListener listener) throws InterruptedException, IOException {
-
-		// print both global and job configuration
-		printConfiguration(listener.getLogger());
 
 		// Create file from play path String
 		File playExecutable = new File(this.getPlayExecutable());
@@ -384,7 +270,7 @@ public class PlayBuilder extends Builder {
 			}
 
 			// Generate informational content for the user
-			String aboutProject = ProjectDetails.formattedInfo(playExecutable,
+			String aboutProject = ValidateProject.formattedInfo(playExecutable,
 					projectPath);
 
 			// Oops, there is no information. Project isn't a Play project.
@@ -393,23 +279,5 @@ public class PlayBuilder extends Builder {
 
 			return FormValidation.okWithMarkup(aboutProject);
 		}
-	}
-
-	private void printConfiguration(PrintStream logger) {
-
-		logger.println("Build Configuration" + "\n\tPLAY_HOME : "
-				+ this.getPlayToolHome() + "\n\tProject path : "
-				+ this.getProjectPath() + "\n\tClean only : "
-				+ (this.isPlayClean() ? "yes" : "no") + "\n\tTest only : "
-				+ (this.isPlayTest() ? "yes" : "no")
-				+ "\n\tGenerate artifact : "
-				+ (this.isPlayPackage() ? "yes" : "no")
-				+ "\n\tPublish artifact : "
-				+ (this.isPlayPublish() ? "yes" : "no")
-				+ "\n\tBuild Akka project : "
-				+ (this.isPlayDist() ? "yes" : "no")
-				+ "\n\tAdditional parameters : " + this.getAdditionalParam()
-				+ "\n\tOverwrite parameters : "
-				+ (this.isOverwriteParam() ? "yes" : "no"));
 	}
 }
