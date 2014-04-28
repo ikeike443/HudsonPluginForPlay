@@ -29,41 +29,47 @@ import hudson.util.DescribableList;
 import hudson.util.FormValidation;
 
 /**
- * @author rafaelrezende
+ * Provides the several of the functionalities of Play!Framework in a Jenkins
+ * plugin. This class is responsible for the Play!Framework module in the job
+ * configuration.
  * 
  */
 public class PlayBuilder extends Builder {
 
+	/** The Play installation path selected by the user. */
 	private final String playToolHome;
-
+	/** Absolute or relative project path. */
 	private final String projectPath;
-
+	/** Parameters provided by the user. */
 	private String additionalParam;
-
-	/**
-	 * All the configured extensions attached to this.
-	 */
+	/** All the configured extensions attached to this. */
 	private DescribableList<PlayExtension, PlayExtensionDescriptor> extensions;
 
 	/**
+	 * Constructor used by Jenkins to handle the Play! job.
+	 * 
+	 * @param playToolHome
+	 *            Path of Play! installation
 	 * @param projectPath
-	 * @param playClean
-	 * @param playTest
+	 *            Project path
 	 * @param additionalParam
-	 * @param overwriteParam
+	 *            Additional parameters
+	 * @param extensions
+	 *            Build goals
 	 */
 	@DataBoundConstructor
 	public PlayBuilder(String playToolHome, String projectPath,
-			String additionalParam,
-			List<PlayExtension> extensions) {
+			String additionalParam, List<PlayExtension> extensions) {
 		this.playToolHome = playToolHome;
 		this.projectPath = projectPath;
 		this.additionalParam = additionalParam;
 		this.extensions = new DescribableList<PlayExtension, PlayExtensionDescriptor>(
 				Saveable.NOOP, Util.fixNull(extensions));
 	}
-	
+
 	/**
+	 * Get the path of the Play! installation.
+	 * 
 	 * @return the playToolHome
 	 */
 	public String getPlayToolHome() {
@@ -71,6 +77,8 @@ public class PlayBuilder extends Builder {
 	}
 
 	/**
+	 * Get the project path.
+	 * 
 	 * @return the projectPath
 	 */
 	public String getProjectPath() {
@@ -78,6 +86,8 @@ public class PlayBuilder extends Builder {
 	}
 
 	/**
+	 * Get additional parameters.
+	 * 
 	 * @return the additionalParam
 	 */
 	public final String getAdditionalParam() {
@@ -85,13 +95,18 @@ public class PlayBuilder extends Builder {
 	}
 
 	/**
-	 * @return the playToolHome
+	 * Get the complete path of the Play! executable. It assumes the executable
+	 * is always "play".
+	 * 
+	 * @return the Play! executable.
 	 */
 	public String getPlayExecutable() {
 		return playToolHome + "/play";
 	}
 
 	/**
+	 * List of Play! goals.
+	 * 
 	 * @return list of extensions
 	 */
 	public DescribableList<PlayExtension, PlayExtensionDescriptor> getExtensions() {
@@ -123,6 +138,9 @@ public class PlayBuilder extends Builder {
 		String noColorFormatting = "-Dsbt.log.noformat=true";
 		commandParameters.add(noColorFormatting);
 
+		// Add the additional parameters to the list of parameters
+		commandParameters.add(additionalParam);
+
 		// add extension actions to command-line one by one
 		for (PlayExtension playExt : this.extensions) {
 
@@ -135,13 +153,10 @@ public class PlayBuilder extends Builder {
 			String command = String.format(commandPattern,
 					playExt.getCommand(), playExt.getParameter());
 
-			System.out.println("########  " + command);
+			// Trim the String to remove leading and trailing whitespace (just
+			// esthetical reason)
 			// Add generated parameter to the array of parameters
-			commandParameters.add(command);
-		}
-
-		for (String string : commandParameters) {
-			System.out.println("#### " + string);
+			commandParameters.add(command.trim());
 		}
 
 		return commandParameters;
@@ -176,8 +191,10 @@ public class PlayBuilder extends Builder {
 			return false;
 		}
 
+		// Creates the complete list of parameters including goals
 		List<String> commandParameters = generatePlayParameters();
 
+		// Launch Play!Framework
 		Proc proc = launcher
 				.launch()
 				.cmds(playExecutable,
@@ -189,6 +206,9 @@ public class PlayBuilder extends Builder {
 		return proc.join() == 0;
 	}
 
+	/**
+	 * Descriptor to retrieve and validate fields from the interface.
+	 */
 	@Extension
 	public static final class PlayDescriptor extends
 			BuildStepDescriptor<Builder> {
@@ -197,22 +217,38 @@ public class PlayBuilder extends Builder {
 			load();
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see hudson.tasks.BuildStepDescriptor#isApplicable(java.lang.Class)
+		 */
 		@Override
 		public boolean isApplicable(Class<? extends AbstractProject> jobType) {
 			return true;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see hudson.model.Descriptor#getDisplayName()
+		 */
 		@Override
 		public String getDisplayName() {
 			return "Invoke Play!Framework";
 		}
 
+		/**
+		 * Goals are Implemented as extensions. This methods returns the
+		 * descriptor of every available extension.
+		 * 
+		 * @return Available goals.
+		 */
 		public List<PlayExtensionDescriptor> getExtensionDescriptors() {
 			return PlayExtensionDescriptor.all();
 		}
 
 		/**
-		 * This method is required by the interface to list Play installations
+		 * Get available Play! installations.
 		 * 
 		 * @return Array of Play installations
 		 */
@@ -222,15 +258,13 @@ public class PlayBuilder extends Builder {
 					.getInstallations();
 		}
 
-		public FormValidation doCheckOverwriteParam(
-				@QueryParameter boolean overwriteParam) {
-			if (overwriteParam)
-				return FormValidation
-						.warning("The above checkboxes will not have any effect.");
-			else
-				return FormValidation.ok();
-		}
-
+		/**
+		 * Check if the project path field is not empty and exists.
+		 * 
+		 * @param projectPath
+		 *            Project path
+		 * @return Form validation
+		 */
 		public FormValidation doCheckProjectPath(
 				@QueryParameter String projectPath) {
 
@@ -247,6 +281,18 @@ public class PlayBuilder extends Builder {
 
 		}
 
+		/**
+		 * Retrieve information about the project by running the 'play about'
+		 * command. Helps to identify that the project is a Play! project and
+		 * that the chosen Play! version is compliant with it. Also helpful to
+		 * check if the Play! installation is valid.
+		 * 
+		 * @param playToolHome
+		 *            Chosen Play! installation
+		 * @param projectPath
+		 *            Project path
+		 * @return Form validation
+		 */
 		public FormValidation doValidateProject(
 				@QueryParameter String playToolHome,
 				@QueryParameter String projectPath) {
