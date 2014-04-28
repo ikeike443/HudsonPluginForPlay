@@ -9,7 +9,7 @@
 			<f:entry title="${%Play!Framework Installation}">
 				<select class="setting-input" name="playToolHome">
 					<j:forEach var="inst" items="${descriptor.installations}">
-						<f:option selected="${inst.name==instance.playToolName}"
+						<f:option selected="${inst.home==instance.playToolHome}"
 							value="${inst.home}">${inst.name} (${inst.home})</f:option>
 					</j:forEach>
 				</select>
