@@ -1,8 +1,10 @@
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+<j:jelly xmlns:j="jelly:core" xmlns:d="jelly:define"
 	xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 
-	<f:entry title="${%Identifier}" field="parameter">
-		<f:textbox />
+	<f:entry>
+		<p style="font-size:10px">
+			Runs the tests provided as identifier. * (will be) interpreted as a wildcard in the test name. See <a href="http://www.scala-sbt.org/release/docs/Detailed-Topics/Testing.html"><i>Testing</i></a> for details.
+		</p>
 	</f:entry>
 
 </j:jelly>
