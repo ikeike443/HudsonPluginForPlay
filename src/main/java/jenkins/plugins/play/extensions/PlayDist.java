@@ -30,7 +30,7 @@ public class PlayDist extends PlayExtension {
     public static class DescriptorImpl extends PlayExtensionDescriptor {
         @Override
         public String getDisplayName() {
-            return "Build an Akka kernel project";
+            return "Build an Akka kernel project [dist]";
         }
     }
 }

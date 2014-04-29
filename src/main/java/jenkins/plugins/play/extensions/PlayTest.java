@@ -30,7 +30,7 @@ public class PlayTest extends PlayExtension {
     public static class DescriptorImpl extends PlayExtensionDescriptor {
         @Override
         public String getDisplayName() {
-            return "Execute all test cases";
+            return "Execute all test cases [test]";
         }
 	}
 }

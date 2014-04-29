@@ -1,4 +1,4 @@
-/**
+ /**
  * 
  */
 package jenkins.plugins.play.extensions;
@@ -42,7 +42,7 @@ public class PlayTestOnly extends PlayExtension {
     public static class DescriptorImpl extends PlayExtensionDescriptor {
         @Override
         public String getDisplayName() {
-            return "Execute single test case";
+            return "Execute single test case [test-only]";
         }
         
         public FormValidation doCheckParameter (@QueryParameter String parameter) {

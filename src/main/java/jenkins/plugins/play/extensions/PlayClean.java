@@ -30,7 +30,7 @@ public class PlayClean extends PlayExtension {
     public static class DescriptorImpl extends PlayExtensionDescriptor {
         @Override
         public String getDisplayName() {
-            return "Clean project";
+            return "Clean project [clean]";
         }
     }
 }

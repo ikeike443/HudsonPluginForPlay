@@ -30,7 +30,7 @@ public class PlayPublish extends PlayExtension {
     public static class DescriptorImpl extends PlayExtensionDescriptor {
         @Override
         public String getDisplayName() {
-            return "Publish artifact to repository";
+            return "Publish artifact to repository [publish]";
         }
     }
 }

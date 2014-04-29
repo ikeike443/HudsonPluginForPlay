@@ -30,7 +30,7 @@ public class PlayCompile extends PlayExtension {
     public static class DescriptorImpl extends PlayExtensionDescriptor {
         @Override
         public String getDisplayName() {
-            return "Compile project";
+            return "Compile project [compile]";
         }
     }
 }

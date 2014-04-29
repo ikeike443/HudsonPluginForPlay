@@ -30,7 +30,7 @@ public class PlayPackage extends PlayExtension {
     public static class DescriptorImpl extends PlayExtensionDescriptor {
         @Override
         public String getDisplayName() {
-            return "Generate artifact";
+            return "Generate artifact [package]";
         }
     }
 }
