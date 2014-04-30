@@ -1,7 +1,10 @@
  /**
  * 
  */
-package jenkins.plugins.play.extensions;
+package jenkins.plugins.play.extensions.play2;
+
+import jenkins.plugins.play.extensions.PlayExtension;
+import jenkins.plugins.play.extensions.PlayExtensionDescriptor;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;

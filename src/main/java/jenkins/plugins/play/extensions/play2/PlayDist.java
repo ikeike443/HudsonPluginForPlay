@@ -1,7 +1,10 @@
 /**
  * 
  */
-package jenkins.plugins.play.extensions;
+package jenkins.plugins.play.extensions.play2;
+
+import jenkins.plugins.play.extensions.PlayExtension;
+import jenkins.plugins.play.extensions.PlayExtensionDescriptor;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -11,12 +14,12 @@ import hudson.Extension;
  * @author rafaelrezende
  *
  */
-public class PlayTest extends PlayExtension {
+public class PlayDist extends PlayExtension {
 	
-	private final static String command = "test";
+	private String command = "dist";
 	
 	@DataBoundConstructor
-	public PlayTest() {
+	public PlayDist() {
 	}
 	
 	/**
@@ -25,12 +28,12 @@ public class PlayTest extends PlayExtension {
 	public String getCommand() {
 		return command;
 	}
-
+	
 	@Extension
     public static class DescriptorImpl extends PlayExtensionDescriptor {
         @Override
         public String getDisplayName() {
-            return "Execute all test cases [test]";
+            return "Build an Akka kernel project [dist]";
         }
-	}
+    }
 }

@@ -1,7 +1,10 @@
 /**
  * 
  */
-package jenkins.plugins.play.extensions;
+package jenkins.plugins.play.extensions.play2;
+
+import jenkins.plugins.play.extensions.PlayExtension;
+import jenkins.plugins.play.extensions.PlayExtensionDescriptor;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -11,12 +14,12 @@ import hudson.Extension;
  * @author rafaelrezende
  *
  */
-public class PlayCompile extends PlayExtension {
+public class PlayTest extends PlayExtension {
 	
-	private String command = "compile";
+	private final static String command = "test";
 	
 	@DataBoundConstructor
-	public PlayCompile() {
+	public PlayTest() {
 	}
 	
 	/**
@@ -25,12 +28,12 @@ public class PlayCompile extends PlayExtension {
 	public String getCommand() {
 		return command;
 	}
-	
+
 	@Extension
     public static class DescriptorImpl extends PlayExtensionDescriptor {
         @Override
         public String getDisplayName() {
-            return "Compile project [compile]";
+            return "Execute all test cases [test]";
         }
-    }
+	}
 }

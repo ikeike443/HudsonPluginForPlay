@@ -1,7 +1,10 @@
 /**
  * 
  */
-package jenkins.plugins.play.extensions;
+package jenkins.plugins.play.extensions.play2;
+
+import jenkins.plugins.play.extensions.PlayExtension;
+import jenkins.plugins.play.extensions.PlayExtensionDescriptor;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -11,12 +14,12 @@ import hudson.Extension;
  * @author rafaelrezende
  *
  */
-public class PlayDist extends PlayExtension {
+public class PlayPackage extends PlayExtension {
 	
-	private String command = "dist";
+	private String command = "package";
 	
 	@DataBoundConstructor
-	public PlayDist() {
+	public PlayPackage() {
 	}
 	
 	/**
@@ -30,7 +33,7 @@ public class PlayDist extends PlayExtension {
     public static class DescriptorImpl extends PlayExtensionDescriptor {
         @Override
         public String getDisplayName() {
-            return "Build an Akka kernel project [dist]";
+            return "Generate artifact [package]";
         }
     }
 }

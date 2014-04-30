@@ -1,7 +1,10 @@
 /**
  * 
  */
-package jenkins.plugins.play.extensions;
+package jenkins.plugins.play.extensions.play2;
+
+import jenkins.plugins.play.extensions.PlayExtension;
+import jenkins.plugins.play.extensions.PlayExtensionDescriptor;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -11,12 +14,12 @@ import hudson.Extension;
  * @author rafaelrezende
  *
  */
-public class PlayPackage extends PlayExtension {
+public class PlayPublish extends PlayExtension {
 	
-	private String command = "package";
+	private String command = "publish";
 	
 	@DataBoundConstructor
-	public PlayPackage() {
+	public PlayPublish() {
 	}
 	
 	/**
@@ -30,7 +33,7 @@ public class PlayPackage extends PlayExtension {
     public static class DescriptorImpl extends PlayExtensionDescriptor {
         @Override
         public String getDisplayName() {
-            return "Generate artifact [package]";
+            return "Publish artifact to repository [publish]";
         }
     }
 }
