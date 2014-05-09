@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jenkins.model.Jenkins;
-import jenkins.plugins.play.extensions.PlayExtension;
-import jenkins.plugins.play.extensions.PlayExtensionDescriptor;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
@@ -43,7 +41,7 @@ public class PlayBuilder extends Builder {
 	/** Parameters provided by the user. */
 	private String additionalParam;
 	/** All the configured extensions attached to this. */
-	private DescribableList<PlayExtension, PlayExtensionDescriptor> extensions;
+	private DescribableList<PlayCommand, PlayCommandDescriptor> extensions;
 
 	/**
 	 * Constructor used by Jenkins to handle the Play! job.
@@ -59,11 +57,11 @@ public class PlayBuilder extends Builder {
 	 */
 	@DataBoundConstructor
 	public PlayBuilder(String playToolHome, String projectPath,
-			String additionalParam, List<PlayExtension> extensions) {
+			String additionalParam, List<PlayCommand> extensions) {
 		this.playToolHome = playToolHome;
 		this.projectPath = projectPath;
 		this.additionalParam = additionalParam;
-		this.extensions = new DescribableList<PlayExtension, PlayExtensionDescriptor>(
+		this.extensions = new DescribableList<PlayCommand, PlayCommandDescriptor>(
 				Saveable.NOOP, Util.fixNull(extensions));
 	}
 
@@ -109,7 +107,7 @@ public class PlayBuilder extends Builder {
 	 * 
 	 * @return list of extensions
 	 */
-	public DescribableList<PlayExtension, PlayExtensionDescriptor> getExtensions() {
+	public DescribableList<PlayCommand, PlayCommandDescriptor> getExtensions() {
 		return extensions;
 	}
 
@@ -142,7 +140,7 @@ public class PlayBuilder extends Builder {
 		commandParameters.add(additionalParam);
 
 		// add extension actions to command-line one by one
-		for (PlayExtension playExt : this.extensions) {
+		for (PlayCommand playExt : this.extensions) {
 
 			// Every command parameter is surrounded by quotes, have them
 			// additional parameters or not.
@@ -243,8 +241,8 @@ public class PlayBuilder extends Builder {
 		 * 
 		 * @return Available goals.
 		 */
-		public List<PlayExtensionDescriptor> getExtensionDescriptors() {
-			return PlayExtensionDescriptor.all();
+		public List<PlayCommandDescriptor> getExtensionDescriptors() {
+			return PlayCommandDescriptor.all();
 		}
 
 		/**
