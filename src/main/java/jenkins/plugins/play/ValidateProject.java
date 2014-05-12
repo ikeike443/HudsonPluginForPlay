@@ -39,14 +39,14 @@ public final class ValidateProject {
 	 * validates if the project path is a Play! project. If yes, it returns the
 	 * composed HTML containing the project information. Null otherwise.
 	 * 
-	 * @param playPath
+	 * @param playExecutable
 	 *            Path of the selected Play!Framework installation.
 	 * @param projectPath
 	 *            Path of the Play! project.
 	 * @return The HTML-formatted project information. It returns null if the
 	 *         path is not a Play!Project.
 	 */
-	public static String formattedInfo(String playPath, String projectPath) {
+	public static String formattedInfo(String playExecutable, String projectPath) {
 
 		// This parameter is always present to remove color formatting
 		// characters from the output.
@@ -55,7 +55,7 @@ public final class ValidateProject {
 		// Compose the command-line to invoke the 'Play about' without color
 		// formatting
 		List<String> args = new LinkedList<String>();
-		args.add(playPath);
+		args.add(playExecutable);
 		args.add(noColorFormatting);
 		args.add("about");
 
