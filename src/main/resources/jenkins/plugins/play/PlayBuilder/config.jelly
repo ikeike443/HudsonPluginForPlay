@@ -21,16 +21,17 @@
 			</f:entry>
 			<f:validateButton title="${%Validate project}"
 				progress="${%Validating...}" method="validateProject" with="playToolHome,projectPath" />
-				
+
 			<f:entry title="${%Parameters}" field="additionalParam">
 				<f:textbox />
 			</f:entry>
 
-				<f:entry title="${%Goals}">
-					<!-- TODO: switch to <f:repeatableHeteroList field="extensions"> -->
-					<f:hetero-list name="extensions" items="${instance.extensions}"
-						descriptors="${descriptor.getExtensionDescriptors()}" hasHeader="true" />
-				</f:entry>
+			<f:entry title="${%Goals}">
+				<!-- TODO: switch to <f:repeatableHeteroList field="extensions"> -->
+				<f:hetero-list name="extensions" items="${instance.extensions}"
+					descriptors="${descriptor.getExtensionDescriptors(instance.playToolHome)}"
+					hasHeader="true" />
+			</f:entry>
 
 		</j:if>
 

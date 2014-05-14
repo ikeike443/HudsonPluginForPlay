@@ -241,7 +241,10 @@ public class PlayBuilder extends Builder {
 		 * 
 		 * @return Available goals.
 		 */
-		public List<PlayCommandDescriptor> getExtensionDescriptors() {
+		public List<PlayCommandDescriptor> getExtensionDescriptors(@QueryParameter String playToolHome) {
+			
+			ValidatePlayTarget.getPlayTarget(playToolHome);
+			
 			return PlayCommandDescriptor.all();
 		}
 
@@ -255,7 +258,7 @@ public class PlayBuilder extends Builder {
 					.getDescriptorByType(PlayInstallation.Descriptor.class)
 					.getInstallations();
 		}
-
+		
 		/**
 		 * Check if the project path field is not empty and exists.
 		 * 
