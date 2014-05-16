@@ -38,8 +38,6 @@ public class TestValidatePlayTarget extends TestCase{
 	@Test
 	public void testRangeMatching() {
 		
-		boolean result = ValidatePlayTarget.compareVersions("0", "0", "0.5");
-		
 		assertTrue(ValidatePlayTarget.compareVersions("0", "0", "0.5"));
 		assertTrue(ValidatePlayTarget.compareVersions("0.2", "0", "0.5"));
 		assertTrue(ValidatePlayTarget.compareVersions("1.2", "0", "1.5"));
@@ -57,5 +55,16 @@ public class TestValidatePlayTarget extends TestCase{
 		assertFalse(ValidatePlayTarget.compareVersions("0", "0.2", "0.5"));
 		assertFalse(ValidatePlayTarget.compareVersions("1.2", "1.2.1", "1.5"));
 		assertFalse(ValidatePlayTarget.compareVersions("1.2.3.4.5.8", "1.2.3.4.5.6", "1.2.3.4.5.7"));
+	}
+	
+	@Test
+	public void testVersionToLong() {
+		
+		assertEquals(10200330000L, ValidatePlayTarget.versionToLong("1.2.0.33", false));
+		assertEquals(10200339999L, ValidatePlayTarget.versionToLong("1.2.0.33", true));
+		assertEquals(0L, ValidatePlayTarget.versionToLong("0", false));
+		assertEquals(12099999999L, ValidatePlayTarget.versionToLong("1.20", true));
+		assertEquals(99999999999L, ValidatePlayTarget.versionToLong("9", true));
+		assertEquals(999999999999L, ValidatePlayTarget.versionToLong("99", true));
 	}
 }
