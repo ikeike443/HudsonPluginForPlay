@@ -36,7 +36,7 @@ public abstract class PlayCommandDescriptor extends Descriptor<PlayCommand> {
 	 * 
 	 * @return List of descriptor extension filtered by version.
 	 */
-	public static DescriptorExtensionList<PlayCommand, PlayCommandDescriptor> all() {
+	public static DescriptorExtensionList<PlayCommand, PlayCommandDescriptor> all(PlayTarget playTarget) {
 
 		// Retrieve the complete list of descriptor extensions (one per play
 		// command)
@@ -53,7 +53,7 @@ public abstract class PlayCommandDescriptor extends Descriptor<PlayCommand> {
 			// Remove from the list if the command isn't compatible with the
 			// version
 			if (!playExtensionDescriptor.compatibleVersions().contains(
-					PlayTarget.PLAY_1_X))
+					playTarget))
 				list.remove(playExtensionDescriptor);
 		}
 

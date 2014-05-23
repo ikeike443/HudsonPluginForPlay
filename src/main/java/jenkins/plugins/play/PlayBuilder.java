@@ -6,6 +6,7 @@ package jenkins.plugins.play;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import jenkins.model.Jenkins;
@@ -13,6 +14,7 @@ import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
+import hudson.DescriptorExtensionList;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.Proc;
@@ -25,6 +27,7 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.DescribableList;
 import hudson.util.FormValidation;
+import hudson.util.ListBoxModel;
 
 /**
  * Provides the several of the functionalities of Play!Framework in a Jenkins
@@ -98,8 +101,15 @@ public class PlayBuilder extends Builder {
 	 * 
 	 * @return the Play! executable.
 	 */
-	public String getPlayExecutable() {
-		return playToolHome + "/play";
+	public File getPlayExecutable() {
+		
+		for (PlayTarget target : PlayTarget.values()) {
+			File executable = new File(this.playToolHome + target.getExecutable());
+			
+			if (executable.exists())
+				return executable;
+		}
+		return null;
 	}
 
 	/**
@@ -172,10 +182,10 @@ public class PlayBuilder extends Builder {
 			BuildListener listener) throws InterruptedException, IOException {
 
 		// Create file from play path String
-		File playExecutable = new File(this.getPlayExecutable());
+		File playExecutable = this.getPlayExecutable();
 
 		// Check if play executable exists
-		if (!playExecutable.exists()) {
+		if (playExecutable == null) {
 			listener.getLogger().println("ERROR! Play executable not found!");
 			return false;
 		}
@@ -243,11 +253,22 @@ public class PlayBuilder extends Builder {
 		 */
 		public List<PlayCommandDescriptor> getExtensionDescriptors(@QueryParameter String playToolHome) {
 			
-			ValidatePlayTarget.getPlayTarget(playToolHome);
+			System.out.println("###############getExtensionDescriptors " + playToolHome);
 			
-			return PlayCommandDescriptor.all();
+			DescriptorExtensionList<PlayCommand, PlayCommandDescriptor> descriptors = PlayCommandDescriptor.all(ValidatePlayTarget.getPlayTarget(playToolHome));
+			for (PlayCommandDescriptor playCommandDescriptor : descriptors) {
+				System.out.println("#!!!!: " + playCommandDescriptor.getDisplayName());
+			}
+			
+			return descriptors;
 		}
-
+		
+//		problem here: the selection of goals uses an hetero-list, which requires a list of extensionDescriptors.
+//		The only way to fill the Goals automatically (afaik) is using a doFillGoalsItemis, that instead, 
+//		requires a ListBoxModel.
+//		So, what I need here: a way to pass the playToolHome to my getExtensionDescriptors, and reload it
+//		everytime a new play tool is selected...
+		
 		/**
 		 * Get available Play! installations.
 		 * 
@@ -268,6 +289,8 @@ public class PlayBuilder extends Builder {
 		 */
 		public FormValidation doCheckProjectPath(
 				@QueryParameter String projectPath) {
+			
+			System.out.println("### CHECK PROJECT ###");
 
 			// If field is empty, call the required validator
 			if (projectPath.isEmpty())
@@ -287,6 +310,7 @@ public class PlayBuilder extends Builder {
 		 * command. Helps to identify that the project is a Play! project and
 		 * that the chosen Play! version is compliant with it. Also helpful to
 		 * check if the Play! installation is valid.
+		 * This method is invoked by a button in the Jenkins jelly interface.
 		 * 
 		 * @param playToolHome
 		 *            Chosen Play! installation
@@ -322,7 +346,7 @@ public class PlayBuilder extends Builder {
 
 			// Oops, there is no information. Project isn't a Play project.
 			if (aboutProject == null)
-				return FormValidation.error("Not a Play!Framework project!");
+				return FormValidation.error("Not recognized as a valid project for the selected Play! tool.");
 
 			return FormValidation.okWithMarkup(aboutProject);
 		}

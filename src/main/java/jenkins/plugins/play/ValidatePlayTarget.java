@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import jenkins.model.Jenkins;
+
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -31,31 +33,44 @@ public class ValidatePlayTarget {
 	private static final int VERSION_RANGE_PARTS = 6;
 	
 	/**
-	 * Identifies the Play! installation version according to the ranges
-	 * provided by the {@link PlayTarget}.
+	 * Identifies the Play! installation version according to the expected
+	 * executable and ranges provided by the {@link PlayTarget}.
 	 * 
-	 * @param playPath Corresponds to the PLAY_HOME
+	 * @param playPath
+	 *            Corresponds to the PLAY_HOME
 	 * 
 	 * @return Corresponding Play version target.
 	 */
 	public static PlayTarget getPlayTarget(String playPath) {
 		
-		String playOutput = null;
-		
-		try {
-			playOutput = getPlayVersion(playPath);
-		} catch (IOException | InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		// validating the play output
-		if (playOutput == null || StringUtils.isEmpty(playOutput))
-			return PlayTarget.NONE;
-		
 		// compare the current version to the given targets until a suitable
 		// one has been found.
 		for (PlayTarget target : PlayTarget.values()) {
+			
+			// Check if the playPath has the expected executable for this target
+			File executable = new File(playPath + "/" + target.getExecutable());
+			
+			System.out.println("######target.getExecutable(): " + target.getExecutable());
+			System.out.println("######executable: " + executable);
+			
+			// For instance, if the target expects a "play" executable,
+			// but doesn't find it, skip it
+			if (!executable.exists())
+				continue;
+			
+			// otherwise, check if the found version is in the range
+			String playOutput = null;
+			try {
+				playOutput = getPlayVersion(executable);
+			} catch (IOException | InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			// validating the play output
+			if (playOutput == null)
+				return PlayTarget.NONE;
+			
 			if (compareVersions(playOutput, target.getVersionRangeMin(), target.getVersionRangeMax()))
 				return target;
 		}
@@ -75,19 +90,19 @@ public class ValidatePlayTarget {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	private static String getPlayVersion(String playPath) throws IOException,
+	private static String getPlayVersion(File playPath) throws IOException,
 			InterruptedException {
 
-		// TODO: find a way to get play executable automatically here
-		
-		// Compose the command-line to invoke the 'Play about' without color
-		// formatting
+		// Add play executable to the command line
 		List<String> args = new LinkedList<String>();
-		args.add(playPath + "/play");
+		args.add(playPath.getAbsolutePath());
 		
-		// Run the composed command
+		System.out.println("########playPath.getAbsolutePath(): " + playPath.getAbsolutePath());
+		System.out.println("########playPath: " + playPath);
+		
+		// Run the "play about" command in the root folder of Jenkins
 		Process process = new ProcessBuilder(args)
-				.directory(new File(playPath)).start();
+				.directory(Jenkins.getInstance().getRootDir()).start();
 		// Wait for it to finish
 		process.waitFor();
 
@@ -111,6 +126,7 @@ public class ValidatePlayTarget {
 		String playOutput = StringUtils.join(lines, "\n");
 		
 		// Parse the version using regex. Example of expected exp: 'play 2.2.1', 'play! 1.2.3'
+		// Only the number is extracted.
 		Matcher versionMatch = Pattern.compile("play[!]?\\s(\\d[\\.\\d]+)", Pattern.CASE_INSENSITIVE).matcher(playOutput);
 		
 		// find the first pattern match and return null if nothing has been
@@ -123,17 +139,27 @@ public class ValidatePlayTarget {
 	}
 	
 	/**
-	 * Checks if a given version fits in range. Both limit versions are inclusive.
+	 * Checks if a given version fits in range. Both limit versions are
+	 * inclusive. If the current version is empty, it means that there are no
+	 * version requirements, so the result is true for any given range.
 	 * 
-	 * @param currVersion Version to be compared.
-	 * @param minVersion Minimum version of the reference range.
-	 * @param maxVersion Maximum version of the reference range.
+	 * @param currVersion
+	 *            Version to be compared.
+	 * @param minVersion
+	 *            Minimum version of the reference range.
+	 * @param maxVersion
+	 *            Maximum version of the reference range.
 	 * @return True if the version fits in the range. False otherwise.
 	 */
 	public static boolean compareVersions(String currVersion, String minVersion, String maxVersion) {
 		
-		// validate inputs
-		if (currVersion.isEmpty() || minVersion.isEmpty() || maxVersion.isEmpty())
+		// If the current version is empty, it means that there are no
+		// version requirements, so the result is true for any given range.
+		if (currVersion.isEmpty())
+			return true;
+		
+		// validate ranges.
+		if (minVersion.isEmpty() || maxVersion.isEmpty())
 			return false;
 		
 		long minVersionLong = versionToLong(minVersion, false);
@@ -142,6 +168,7 @@ public class ValidatePlayTarget {
 		
 		if (currVersionLong >= minVersionLong && currVersionLong <= maxVersionLong)
 			return true;
+		
 		else return false;
 	}
 	

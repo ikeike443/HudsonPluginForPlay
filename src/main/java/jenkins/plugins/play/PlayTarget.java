@@ -16,7 +16,7 @@ package jenkins.plugins.play;
 public enum PlayTarget {
 
 	// Default target
-	NONE("", "0.0.0", "0.0.0"),
+	NONE("noneExec", "0.0.0", "0.0.0"),
 
 	// CUSTOM TARGETS
 	// Any version started with "1."
@@ -60,11 +60,12 @@ public enum PlayTarget {
 	/**
 	 * Private constructor. No external object can create targets.
 	 * 
-	 * @param code
-	 * @param message
+	 * @param executable
+	 * @param versionRangeMin
+	 * @param versionRangeMax
 	 */
-	private PlayTarget(String code, String versionRangeMin, String versionRangeMax) {
-		this.executable = code;
+	private PlayTarget(String executable, String versionRangeMin, String versionRangeMax) {
+		this.executable = executable;
 		this.versionRangeMin = versionRangeMin;
 		this.versionRangeMax = versionRangeMax;
 	}

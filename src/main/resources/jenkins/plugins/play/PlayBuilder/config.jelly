@@ -32,7 +32,6 @@
 					descriptors="${descriptor.getExtensionDescriptors(instance.playToolHome)}"
 					hasHeader="true" />
 			</f:entry>
-
 		</j:if>
 
 		<j:if test="${empty(descriptor.installations)}">
