@@ -6,10 +6,13 @@ package jenkins.plugins.play;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 import jenkins.model.Jenkins;
+import jenkins.plugins.play.version.PlayVersion;
+import jenkins.plugins.play.version.PlayVersionDescriptor;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
@@ -43,8 +46,8 @@ public class PlayBuilder extends Builder {
 	private final String projectPath;
 	/** Parameters provided by the user. */
 	private String additionalParam;
-	/** All the configured extensions attached to this. */
-	private DescribableList<PlayCommand, PlayCommandDescriptor> extensions;
+	
+	private DescribableList<PlayVersion, PlayVersionDescriptor> playTarget;
 
 	/**
 	 * Constructor used by Jenkins to handle the Play! job.
@@ -60,12 +63,14 @@ public class PlayBuilder extends Builder {
 	 */
 	@DataBoundConstructor
 	public PlayBuilder(String playToolHome, String projectPath,
-			String additionalParam, List<PlayCommand> extensions) {
+			String additionalParam, List<PlayVersion> playTarget) {
 		this.playToolHome = playToolHome;
 		this.projectPath = projectPath;
 		this.additionalParam = additionalParam;
-		this.extensions = new DescribableList<PlayCommand, PlayCommandDescriptor>(
-				Saveable.NOOP, Util.fixNull(extensions));
+		this.playTarget = new DescribableList<PlayVersion, PlayVersionDescriptor>(
+				Saveable.NOOP, Util.fixNull(playTarget));
+		
+		System.out.println("#### PLAY TARGET TYPE: " + playTarget.getClass().getCanonicalName());
 	}
 
 	/**
@@ -113,12 +118,10 @@ public class PlayBuilder extends Builder {
 	}
 
 	/**
-	 * List of Play! goals.
-	 * 
-	 * @return list of extensions
+	 * @return the playTarget
 	 */
-	public DescribableList<PlayCommand, PlayCommandDescriptor> getExtensions() {
-		return extensions;
+	public final DescribableList<PlayVersion, PlayVersionDescriptor> getPlayTarget() {
+		return playTarget;
 	}
 
 	/*
@@ -149,23 +152,23 @@ public class PlayBuilder extends Builder {
 		// Add the additional parameters to the list of parameters
 		commandParameters.add(additionalParam);
 
-		// add extension actions to command-line one by one
-		for (PlayCommand playExt : this.extensions) {
-
-			// Every command parameter is surrounded by quotes, have them
-			// additional parameters or not.
-			// HOWEVER, the launcher already adds single quotes automatically
-			// whenever the parameter is composed of two or more strings.
-			// Therefore, no need to add the quotes here.
-			String commandPattern = "%s %s";
-			String command = String.format(commandPattern,
-					playExt.getCommand(), playExt.getParameter());
-
-			// Trim the String to remove leading and trailing whitespace (just
-			// esthetical reason)
-			// Add generated parameter to the array of parameters
-			commandParameters.add(command.trim());
-		}
+//		// add extension actions to command-line one by one
+//		for (PlayCommand playExt : this.extensions) {
+//
+//			// Every command parameter is surrounded by quotes, have them
+//			// additional parameters or not.
+//			// HOWEVER, the launcher already adds single quotes automatically
+//			// whenever the parameter is composed of two or more strings.
+//			// Therefore, no need to add the quotes here.
+//			String commandPattern = "%s %s";
+//			String command = String.format(commandPattern,
+//					playExt.getCommand(), playExt.getParameter());
+//
+//			// Trim the String to remove leading and trailing whitespace (just
+//			// esthetical reason)
+//			// Add generated parameter to the array of parameters
+//			commandParameters.add(command.trim());
+//		}
 
 		return commandParameters;
 	}
@@ -245,29 +248,40 @@ public class PlayBuilder extends Builder {
 			return "Invoke Play!Framework";
 		}
 
-		/**
-		 * Goals are Implemented as extensions. This methods returns the
-		 * descriptor of every available extension.
-		 * 
-		 * @return Available goals.
-		 */
-		public List<PlayCommandDescriptor> getExtensionDescriptors(@QueryParameter String playToolHome) {
-			
-			System.out.println("###############getExtensionDescriptors " + playToolHome);
-			
-			DescriptorExtensionList<PlayCommand, PlayCommandDescriptor> descriptors = PlayCommandDescriptor.all(ValidatePlayTarget.getPlayTarget(playToolHome));
-			for (PlayCommandDescriptor playCommandDescriptor : descriptors) {
-				System.out.println("#!!!!: " + playCommandDescriptor.getDisplayName());
-			}
-			
-			return descriptors;
-		}
+//		/**
+//		 * Goals are Implemented as extensions. This methods returns the
+//		 * descriptor of every available extension.
+//		 * 
+//		 * @return Available goals.
+//		 */
+//		public List<PlayCommandDescriptor> getExtensionDescriptors(@QueryParameter String playToolHome) {
+//			
+//			System.out.println("###############getExtensionDescriptors " + playToolHome);
+//			
+//			DescriptorExtensionList<PlayCommand, PlayCommandDescriptor> descriptors = PlayCommandDescriptor.all(ValidatePlayTarget.getPlayTarget(playToolHome));
+//			for (PlayCommandDescriptor playCommandDescriptor : descriptors) {
+//				System.out.println("#!!!!: " + playCommandDescriptor.getDisplayName());
+//			}
+//			
+//			return descriptors;
+//		}
 		
-//		problem here: the selection of goals uses an hetero-list, which requires a list of extensionDescriptors.
-//		The only way to fill the Goals automatically (afaik) is using a doFillGoalsItemis, that instead, 
-//		requires a ListBoxModel.
-//		So, what I need here: a way to pass the playToolHome to my getExtensionDescriptors, and reload it
-//		everytime a new play tool is selected...
+//		/**
+//		 * Goals are Implemented as extensions. This methods returns the
+//		 * descriptor of every available extension.
+//		 * 
+//		 * @return Available goals.
+//		 */
+//		public List<PlayCommandDescriptor> getExtensionDescriptors() {
+//			
+//			DescriptorExtensionList<PlayCommand, PlayCommandDescriptor> descriptors = PlayCommandDescriptor.all(PlayTarget.PLAY_2_X);
+//			return descriptors;
+//		}
+		
+//		public List<PlayVersionDescriptor> getPlayTargetDescriptors() {
+//			
+//			return PlayVersionDescriptor.all();
+//		}
 		
 		/**
 		 * Get available Play! installations.
@@ -276,10 +290,53 @@ public class PlayBuilder extends Builder {
 		 */
 		public PlayInstallation[] getInstallations() {
 			return Jenkins.getInstance()
-					.getDescriptorByType(PlayInstallation.Descriptor.class)
+					.getDescriptorByType(PlayInstallation.PlayToolDescriptor.class)
 					.getInstallations();
 		}
 		
+		// TODO: documented this below as an alternative to provide toolInstallations
+		
+		/**
+         * Lists available toolinstallations.
+         * @return  list of available git tools
+         */
+        public List<PlayInstallation> getPlayTools() {
+        	PlayInstallation[] gitToolInstallations = Jenkins.getInstance().getDescriptorByType(PlayInstallation.PlayToolDescriptor.class).getInstallations();
+            return Arrays.asList(gitToolInstallations);
+        }
+        
+        public ListBoxModel doFillPlayToolItems() {
+            ListBoxModel r = new ListBoxModel();
+            for (PlayInstallation playTool : getPlayTools()) {
+                r.add(playTool.getName());
+            }
+            return r;
+        }
+        
+        // TODO IT DOES NOT BELONG HERE
+        public DescriptorExtensionList<PlayVersion, PlayVersionDescriptor> getPlayToolsExt() {
+        	System.out.println("#######INVOKING DESCRIPTOR GETPLAYTOOLSEXT");
+        	DescriptorExtensionList<PlayVersion, PlayVersionDescriptor> list = Jenkins.getInstance().getDescriptorList(PlayVersion.class);
+//        	return list;
+//        	
+//        	The jelly should show the play installation, but should save the selected version corresponding to the play installation
+//        	For every play installation on the jelly side, the respective descriptor is shown instead... then saved to the descriptor variable in PlayBuilder
+        	
+        	PlayInstallation[] gitToolInstallations = Jenkins.getInstance().getDescriptorByType(PlayInstallation.PlayToolDescriptor.class).getInstallations();
+        	
+//        	DescriptorExtensionList<PlayVersion, PlayVersionDescriptor> result = null;
+        	
+        	for (PlayInstallation playInstallation : gitToolInstallations) {
+        		for (PlayVersionDescriptor playVersionDescriptor : list) {
+        			if (playInstallation.getVersion().equals(playVersionDescriptor.VERSION_ID));
+        				list.add(playVersionDescriptor);
+				}
+			}
+        	
+//        	return Arrays.asList(gitToolInstallations);
+        	return list;
+        }
+        
 		/**
 		 * Check if the project path field is not empty and exists.
 		 * 
@@ -304,7 +361,7 @@ public class PlayBuilder extends Builder {
 			return FormValidation.ok();
 
 		}
-
+		
 		/**
 		 * Retrieve information about the project by running the 'play about'
 		 * command. Helps to identify that the project is a Play! project and
@@ -321,6 +378,8 @@ public class PlayBuilder extends Builder {
 		public FormValidation doValidateProject(
 				@QueryParameter String playToolHome,
 				@QueryParameter String projectPath) {
+			
+			// TODO change hardcoded play executable
 
 			String playExecutable = playToolHome + "/play";
 
