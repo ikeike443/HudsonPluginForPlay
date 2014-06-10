@@ -61,7 +61,7 @@ public class Play2x extends PlayVersion {
 	@Extension
 	public static class Play2xDescriptor extends PlayVersionDescriptor {
 
-		public static final String VERSION_ID = "PLAY_1X";
+		public static final String VERSION_ID = "PLAY_2X";
 
 		protected static final String[] COMMAND_LIST = { "PLAY_CLEAN", "PLAY_COMPILE" };
 		
