@@ -17,47 +17,38 @@ import hudson.model.Descriptor;
  */
 public abstract class PlayCommandDescriptor extends Descriptor<PlayCommand> {
 
-	/**
-	 * Version for which this command should be available. Matches the
-	 * {@link PlayTarget} enum.
-	 */
-	protected List<PlayTarget> compatibleVersions = new ArrayList<PlayTarget>();
+	public String getCommandId() {
+    	return "NULL";
+    }
 
-	/**
-	 * @return List of compatible versions.
-	 */
-	public List<PlayTarget> compatibleVersions() {
-		return compatibleVersions;
-	}
-
-	/**
-	 * List of descriptor extension presented in the Jenkins interface according
-	 * to the selected version.
-	 * 
-	 * @return List of descriptor extension filtered by version.
-	 */
-	public static DescriptorExtensionList<PlayCommand, PlayCommandDescriptor> all(PlayTarget playTarget) {
-
-		// Retrieve the complete list of descriptor extensions (one per play
-		// command)
-		DescriptorExtensionList<PlayCommand, PlayCommandDescriptor> list = Jenkins
-				.getInstance().getDescriptorList(PlayCommand.class);
-
-		// Iterate over commands to filter those compatible to the desired
-		// version
-		for (Iterator<PlayCommandDescriptor> iterator = list.iterator(); iterator
-				.hasNext();) {
-
-			PlayCommandDescriptor playExtensionDescriptor = iterator.next();
-
-			// Remove from the list if the command isn't compatible with the
-			// version
-			if (!playExtensionDescriptor.compatibleVersions().contains(
-					playTarget))
-				list.remove(playExtensionDescriptor);
-		}
-
-		return list;
-	}
+//	/**
+//	 * List of descriptor extension presented in the Jenkins interface according
+//	 * to the selected version.
+//	 * 
+//	 * @return List of descriptor extension filtered by version.
+//	 */
+//	public static DescriptorExtensionList<PlayCommand, PlayCommandDescriptor> all(PlayTarget playTarget) {
+//
+//		// Retrieve the complete list of descriptor extensions (one per play
+//		// command)
+//		DescriptorExtensionList<PlayCommand, PlayCommandDescriptor> list = Jenkins
+//				.getInstance().getDescriptorList(PlayCommand.class);
+//
+//		// Iterate over commands to filter those compatible to the desired
+//		// version
+//		for (Iterator<PlayCommandDescriptor> iterator = list.iterator(); iterator
+//				.hasNext();) {
+//
+//			PlayCommandDescriptor playExtensionDescriptor = iterator.next();
+//
+//			// Remove from the list if the command isn't compatible with the
+//			// version
+//			if (!playExtensionDescriptor.compatibleVersions().contains(
+//					playTarget))
+//				list.remove(playExtensionDescriptor);
+//		}
+//
+//		return list;
+//	}
 
 }

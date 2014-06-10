@@ -17,21 +17,19 @@ public class PlayClean extends PlayCommand {
 	
 	@DataBoundConstructor
 	public PlayClean() {
-		// overriding inherited command 
-		this.command = "clean";
+		super();
 	}
 
 	@Extension
     public static class DescriptorImpl extends PlayCommandDescriptor {
 		
-		public DescriptorImpl() {
-			// This command is compatible with the following versions...
-			this.compatibleVersions = Arrays.asList(PlayTarget.PLAY_2_X);
-		}
-		
         @Override
         public String getDisplayName() {
             return "Clean project [clean]";
+        }
+        
+        public String getCommandId() {
+        	return "PLAY_CLEAN";
         }
     }
 }

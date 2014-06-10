@@ -20,21 +20,18 @@ public class PlayDist extends PlayCommand {
 	
 	@DataBoundConstructor
 	public PlayDist() {
-		// overriding inherited command 
-		this.command = "dist";
 	}
 	
 	@Extension
     public static class DescriptorImpl extends PlayCommandDescriptor {
 		
-		public DescriptorImpl() {
-			// This command is compatible with the following versions...
-			this.compatibleVersions = Arrays.asList(PlayTarget.PLAY_2_X);
-		}
-		
         @Override
         public String getDisplayName() {
             return "Build an Akka kernel project [dist]";
+        }
+        
+        public String getCommandId() {
+        	return "PLAY_DIST";
         }
     }
 }

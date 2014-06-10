@@ -17,21 +17,18 @@ public class PlayCompile extends PlayCommand {
 	
 	@DataBoundConstructor
 	public PlayCompile() {
-		// overriding inherited command 
-		this.command = "compile";
 	}
 	
 	@Extension
     public static class DescriptorImpl extends PlayCommandDescriptor {
 		
-		public DescriptorImpl() {
-			// This command is compatible with the following versions...
-			this.compatibleVersions = Arrays.asList(PlayTarget.PLAY_1_X, PlayTarget.PLAY_2_X);
-		}
-		
         @Override
         public String getDisplayName() {
             return "Compile project [compile]";
+        }
+        
+        public String getCommandId() {
+        	return "PLAY_COMPILE";
         }
     }
 }
