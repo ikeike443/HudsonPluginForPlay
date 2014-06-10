@@ -1,0 +1,18 @@
+<j:jelly xmlns:j="jelly:core" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+	xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+	<f:entry>
+		<p style="font-size:10px">
+			Test test test test
+		</p>
+	</f:entry>
+
+	<f:entry title="${%Goals}">
+		<!-- TODO: switch to <f:repeatableHeteroList field="extensions"> -->
+		<f:hetero-list name="extensions" items="${instance.playTarget.extensions}"
+			descriptors="${descriptor.extensionDescriptors}"
+			hasHeader="true" />
+	</f:entry>
+
+</j:jelly>
+

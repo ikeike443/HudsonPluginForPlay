@@ -7,5 +7,9 @@
 	<f:entry title="${%PLAY_HOME}" field="home">
 		<f:textbox />
 	</f:entry>
+	
+	<f:entry title="${%Play version}" field="version">
+		<f:select />
+	</f:entry>
 
 </j:jelly>
