@@ -9,6 +9,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jenkins.model.Jenkins;
+import jenkins.plugins.play.version.Play2x;
+import jenkins.plugins.play.version.Play1x.Play1xDescriptor;
+import jenkins.plugins.play.version.Play23x.Play23xDescriptor;
+import jenkins.plugins.play.version.Play2x.Play2xDescriptor;
 import net.sf.json.JSONObject;
 
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -23,6 +27,7 @@ import hudson.slaves.NodeSpecific;
 import hudson.tools.ToolDescriptor;
 import hudson.tools.ToolProperty;
 import hudson.tools.ToolInstallation;
+import hudson.util.ListBoxModel;
 
 /**
  *	Represents the Play installation in the global configuration of Jenkins.
@@ -31,14 +36,23 @@ public final class PlayInstallation extends ToolInstallation implements NodeSpec
 
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(PlayInstallation.class.getName());
+	private String version;
 
 	/**
 	 * @param name Play installation ID
 	 * @param home Play installation path
 	 */
 	@DataBoundConstructor
-	public PlayInstallation(String name, String home, List<? extends ToolProperty<?>> properties) {
+	public PlayInstallation(String name, String home, List<? extends ToolProperty<?>> properties, String version) {
 		super(name, home, properties);
+		this.version = version;
+	}
+	
+	/**
+	 * @return the version
+	 */
+	public final String getVersion() {
+		return version;
 	}
 	
 	/* (non-Javadoc)
@@ -46,33 +60,34 @@ public final class PlayInstallation extends ToolInstallation implements NodeSpec
 	 */
 	@Override
 	public PlayInstallation forEnvironment(EnvVars environment) {
-		return new PlayInstallation(getName(), environment.expand(getHome()), getProperties().toList());
+		return new PlayInstallation(getName(), environment.expand(getHome()), getProperties().toList(), getVersion());
 	}
 	
+
 	/* (non-Javadoc)
 	 * @see hudson.slaves.NodeSpecific#forNode(hudson.model.Node, hudson.model.TaskListener)
 	 */
 	@Override
 	public PlayInstallation forNode(Node node, TaskListener log)
 			throws IOException, InterruptedException {
-		return new PlayInstallation(getName(), translateFor(node, log), getProperties().toList());
+		return new PlayInstallation(getName(), translateFor(node, log), getProperties().toList(), getVersion());
 	}
 	
 	/* (non-Javadoc)
 	 * @see hudson.model.AbstractDescribableImpl#getDescriptor()
 	 */
 	@Override
-    public Descriptor getDescriptor() {
-        return (Descriptor) Jenkins.getInstance().getDescriptorOrDie(getClass());
+    public PlayToolDescriptor getDescriptor() {
+        return (PlayToolDescriptor) Jenkins.getInstance().getDescriptorOrDie(getClass());
     }
 	
 	/**
 	 * Play installation descriptor.
 	 */
 	@Extension
-	public static class Descriptor extends ToolDescriptor<PlayInstallation> {
+	public static class PlayToolDescriptor extends ToolDescriptor<PlayInstallation> {
 		
-		public Descriptor() {
+		public PlayToolDescriptor() {
             super();
             load();
         }
@@ -82,7 +97,7 @@ public final class PlayInstallation extends ToolInstallation implements NodeSpec
 		 */
 		@Override
 		public String getDisplayName() {
-			return "Play";
+			return "Play!";
 		}
 		
 		/* (non-Javadoc)
@@ -122,6 +137,17 @@ public final class PlayInstallation extends ToolInstallation implements NodeSpec
 			
 			LOGGER.log(Level.WARNING, "Invalid play installation: ", name);
 			return null;
+		}
+		
+		public ListBoxModel doFillVersionItems() {
+			
+			ListBoxModel list = new ListBoxModel();
+			list.add("Play < 2.0", Play1xDescriptor.VERSION_ID);
+			list.add("2.0 >= Play < 2.3", Play2xDescriptor.VERSION_ID);
+			list.add("Play >= 2.3", Play23xDescriptor.VERSION_ID);
+			
+			return list;
+			
 		}
 	}
 
