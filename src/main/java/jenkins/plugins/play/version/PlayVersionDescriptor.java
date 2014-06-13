@@ -8,9 +8,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import jenkins.model.Jenkins;
-import jenkins.plugins.play.PlayCommand;
-import jenkins.plugins.play.PlayCommandDescriptor;
 import jenkins.plugins.play.PlayTarget;
+import jenkins.plugins.play.commands.PlayCommand;
+import jenkins.plugins.play.commands.PlayCommandDescriptor;
 import hudson.DescriptorExtensionList;
 import hudson.model.Descriptor;
 
@@ -30,6 +30,14 @@ public abstract class PlayVersionDescriptor extends Descriptor<PlayVersion> {
     }
 	
 	 /**
+	 * 
+	 */
+	public PlayVersionDescriptor() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
 	 * Goals are Implemented as extensions. This methods returns the
 	 * descriptor of every available extension.
 	 * 

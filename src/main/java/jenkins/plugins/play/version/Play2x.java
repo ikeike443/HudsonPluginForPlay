@@ -7,11 +7,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import jenkins.model.Jenkins;
-import jenkins.plugins.play.PlayCommand;
-import jenkins.plugins.play.PlayCommandDescriptor;
 import jenkins.plugins.play.PlayTarget;
 import jenkins.plugins.play.ValidatePlayTarget;
 import jenkins.plugins.play.commands.PlayClean;
+import jenkins.plugins.play.commands.PlayCommand;
+import jenkins.plugins.play.commands.PlayCommandDescriptor;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;

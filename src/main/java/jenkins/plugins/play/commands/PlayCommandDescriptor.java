@@ -1,7 +1,7 @@
 /**
  * 
  */
-package jenkins.plugins.play;
+package jenkins.plugins.play.commands;
 
 import java.util.ArrayList;
 import java.util.Iterator;

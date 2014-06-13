@@ -11,6 +11,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import jenkins.model.Jenkins;
+import jenkins.plugins.play.version.Play1x;
+import jenkins.plugins.play.version.Play1x.Play1xDescriptor;
 import jenkins.plugins.play.version.PlayVersion;
 import jenkins.plugins.play.version.PlayVersionDescriptor;
 
@@ -61,16 +63,25 @@ public class PlayBuilder extends Builder {
 	 * @param extensions
 	 *            Build goals
 	 */
+//	@DataBoundConstructor
+//	public PlayBuilder(String playToolHome, String projectPath,
+//			String additionalParam, List<PlayVersion> playTarget) {
+//		this.playToolHome = playToolHome;
+//		this.projectPath = projectPath;
+//		this.additionalParam = additionalParam;
+//		this.playTarget = new DescribableList<PlayVersion, PlayVersionDescriptor>(
+//				Saveable.NOOP, Util.fixNull(playTarget));
+//		
+//		System.out.println("#### PLAY TARGET TYPE: " + playTarget.getClass().getCanonicalName());
+//	}
+	
 	@DataBoundConstructor
 	public PlayBuilder(String playToolHome, String projectPath,
-			String additionalParam, List<PlayVersion> playTarget) {
+			String additionalParam) {
 		this.playToolHome = playToolHome;
 		this.projectPath = projectPath;
 		this.additionalParam = additionalParam;
-		this.playTarget = new DescribableList<PlayVersion, PlayVersionDescriptor>(
-				Saveable.NOOP, Util.fixNull(playTarget));
 		
-		System.out.println("#### PLAY TARGET TYPE: " + playTarget.getClass().getCanonicalName());
 	}
 
 	/**
@@ -313,28 +324,38 @@ public class PlayBuilder extends Builder {
             return r;
         }
         
-        // TODO IT DOES NOT BELONG HERE
-        public DescriptorExtensionList<PlayVersion, PlayVersionDescriptor> getPlayToolsExt() {
-        	System.out.println("#######INVOKING DESCRIPTOR GETPLAYTOOLSEXT");
+     // TODO IT DOES NOT BELONG HERE
+        public DescriptorExtensionList<PlayVersion, PlayVersionDescriptor> getPlayToolsExt(String value) {
+        	System.out.println("#######INVOKING DESCRIPTOR GETPLAYTOOLSEXT VALUE : " + value);
+        	
         	DescriptorExtensionList<PlayVersion, PlayVersionDescriptor> list = Jenkins.getInstance().getDescriptorList(PlayVersion.class);
-//        	return list;
+        	
+        	Play1x p1 = new Play1x("p1", null);
+        	
+//        	Play1xDescriptor pd = new Play1xDescriptor();
+        	
+        	list.add((PlayVersionDescriptor)p1.getDescriptor());
+//        	list.add(pd);
+//        	list.add(pd);
+        	
+        	return list;
 //        	
 //        	The jelly should show the play installation, but should save the selected version corresponding to the play installation
 //        	For every play installation on the jelly side, the respective descriptor is shown instead... then saved to the descriptor variable in PlayBuilder
         	
-        	PlayInstallation[] gitToolInstallations = Jenkins.getInstance().getDescriptorByType(PlayInstallation.PlayToolDescriptor.class).getInstallations();
-        	
-//        	DescriptorExtensionList<PlayVersion, PlayVersionDescriptor> result = null;
-        	
-        	for (PlayInstallation playInstallation : gitToolInstallations) {
-        		for (PlayVersionDescriptor playVersionDescriptor : list) {
-        			if (playInstallation.getVersion().equals(playVersionDescriptor.VERSION_ID));
-        				list.add(playVersionDescriptor);
-				}
-			}
-        	
-//        	return Arrays.asList(gitToolInstallations);
-        	return list;
+//        	PlayInstallation[] gitToolInstallations = Jenkins.getInstance().getDescriptorByType(PlayInstallation.PlayToolDescriptor.class).getInstallations();
+//        	
+////        	DescriptorExtensionList<PlayVersion, PlayVersionDescriptor> result = null;
+//        	
+//        	for (PlayInstallation playInstallation : gitToolInstallations) {
+//        		for (PlayVersionDescriptor playVersionDescriptor : list) {
+//        			if (playInstallation.getVersion().equals(playVersionDescriptor.VERSION_ID));
+//        				list.add(playVersionDescriptor);
+//				}
+//			}
+//        	
+////        	return Arrays.asList(gitToolInstallations);
+//        	return list;
         }
         
 		/**

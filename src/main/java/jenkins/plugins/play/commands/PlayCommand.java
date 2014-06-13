@@ -1,7 +1,7 @@
 /**
  * 
  */
-package jenkins.plugins.play;
+package jenkins.plugins.play.commands;
 
 import hudson.model.AbstractDescribableImpl;
 

@@ -2,8 +2,6 @@ package jenkins.plugins.play.commands;
 
 import java.util.Arrays;
 
-import jenkins.plugins.play.PlayCommand;
-import jenkins.plugins.play.PlayCommandDescriptor;
 import jenkins.plugins.play.PlayTarget;
 
 import org.kohsuke.stapler.DataBoundConstructor;

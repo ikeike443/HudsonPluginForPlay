@@ -9,11 +9,11 @@ import java.util.List;
 
 import jenkins.model.Jenkins;
 import jenkins.plugins.play.PlayBuilder;
-import jenkins.plugins.play.PlayCommand;
-import jenkins.plugins.play.PlayCommandDescriptor;
 import jenkins.plugins.play.PlayTarget;
 import jenkins.plugins.play.ValidatePlayTarget;
 import jenkins.plugins.play.commands.PlayClean;
+import jenkins.plugins.play.commands.PlayCommand;
+import jenkins.plugins.play.commands.PlayCommandDescriptor;
 import jenkins.plugins.play.commands.PlayCompile;
 
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -69,5 +69,10 @@ public class Play1x extends PlayVersion {
 		public static final String VERSION_ID = "PLAY_1X";
 		
 		protected static final String[] COMMAND_LIST = {"PLAY_CLEAN", "PLAY_COMPILE"};
+		
+		@Override
+		public String getDisplayName() {
+	        return VERSION_ID;
+	    }
     }
 }
