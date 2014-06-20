@@ -25,10 +25,11 @@
 
 			<f:dropdownDescriptorSelector title="Command set"
 				field="playTarget" descriptors="${descriptor.playTarget}" />
-				
+
 			<f:entry title="${%Parameters}" field="additionalParam">
 				<f:textbox />
 			</f:entry>
+
 		</j:if>
 
 		<j:if test="${empty(descriptor.installations)}">

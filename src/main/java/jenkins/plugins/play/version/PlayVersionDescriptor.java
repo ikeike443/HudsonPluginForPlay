@@ -19,7 +19,7 @@ import hudson.model.Descriptor;
  */
 public abstract class PlayVersionDescriptor extends Descriptor<PlayVersion> {
 	
-	private static final String[] COMMAND_LIST = {};
+	public static final String[] COMMAND_LIST = {};
 	
 	@Override
 	public String getDisplayName() {
@@ -40,7 +40,7 @@ public abstract class PlayVersionDescriptor extends Descriptor<PlayVersion> {
 	 * 
 	 * @return Available goals.
 	 */
-	protected List<PlayCommandDescriptor> getExtensionDescriptors() {
+	public List<PlayCommandDescriptor> getExtensionDescriptors() {
 		
 		List<String> associatedCommands = Arrays.asList(COMMAND_LIST);
 		

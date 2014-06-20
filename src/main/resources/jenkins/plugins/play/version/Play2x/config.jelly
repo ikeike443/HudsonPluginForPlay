@@ -10,8 +10,7 @@
 	<f:entry title="${%Goals}">
 		<!-- TODO: switch to <f:repeatableHeteroList field="extensions"> -->
 		<f:hetero-list name="extensions" items="${instance.extensions}"
-			descriptors="${descriptor.extensionDescriptors}"
-			hasHeader="true" />
+			descriptors="${descriptor.extensionDescriptors}" hasHeader="true" />
 	</f:entry>
 
 </j:jelly>

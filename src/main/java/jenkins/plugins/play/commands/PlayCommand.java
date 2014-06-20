@@ -15,7 +15,7 @@ public abstract class PlayCommand extends AbstractDescribableImpl<PlayCommand> {
 	 * Additional parameter when required by the command (i.e.: the class name
 	 * in test-only command).
 	 */
-	protected String parameter = "";
+	public String parameter = "";
 
 	/**
 	 * @return Additional parameter of the command.

@@ -17,16 +17,15 @@ import hudson.util.DescribableList;
 public class Play1x extends PlayVersion {
 	
 	@DataBoundConstructor
-	public Play1x(String value,
-			DescribableList<PlayCommand, PlayCommandDescriptor> extensions) {
-		super(value, extensions);
+	public Play1x(DescribableList<PlayCommand, PlayCommandDescriptor> extensions) {
+		super(extensions);
 		// TODO Auto-generated constructor stub
 	}
 
 	@Extension
     public static class Play1xDescriptor extends PlayVersionDescriptor {
 
-		protected static final String[] COMMAND_LIST = {"PLAY_CLEAN", "PLAY_COMPILE"};
+		public static final String[] COMMAND_LIST = {"PLAY_CLEAN", "PLAY_COMPILE"};
 		
 		@Override
 		public String getDisplayName() {

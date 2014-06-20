@@ -1,5 +1,8 @@
 package jenkins.plugins.play.version;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jenkins.plugins.play.commands.PlayCommand;
 import jenkins.plugins.play.commands.PlayCommandDescriptor;
 
@@ -16,33 +19,21 @@ import hudson.util.DescribableList;
  */
 public abstract class PlayVersion extends AbstractDescribableImpl<PlayVersion> {
 	
-private final String value;
-	
 	/** All the configured extensions attached to this. */
-	private DescribableList<PlayCommand, PlayCommandDescriptor> extensions;
+	public List<PlayCommand> extensions;
 	
 	/**
 	 * 
 	 */
 	@DataBoundConstructor
-	public PlayVersion(String value, 
-			DescribableList<PlayCommand, PlayCommandDescriptor> extensions) {
-		this.value = value;
-		this.extensions = new DescribableList<PlayCommand, PlayCommandDescriptor>(
-				Saveable.NOOP, Util.fixNull(extensions));
+	public PlayVersion(List<PlayCommand> extensions) {
+		this.extensions = extensions == null ? new ArrayList<PlayCommand>() : new ArrayList<PlayCommand>(extensions);
 	}
 	
 	/**
-	 * @return the value
-	 */
-	public final String getValue() {
-		return value;
-	}
-
-	/**
 	 * @return the extensions
 	 */
-	public final DescribableList<PlayCommand, PlayCommandDescriptor> getExtensions() {
+	public final List<PlayCommand> getExtensions() {
 		return extensions;
 	}
 

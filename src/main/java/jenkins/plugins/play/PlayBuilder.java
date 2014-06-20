@@ -24,6 +24,7 @@ import hudson.DescriptorExtensionList;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.Proc;
+import hudson.Util;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
@@ -49,7 +50,7 @@ public class PlayBuilder extends Builder {
 	private final String additionalParam;
 	
 	private PlayVersion playTarget;
-
+	
 	/**
 	 * Constructor used by Jenkins to handle the Play! job.
 	 * 
@@ -332,19 +333,6 @@ public class PlayBuilder extends Builder {
 				return FormValidation.error("Not recognized as a valid project for the selected Play! tool.");
 
 			return FormValidation.okWithMarkup(aboutProject);
-		}
-		
-		
-		/**
-		 * Goals are Implemented as extensions. This methods returns the
-		 * descriptor of every available extension.
-		 * 
-		 * @return Available goals.
-		 */
-		protected List<PlayCommandDescriptor> getExtensionDescriptors() {
-			
-			System.out.println("############ PlayBuilder.getExtensionDescriptors");
-			return Jenkins.getInstance().getDescriptorList(PlayCommand.class);
 		}
 	}
 }

@@ -23,16 +23,16 @@ import hudson.util.DescribableList;
 public class Play2x extends PlayVersion {
 
 	@DataBoundConstructor
-	public Play2x(String value,
-			DescribableList<PlayCommand, PlayCommandDescriptor> extensions) {
-		super(value, extensions);
+	public Play2x(List<PlayCommand> extensions) {
+		super(extensions);
+		System.out.println("####### Constructor Play2x here!");
 		// TODO Auto-generated constructor stub
 	}
 
 	@Extension
 	public static class Play2xDescriptor extends PlayVersionDescriptor {
 
-		protected static final String[] COMMAND_LIST = { "PLAY_CLEAN", "PLAY_COMPILE" };
+		public static final String[] COMMAND_LIST = { "PLAY_CLEAN", "PLAY_COMPILE" };
 		
 		@Override
 		public String getDisplayName() {
@@ -45,7 +45,7 @@ public class Play2x extends PlayVersion {
 		 * 
 		 * @return Available goals.
 		 */
-		protected List<PlayCommandDescriptor> getExtensionDescriptors() {
+		public List<PlayCommandDescriptor> getExtensionDescriptors() {
 			
 			System.out.println("############ Play2x.getExtensionDescriptors");
 			
