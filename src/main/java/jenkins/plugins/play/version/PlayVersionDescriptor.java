@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import jenkins.model.Jenkins;
-import jenkins.plugins.play.PlayTarget;
 import jenkins.plugins.play.commands.PlayCommand;
 import jenkins.plugins.play.commands.PlayCommandDescriptor;
 import hudson.DescriptorExtensionList;
@@ -20,13 +19,11 @@ import hudson.model.Descriptor;
  */
 public abstract class PlayVersionDescriptor extends Descriptor<PlayVersion> {
 	
-	public static final String VERSION_ID = "NULL";
-	
 	private static final String[] COMMAND_LIST = {};
 	
 	@Override
 	public String getDisplayName() {
-        return VERSION_ID;
+        return "None";
     }
 	
 	 /**

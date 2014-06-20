@@ -3,13 +3,13 @@
 
 	<f:entry>
 		<p style="font-size:10px">
-			Test test test test
+			Test test test test cu
 		</p>
 	</f:entry>
 
 	<f:entry title="${%Goals}">
 		<!-- TODO: switch to <f:repeatableHeteroList field="extensions"> -->
-		<f:hetero-list name="extensions" items="${instance.playTarget.extensions}"
+		<f:hetero-list name="extensions" items="${instance.extensions}"
 			descriptors="${descriptor.extensionDescriptors}"
 			hasHeader="true" />
 	</f:entry>

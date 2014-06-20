@@ -6,14 +6,6 @@
 
 		<j:if test="${!empty(descriptor.installations)}">
 
-
-			<f:entry title="${%Project path}" field="projectPath"
-				description="Absolute path or relative to the build workspace">
-				<f:textbox />
-			</f:entry>
-			<f:validateButton title="${%Validate project}"
-				progress="${%Validating...}" method="validateProject" with="playToolHome,projectPath" />
-
 			<f:entry title="${%Play!Framework Installation}">
 				<select class="setting-input" name="playToolHome">
 					<j:forEach var="inst" items="${descriptor.installations}">
@@ -23,23 +15,20 @@
 				</select>
 			</f:entry>
 
-			<f:entry title="${%Play! executable}" field="playTool">
-				<f:select />
+			<f:entry title="${%Project path}" field="projectPath"
+				description="Absolute path or relative to the build workspace">
+				<f:textbox />
 			</f:entry>
+			<f:validateButton title="${%Validate project}"
+				progress="${%Validating...}" method="validateProject" with="playToolHome,projectPath" />
 
-			<f:entry title="${%Goals}">
-				<!-- TODO: switch to <f:repeatableHeteroList field="extensions"> -->
-				<f:hetero-list name="extensions"
-					items="${instance.playTarget.extensions}" descriptors="${descriptor.extensionDescriptors}"
-					hasHeader="true" />
-			</f:entry>
 
+			<f:dropdownDescriptorSelector title="Command set"
+				field="playTarget" descriptors="${descriptor.playTarget}" />
+				
 			<f:entry title="${%Parameters}" field="additionalParam">
 				<f:textbox />
 			</f:entry>
-
-			<f:dropdownDescriptorSelector title="Play installation"
-				field="playTarget" descriptors="${descriptor.getPlayToolsExt(instance.additionalParam)}" />
 		</j:if>
 
 		<j:if test="${empty(descriptor.installations)}">
