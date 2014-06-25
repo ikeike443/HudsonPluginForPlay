@@ -9,6 +9,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jenkins.model.Jenkins;
+import jenkins.plugins.play.commands.PlayCommand;
+import jenkins.plugins.play.commands.PlayCommandDescriptor;
+import jenkins.plugins.play.version.Play2x;
+import jenkins.plugins.play.version.PlayVersion;
+import jenkins.plugins.play.version.PlayVersionDescriptor;
 import net.sf.json.JSONObject;
 
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -40,6 +45,8 @@ public final class PlayInstallation extends ToolInstallation implements NodeSpec
 	public PlayInstallation(String name, String home, List<? extends ToolProperty<?>> properties) {
 		super(name, home, properties);
 	}
+	
+	
 	
 	/* (non-Javadoc)
 	 * @see hudson.model.EnvironmentSpecific#forEnvironment(hudson.EnvVars)
