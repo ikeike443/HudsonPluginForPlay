@@ -20,21 +20,21 @@ import hudson.util.DescribableList;
 public abstract class PlayVersion extends AbstractDescribableImpl<PlayVersion> {
 	
 	/** All the configured extensions attached to this. */
-	public List<PlayCommand> extensions;
+	public List<PlayCommand> commands;
 	
 	/**
 	 * 
 	 */
 	@DataBoundConstructor
-	public PlayVersion(List<PlayCommand> extensions) {
-		this.extensions = extensions == null ? new ArrayList<PlayCommand>() : new ArrayList<PlayCommand>(extensions);
+	public PlayVersion(List<PlayCommand> commands) {
+		this.commands = commands == null ? new ArrayList<PlayCommand>() : new ArrayList<PlayCommand>(commands);
 	}
 	
 	/**
 	 * @return the extensions
 	 */
-	public final List<PlayCommand> getExtensions() {
-		return extensions;
+	public final List<PlayCommand> getCommands() {
+		return commands;
 	}
 
 }

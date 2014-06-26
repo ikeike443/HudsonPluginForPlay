@@ -6,32 +6,25 @@ package jenkins.plugins.play;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import jenkins.model.Jenkins;
-import jenkins.plugins.play.commands.PlayCommand;
-import jenkins.plugins.play.commands.PlayCommandDescriptor;
-import jenkins.plugins.play.version.Play1x;
+import jenkins.plugins.play.version.Play2x;
 import jenkins.plugins.play.version.PlayVersion;
 import jenkins.plugins.play.version.PlayVersionDescriptor;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
-import hudson.DescriptorExtensionList;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.Proc;
-import hudson.Util;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.model.Descriptor;
 import hudson.model.BuildListener;
-import hudson.model.Saveable;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
-import hudson.util.DescribableList;
 import hudson.util.FormValidation;
 
 /**
@@ -259,7 +252,7 @@ public class PlayBuilder extends Builder {
 		}
 		
 		// TODO IT DOES NOT BELONG HERE
-        public DescriptorExtensionList<PlayVersion, PlayVersionDescriptor> getPlayTarget() {
+        public List<PlayVersionDescriptor> getPlayTarget() {
         	
         	return Jenkins.getInstance().getDescriptorList(PlayVersion.class);
         }

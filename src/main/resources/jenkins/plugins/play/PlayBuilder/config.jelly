@@ -22,7 +22,6 @@
 			<f:validateButton title="${%Validate project}"
 				progress="${%Validating...}" method="validateProject" with="playToolHome,projectPath" />
 
-
 			<f:dropdownDescriptorSelector title="Command set"
 				field="playTarget" descriptors="${descriptor.playTarget}" />
 

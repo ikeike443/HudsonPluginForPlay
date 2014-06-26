@@ -3,12 +3,13 @@
  */
 package jenkins.plugins.play.version;
 
+import java.util.List;
+
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import jenkins.plugins.play.commands.PlayCommand;
 import jenkins.plugins.play.commands.PlayCommandDescriptor;
 import hudson.Extension;
-import hudson.util.DescribableList;
 
 /**
  * @author rafaelrezende
@@ -17,19 +18,29 @@ import hudson.util.DescribableList;
 public class Play1x extends PlayVersion {
 	
 	@DataBoundConstructor
-	public Play1x(DescribableList<PlayCommand, PlayCommandDescriptor> extensions) {
-		super(extensions);
-		// TODO Auto-generated constructor stub
+	public Play1x(List<PlayCommand> commands) {
+		super(commands);
 	}
 
 	@Extension
     public static class Play1xDescriptor extends PlayVersionDescriptor {
 
-		public static final String[] COMMAND_LIST = {"PLAY_CLEAN", "PLAY_COMPILE"};
+		public static final String[] COMMAND_LIST = { "PLAY_CLEAN", "PLAY_COMPILE" };
 		
 		@Override
 		public String getDisplayName() {
 	        return "Play 1.x";
 	    }
+		
+		/**
+		 * Goals are Implemented as extensions. This methods returns the
+		 * descriptor of every available extension.
+		 * 
+		 * @return Available goals.
+		 */
+		public List<PlayCommandDescriptor> getCommandDescriptors() {
+			
+			return super.getCommandDescriptors(Play1xDescriptor.COMMAND_LIST);
+		}
     }
 }
