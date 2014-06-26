@@ -93,27 +93,22 @@ public class PlayBuilder extends Builder {
 	}
 
 	/**
+	 * @return the playTarget
+	 */
+	public final PlayVersion getPlayTarget() {
+		return playTarget;
+	}
+	
+	/**
 	 * Get the complete path of the Play! executable. It assumes the executable
 	 * is always "play".
 	 * 
 	 * @return the Play! executable.
 	 */
 	public File getPlayExecutable() {
-		
-		for (PlayTarget target : PlayTarget.values()) {
-			File executable = new File(this.playToolHome + target.getExecutable());
-			
-			if (executable.exists())
-				return executable;
-		}
-		return null;
-	}
 
-	/**
-	 * @return the playTarget
-	 */
-	public final PlayVersion getPlayTarget() {
-		return playTarget;
+		// TODO
+		return null;
 	}
 	
 	/*

@@ -1,9 +1,5 @@
 package jenkins.plugins.play.commands;
 
-import java.util.Arrays;
-
-import jenkins.plugins.play.PlayTarget;
-
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import hudson.Extension;
