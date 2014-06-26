@@ -51,7 +51,9 @@ public abstract class PlayCommandDescriptor extends Descriptor<PlayCommand> {
 //		return list;
 //	}
 	
-	
+	public String getCommand() {
+    	return "";
+    }
 	
 	/**
 	 * List of descriptor extension presented in the Jenkins interface according

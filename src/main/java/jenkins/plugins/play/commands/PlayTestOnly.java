@@ -27,6 +27,10 @@ public class PlayTestOnly extends PlayCommand {
 		public String getCommandId() {
 			return "PLAY_TESTONLY";
 		}
+		
+		public String getCommand() {
+        	return "testOnly";
+        }
         
         public FormValidation doCheckParameter (@QueryParameter String parameter) {
         	return FormValidation.validateRequired(parameter);

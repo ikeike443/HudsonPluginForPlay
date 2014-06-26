@@ -24,5 +24,9 @@ public class PlayCompile extends PlayCommand {
         public String getCommandId() {
         	return "PLAY_COMPILE";
         }
+        
+        public String getCommand() {
+        	return "compile";
+        }
     }
 }

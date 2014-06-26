@@ -27,5 +27,9 @@ public class PlayDist extends PlayCommand {
         public String getCommandId() {
         	return "PLAY_DIST";
         }
+        
+        public String getCommand() {
+        	return "dist";
+        }
     }
 }

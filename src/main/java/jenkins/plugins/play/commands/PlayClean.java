@@ -25,5 +25,9 @@ public class PlayClean extends PlayCommand {
         public String getCommandId() {
         	return "PLAY_CLEAN";
         }
+        
+        public String getCommand() {
+        	return "clean";
+        }
     }
 }

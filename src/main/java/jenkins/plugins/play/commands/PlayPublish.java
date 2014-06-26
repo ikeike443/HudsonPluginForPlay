@@ -24,5 +24,9 @@ public class PlayPublish extends PlayCommand {
         public String getCommandId() {
         	return "PLAY_PUBLISH";
         }
+        
+        public String getCommand() {
+        	return "publish";
+        }
     }
 }

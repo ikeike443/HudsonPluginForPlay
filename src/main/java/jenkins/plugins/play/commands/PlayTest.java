@@ -24,5 +24,9 @@ public class PlayTest extends PlayCommand {
         public String getCommandId() {
         	return "PLAY_TEST";
         }
+        
+        public String getCommand() {
+        	return "test";
+        }
 	}
 }
