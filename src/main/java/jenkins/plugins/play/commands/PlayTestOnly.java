@@ -13,7 +13,13 @@ public class PlayTestOnly extends PlayCommand {
 	
 	@DataBoundConstructor
 	public PlayTestOnly(String parameter) {
+		super();
 		this.parameter = parameter;
+	}
+	
+	@Override
+	public String getCommand() {
+		return "testOnly";
 	}
 	
 	@Extension
@@ -28,10 +34,6 @@ public class PlayTestOnly extends PlayCommand {
 			return "PLAY_TESTONLY";
 		}
 		
-		public String getCommand() {
-        	return "testOnly";
-        }
-        
         public FormValidation doCheckParameter (@QueryParameter String parameter) {
         	return FormValidation.validateRequired(parameter);
         }

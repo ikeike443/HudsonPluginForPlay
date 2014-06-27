@@ -5,10 +5,13 @@ package jenkins.plugins.play;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import jenkins.model.Jenkins;
+import jenkins.plugins.play.commands.PlayCommand;
+import jenkins.plugins.play.version.Play1x;
 import jenkins.plugins.play.version.Play2x;
 import jenkins.plugins.play.version.PlayVersion;
 import jenkins.plugins.play.version.PlayVersionDescriptor;
@@ -102,12 +105,31 @@ public class PlayBuilder extends Builder {
 	/**
 	 * Get the complete path of the Play! executable. It assumes the executable
 	 * is always "play".
+	 * @param listener 
 	 * 
 	 * @return the Play! executable.
 	 */
-	public File getPlayExecutable() {
+	public File getPlayExecutable(BuildListener listener) {
+		
+		PrintStream logger = listener.getLogger();
+		
+		logger.println("Searching for \"play\" executable in the folder " + this.playToolHome);
 
-		// TODO
+		// Try play executable first
+		File playExecutable = new File(this.playToolHome + "/play");
+		if (playExecutable.exists())
+			return playExecutable;
+		
+		logger.println("Executable \"play\" not found. Trying \"activator\".");
+
+		// Try activator executable
+		playExecutable = new File(this.playToolHome + "/activator");
+		if (playExecutable.exists())
+			return playExecutable;
+		
+		logger.println("ERROR: No Play! executable was found.");
+		
+		// There is no potential executor here. Return null.
 		return null;
 	}
 	
@@ -132,30 +154,30 @@ public class PlayBuilder extends Builder {
 		List<String> commandParameters = new ArrayList<String>();
 
 		// This parameter is always present to remove color formatting
-		// characters from the output.
-		String noColorFormatting = "-Dsbt.log.noformat=true";
-		commandParameters.add(noColorFormatting);
+		// characters from the output. (Except for Play 1.x)
+		if (!(this.playTarget instanceof Play1x))
+			commandParameters.add("-Dsbt.log.noformat=true");
 
 		// Add the additional parameters to the list of parameters
 		commandParameters.add(additionalParam);
 
-//		// add extension actions to command-line one by one
-//		for (PlayCommand playExt : this.extensions) {
-//
-//			// Every command parameter is surrounded by quotes, have them
-//			// additional parameters or not.
-//			// HOWEVER, the launcher already adds single quotes automatically
-//			// whenever the parameter is composed of two or more strings.
-//			// Therefore, no need to add the quotes here.
-//			String commandPattern = "%s %s";
-//			String command = String.format(commandPattern,
-//					playExt.getCommand(), playExt.getParameter());
-//
-//			// Trim the String to remove leading and trailing whitespace (just
-//			// esthetical reason)
-//			// Add generated parameter to the array of parameters
-//			commandParameters.add(command.trim());
-//		}
+		// add extension actions to command-line one by one
+		for (PlayCommand playExt : this.playTarget.getCommands()) {
+
+			// Every command parameter is surrounded by quotes, have them
+			// additional parameters or not.
+			// HOWEVER, the launcher already adds single quotes automatically
+			// whenever the parameter is composed of two or more strings.
+			// Therefore, no need to add the quotes here.
+			String commandPattern = "%s %s";
+			String command = String.format(commandPattern,
+					playExt.getCommand(), playExt.getParameter());
+
+			// Trim the String to remove leading and trailing whitespace (just
+			// esthetical reason)
+			// Add generated parameter to the array of parameters
+			commandParameters.add(command.trim());
+		}
 
 		return commandParameters;
 	}
@@ -172,7 +194,7 @@ public class PlayBuilder extends Builder {
 			BuildListener listener) throws InterruptedException, IOException {
 
 		// Create file from play path String
-		File playExecutable = this.getPlayExecutable();
+		File playExecutable = this.getPlayExecutable(listener);
 
 		// Check if play executable exists
 		if (playExecutable == null) {
@@ -195,12 +217,13 @@ public class PlayBuilder extends Builder {
 		// Launch Play!Framework
 		Proc proc = launcher
 				.launch()
-				.cmds(playExecutable,
-						commandParameters.toArray(new String[commandParameters
-								.size()])).pwd(this.getProjectPath())
+				.cmds(playExecutable, commandParameters.toArray(new String[commandParameters.size()]))
+				.pwd(this.getProjectPath())
 				.writeStdin().stdout(listener.getLogger())
 				.stderr(listener.getLogger()).start();
 
+		System.out.println("##### playExecutable: " + playExecutable);
+		
 		return proc.join() == 0;
 	}
 

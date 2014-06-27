@@ -11,6 +11,12 @@ public class PlayTest extends PlayCommand {
 	
 	@DataBoundConstructor
 	public PlayTest() {
+		super();
+	}
+	
+	@Override
+	public String getCommand() {
+		return "test";
 	}
 	
 	@Extension
@@ -25,8 +31,5 @@ public class PlayTest extends PlayCommand {
         	return "PLAY_TEST";
         }
         
-        public String getCommand() {
-        	return "test";
-        }
 	}
 }

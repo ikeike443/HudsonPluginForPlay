@@ -11,6 +11,12 @@ public class PlayPublish extends PlayCommand {
 	
 	@DataBoundConstructor
 	public PlayPublish() {
+		super();
+	}
+	
+	@Override
+	public String getCommand() {
+		return "publish";
 	}
 	
 	@Extension
@@ -25,8 +31,5 @@ public class PlayPublish extends PlayCommand {
         	return "PLAY_PUBLISH";
         }
         
-        public String getCommand() {
-        	return "publish";
-        }
     }
 }

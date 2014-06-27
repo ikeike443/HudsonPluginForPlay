@@ -14,6 +14,12 @@ public class PlayDist extends PlayCommand {
 	
 	@DataBoundConstructor
 	public PlayDist() {
+		super();
+	}
+	
+	@Override
+	public String getCommand() {
+		return "dist";
 	}
 	
 	@Extension
@@ -28,8 +34,5 @@ public class PlayDist extends PlayCommand {
         	return "PLAY_DIST";
         }
         
-        public String getCommand() {
-        	return "dist";
-        }
     }
 }

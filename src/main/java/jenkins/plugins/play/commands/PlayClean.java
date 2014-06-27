@@ -14,6 +14,11 @@ public class PlayClean extends PlayCommand {
 		super();
 	}
 
+	@Override
+	public String getCommand() {
+		return "clean";
+	}
+	
 	@Extension
     public static class DescriptorImpl extends PlayCommandDescriptor {
 		
@@ -26,8 +31,5 @@ public class PlayClean extends PlayCommand {
         	return "PLAY_CLEAN";
         }
         
-        public String getCommand() {
-        	return "clean";
-        }
     }
 }

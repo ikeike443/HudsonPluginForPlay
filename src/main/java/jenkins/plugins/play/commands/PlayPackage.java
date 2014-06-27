@@ -11,6 +11,12 @@ public class PlayPackage extends PlayCommand {
 	
 	@DataBoundConstructor
 	public PlayPackage() {
+		super();
+	}
+	
+	@Override
+	public String getCommand() {
+		return "package";
 	}
 	
 	@Extension
@@ -25,8 +31,5 @@ public class PlayPackage extends PlayCommand {
         	return "PLAY_PACKAGE";
         }
         
-        public String getCommand() {
-        	return "package";
-        }
     }
 }

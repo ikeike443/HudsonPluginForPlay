@@ -10,7 +10,7 @@ import hudson.model.AbstractDescribableImpl;
  * class must provide the respective command line (i.e.: 'clean', 'compile').
  */
 public abstract class PlayCommand extends AbstractDescribableImpl<PlayCommand> {
-
+	
 	/**
 	 * Additional parameter when required by the command (i.e.: the class name
 	 * in test-only command).
@@ -22,6 +22,10 @@ public abstract class PlayCommand extends AbstractDescribableImpl<PlayCommand> {
 	 */
 	public String getParameter() {
 		return parameter;
+	}
+	
+	public String getCommand() {
+		return "";
 	}
 
 }
