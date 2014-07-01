@@ -12,7 +12,6 @@ import java.util.List;
 import jenkins.model.Jenkins;
 import jenkins.plugins.play.commands.PlayCommand;
 import jenkins.plugins.play.version.Play1x;
-import jenkins.plugins.play.version.Play2x;
 import jenkins.plugins.play.version.PlayVersion;
 import jenkins.plugins.play.version.PlayVersionDescriptor;
 
@@ -24,7 +23,6 @@ import hudson.Launcher;
 import hudson.Proc;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.model.Descriptor;
 import hudson.model.BuildListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
@@ -42,30 +40,21 @@ public class PlayBuilder extends Builder {
 	private final String playToolHome;
 	/** Absolute or relative project path. */
 	private final String projectPath;
-	/** Parameters provided by the user. */
-	private final String additionalParam;
-	
-	private PlayVersion playTarget;
+	/** Play version used in the job. Indicates the command set available. */
+	private PlayVersion playVersion;
 	
 	/**
 	 * Constructor used by Jenkins to handle the Play! job.
 	 * 
-	 * @param playToolHome
-	 *            Path of Play! installation
-	 * @param projectPath
-	 *            Project path
-	 * @param additionalParam
-	 *            Additional parameters
-	 * @param extensions
-	 *            Build goals
+	 * @param playToolHome Path of Play! installation.
+	 * @param projectPath Project path.
+	 * @param playVersion Play version.
 	 */
 	@DataBoundConstructor
-	public PlayBuilder(String playToolHome, String projectPath,
-			String additionalParam, PlayVersion playTarget) {
+	public PlayBuilder(String playToolHome, String projectPath, PlayVersion playVersion) {
 		this.playToolHome = playToolHome;
 		this.projectPath = projectPath;
-		this.additionalParam = additionalParam;
-		this.playTarget = playTarget;
+		this.playVersion = playVersion;
 	}
 	
 	/**
@@ -87,27 +76,17 @@ public class PlayBuilder extends Builder {
 	}
 
 	/**
-	 * Get additional parameters.
-	 * 
-	 * @return the additionalParam
+	 * @return the Play version.
 	 */
-	public final String getAdditionalParam() {
-		return additionalParam;
-	}
-
-	/**
-	 * @return the playTarget
-	 */
-	public final PlayVersion getPlayTarget() {
-		return playTarget;
+	public final PlayVersion getPlayVersion() {
+		return playVersion;
 	}
 	
 	/**
-	 * Get the complete path of the Play! executable. It assumes the executable
-	 * is always "play".
-	 * @param listener 
+	 * Get the complete path of the Play! executable. First looks for a 'play' executable, then 'activator'.
 	 * 
-	 * @return the Play! executable.
+	 * @param listener Provides the logger.
+	 * @return the Play! executable path.
 	 */
 	public File getPlayExecutable(BuildListener listener) {
 		
@@ -127,7 +106,7 @@ public class PlayBuilder extends Builder {
 		if (playExecutable.exists())
 			return playExecutable;
 		
-		logger.println("ERROR: No Play! executable was found.");
+		logger.println("ERROR! No Play! executable was found.");
 		
 		// There is no potential executor here. Return null.
 		return null;
@@ -155,15 +134,12 @@ public class PlayBuilder extends Builder {
 
 		// This parameter is always present to remove color formatting
 		// characters from the output. (Except for Play 1.x)
-		if (!(this.playTarget instanceof Play1x))
+		if (!(this.playVersion instanceof Play1x))
 			commandParameters.add("-Dsbt.log.noformat=true");
 
-		// Add the additional parameters to the list of parameters
-		commandParameters.add(additionalParam);
-
 		// add extension actions to command-line one by one
-		for (PlayCommand playExt : this.playTarget.getCommands()) {
-
+		for (PlayCommand playExt : this.playVersion.getCommands()) {
+			
 			// Every command parameter is surrounded by quotes, have them
 			// additional parameters or not.
 			// HOWEVER, the launcher already adds single quotes automatically
@@ -178,7 +154,7 @@ public class PlayBuilder extends Builder {
 			// Add generated parameter to the array of parameters
 			commandParameters.add(command.trim());
 		}
-
+		
 		return commandParameters;
 	}
 
@@ -198,7 +174,6 @@ public class PlayBuilder extends Builder {
 
 		// Check if play executable exists
 		if (playExecutable == null) {
-			listener.getLogger().println("ERROR! Play executable not found!");
 			return false;
 		}
 
@@ -213,27 +188,67 @@ public class PlayBuilder extends Builder {
 
 		// Creates the complete list of parameters including goals
 		List<String> commandParameters = generatePlayParameters();
-
-		// Launch Play!Framework
-		Proc proc = launcher
-				.launch()
-				.cmds(playExecutable, commandParameters.toArray(new String[commandParameters.size()]))
-				.pwd(this.getProjectPath())
-				.writeStdin().stdout(listener.getLogger())
-				.stderr(listener.getLogger()).start();
-
-		System.out.println("##### playExecutable: " + playExecutable);
 		
-		return proc.join() == 0;
+		// Validated that there are commands set up
+		if (commandParameters == null) {
+			listener.getLogger().println("ERROR! No commands were provided.");
+			return false;
+		}
+
+		for (String comm : commandParameters) {
+			listener.getLogger().println("Command detected: " + comm);
+		}
+		
+		// Play 1.x is not able to execute several commands in sequence.
+		// Instead, it should call the 'play' executable for every command
+		// separately.
+		if (this.getPlayVersion() instanceof Play1x) {
+			
+			// For each command...
+			for (String comm : commandParameters) {
+				// ... run it in a new process.
+				Proc proc = launcher
+						.launch()
+						.cmds(playExecutable, comm)
+						.pwd(this.getProjectPath())
+						.writeStdin().stdout(listener.getLogger())
+						.stderr(listener.getLogger()).start();
+				
+				int result = proc.join();
+				// Immediately stop the build process when a command results in error.
+				if (result != 0) {
+					listener.getLogger().println("ERROR! Failed to execute the Play! command.");
+					return false;
+				}
+			}
+			// Every command ran successfully
+			return true;
+		}
+		
+		// Play 2.x (sbt) is able to execute all commands at once
+		else {
+			// Launch Play!Framework
+			Proc proc = launcher
+					.launch()
+					.cmds(playExecutable, commandParameters.toArray(new String[commandParameters.size()]))
+					.pwd(this.getProjectPath())
+					.writeStdin().stdout(listener.getLogger())
+					.stderr(listener.getLogger()).start();
+	
+			return proc.join() == 0;
+		}
 	}
 
 	/**
-	 * Descriptor to retrieve and validate fields from the interface.
+	 * Descriptor to capture and validate fields from the interface.
 	 */
 	@Extension
 	public static final class PlayDescriptor extends
 			BuildStepDescriptor<Builder> {
 
+		/**
+		 * Descriptor constructor.
+		 */
 		public PlayDescriptor() {
 			load();
 		}
@@ -269,9 +284,11 @@ public class PlayBuilder extends Builder {
 					.getInstallations();
 		}
 		
-		// TODO IT DOES NOT BELONG HERE
-        public List<PlayVersionDescriptor> getPlayTarget() {
-        	
+        /**
+         * Retrieve list of Play! versions.
+         * @return
+         */
+        public List<PlayVersionDescriptor> getPlayVersion() {
         	return Jenkins.getInstance().getDescriptorList(PlayVersion.class);
         }
         
@@ -311,12 +328,12 @@ public class PlayBuilder extends Builder {
 		 *            Project path
 		 * @return Form validation
 		 */
+		@Deprecated
 		public FormValidation doValidateProject(
 				@QueryParameter String playToolHome,
 				@QueryParameter String projectPath) {
 			
 			// TODO change hardcoded play executable
-
 			String playExecutable = playToolHome + "/play";
 
 			// If the field is empty or invalid, silently return OK, because the

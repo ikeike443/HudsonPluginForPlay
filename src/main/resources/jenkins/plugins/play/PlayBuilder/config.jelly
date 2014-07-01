@@ -25,10 +25,6 @@
 			<f:dropdownDescriptorSelector title="Command set"
 				field="playVersion" descriptors="${descriptor.playVersion}" />
 
-			<f:entry title="${%Parameters}" field="additionalParam">
-				<f:textbox />
-			</f:entry>
-
 		</j:if>
 
 		<j:if test="${empty(descriptor.installations)}">
