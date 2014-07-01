@@ -23,7 +23,7 @@
 				progress="${%Validating...}" method="validateProject" with="playToolHome,projectPath" />
 
 			<f:dropdownDescriptorSelector title="Command set"
-				field="playTarget" descriptors="${descriptor.playTarget}" />
+				field="playVersion" descriptors="${descriptor.playVersion}" />
 
 			<f:entry title="${%Parameters}" field="additionalParam">
 				<f:textbox />
