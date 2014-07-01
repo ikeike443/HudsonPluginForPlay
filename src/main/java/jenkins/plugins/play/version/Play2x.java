@@ -25,7 +25,7 @@ public class Play2x extends PlayVersion {
 	@Extension
 	public static class Play2xDescriptor extends PlayVersionDescriptor {
 		
-		public static final String[] COMMAND_LIST = { "PLAY_CLEAN", "PLAY_COMPILE" };
+		public static final String[] COMMAND_LIST = { "PLAY_CLEAN", "PLAY_COMPILE", "PLAY_DIST", "PLAY_PACKAGE", "PLAY_PUBLISH", "PLAY_TEST", "PLAY_TESTONLY", "PLAY_CUSTOM" };
 		
 		@Override
 		public String getDisplayName() {
