@@ -19,9 +19,7 @@
 				description="Absolute path or relative to the build workspace">
 				<f:textbox />
 			</f:entry>
-			<f:validateButton title="${%Validate project}"
-				progress="${%Validating...}" method="validateProject" with="playToolHome,projectPath" />
-
+			
 			<f:dropdownDescriptorSelector title="Command set"
 				field="playVersion" descriptors="${descriptor.playVersion}" />
 

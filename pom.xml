@@ -55,17 +55,8 @@
 		artifacts that we need -->
 	<repositories>
 		<repository>
-			<id>mavencentralrepo</id>
-			<url>http://repo1.maven.org/maven2/</url>
-		</repository>
-		<repository>
 			<id>repo.jenkins-ci.org</id>
 			<url>http://repo.jenkins-ci.org/public/</url>
-		</repository>
-
-		<repository>
-			<id>infradna</id>
-			<url>http://download.java.net/maven/2/</url>
 		</repository>
 	</repositories>
 
@@ -85,9 +76,15 @@
 	<description>This plugin allows Jenkins to execute several actions available in the Play!Framework command-line.</description>
 	<dependencies>
 		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>1.9.5</version>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4</artifactId>
+			<version>1.5.4</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-api-mockito</artifactId>
+			<version>1.5.4</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

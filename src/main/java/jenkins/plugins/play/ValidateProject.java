@@ -45,8 +45,9 @@ public final class ValidateProject {
 	 *            Path of the Play! project.
 	 * @return The HTML-formatted project information. It returns null if the
 	 *         path is not a Play!Project.
+	 * @throws IOException 
 	 */
-	public static String formattedInfo(String playExecutable, String projectPath) {
+	public static String formattedInfo(File playExecutable, String projectPath) {
 
 		// This parameter is always present to remove color formatting
 		// characters from the output.
@@ -55,7 +56,7 @@ public final class ValidateProject {
 		// Compose the command-line to invoke the 'Play about' without color
 		// formatting
 		List<String> args = new LinkedList<String>();
-		args.add(playExecutable);
+		args.add(playExecutable.getAbsolutePath());
 		args.add(noColorFormatting);
 		args.add("about");
 

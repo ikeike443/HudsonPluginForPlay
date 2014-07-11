@@ -1,8 +1,10 @@
 package jenkins.plugins.play.commands;
 
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.QueryParameter;
 
 import hudson.Extension;
+import hudson.util.FormValidation;
 
 /**
  * Represents the Play test command.
@@ -29,6 +31,10 @@ public class PlayCustom extends PlayCommand {
         
         public String getCommandId() {
         	return "PLAY_CUSTOM";
+        }
+        
+        public FormValidation doCheckParameter (@QueryParameter String parameter) {
+        	return FormValidation.validateRequired(parameter);
         }
         
 	}

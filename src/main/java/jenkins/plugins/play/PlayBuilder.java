@@ -5,6 +5,7 @@ package jenkins.plugins.play;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,28 +86,20 @@ public class PlayBuilder extends Builder {
 	/**
 	 * Get the complete path of the Play! executable. First looks for a 'play' executable, then 'activator'.
 	 * 
-	 * @param listener Provides the logger.
+	 * @param playToolHome Path of the Play tool home.
 	 * @return the Play! executable path.
 	 */
-	public File getPlayExecutable(BuildListener listener) {
+	public static File getPlayExecutable(String playToolHome) {
 		
-		PrintStream logger = listener.getLogger();
-		
-		logger.println("Searching for \"play\" executable in the folder " + this.playToolHome);
-
 		// Try play executable first
-		File playExecutable = new File(this.playToolHome + "/play");
+		File playExecutable = new File(playToolHome + "/play");
 		if (playExecutable.exists())
 			return playExecutable;
 		
-		logger.println("Executable \"play\" not found. Trying \"activator\".");
-
 		// Try activator executable
-		playExecutable = new File(this.playToolHome + "/activator");
+		playExecutable = new File(playToolHome + "/activator");
 		if (playExecutable.exists())
 			return playExecutable;
-		
-		logger.println("ERROR! No Play! executable was found.");
 		
 		// There is no potential executor here. Return null.
 		return null;
@@ -170,7 +163,7 @@ public class PlayBuilder extends Builder {
 			BuildListener listener) throws InterruptedException, IOException {
 
 		// Create file from play path String
-		File playExecutable = this.getPlayExecutable(listener);
+		File playExecutable = PlayBuilder.getPlayExecutable(this.playToolHome);
 
 		// Check if play executable exists
 		if (playExecutable == null) {
@@ -313,54 +306,6 @@ public class PlayBuilder extends Builder {
 
 			return FormValidation.ok();
 
-		}
-		
-		/**
-		 * Retrieve information about the project by running the 'play about'
-		 * command. Helps to identify that the project is a Play! project and
-		 * that the chosen Play! version is compliant with it. Also helpful to
-		 * check if the Play! installation is valid.
-		 * This method is invoked by a button in the Jenkins jelly interface.
-		 * 
-		 * @param playToolHome
-		 *            Chosen Play! installation
-		 * @param projectPath
-		 *            Project path
-		 * @return Form validation
-		 */
-		@Deprecated
-		public FormValidation doValidateProject(
-				@QueryParameter String playToolHome,
-				@QueryParameter String projectPath) {
-			
-			// TODO change hardcoded play executable
-			String playExecutable = playToolHome + "/play";
-
-			// If the field is empty or invalid, silently return OK, because the
-			// validation is already performed by the doCheckProjectPath method.
-			if (projectPath.isEmpty())
-				return FormValidation.ok();
-
-			File projectPathDir = new File(projectPath);
-			if (!projectPathDir.exists())
-				return FormValidation.ok();
-
-			// Check if play executable exists
-			File playFile = new File(playExecutable);
-			if (!playFile.exists()) {
-				return FormValidation
-						.error("Cannot validate project! The assigned Play!Framework installation is invalid!");
-			}
-
-			// Generate informational content for the user
-			String aboutProject = ValidateProject.formattedInfo(playExecutable,
-					projectPath);
-
-			// Oops, there is no information. Project isn't a Play project.
-			if (aboutProject == null)
-				return FormValidation.error("Not recognized as a valid project for the selected Play! tool.");
-
-			return FormValidation.okWithMarkup(aboutProject);
 		}
 	}
 }
