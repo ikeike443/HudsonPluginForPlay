@@ -4,14 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jenkins.plugins.play.commands.PlayCommand;
-import jenkins.plugins.play.commands.PlayCommandDescriptor;
-
 import org.kohsuke.stapler.DataBoundConstructor;
-
-import hudson.Util;
 import hudson.model.AbstractDescribableImpl;
-import hudson.model.Saveable;
-import hudson.util.DescribableList;
 
 /**
  * Abstract representation of a Play command. Every command implementing this

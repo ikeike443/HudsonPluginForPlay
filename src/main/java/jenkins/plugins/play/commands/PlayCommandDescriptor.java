@@ -3,10 +3,6 @@
  */
 package jenkins.plugins.play.commands;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import jenkins.model.Jenkins;
 import hudson.DescriptorExtensionList;
 import hudson.model.Descriptor;

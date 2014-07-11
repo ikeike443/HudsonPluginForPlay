@@ -5,15 +5,9 @@ package jenkins.plugins.play;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jenkins.model.Jenkins;
-import jenkins.plugins.play.commands.PlayCommand;
-import jenkins.plugins.play.commands.PlayCommandDescriptor;
-import jenkins.plugins.play.version.Play2x;
-import jenkins.plugins.play.version.PlayVersion;
-import jenkins.plugins.play.version.PlayVersionDescriptor;
 import net.sf.json.JSONObject;
 
 import org.kohsuke.stapler.DataBoundConstructor;

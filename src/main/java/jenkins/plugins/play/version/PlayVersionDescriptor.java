@@ -11,7 +11,6 @@ import java.util.List;
 import jenkins.model.Jenkins;
 import jenkins.plugins.play.commands.PlayCommand;
 import jenkins.plugins.play.commands.PlayCommandDescriptor;
-import hudson.DescriptorExtensionList;
 import hudson.model.Descriptor;
 
 /**

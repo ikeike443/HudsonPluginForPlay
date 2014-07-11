@@ -4,15 +4,11 @@
 package jenkins.plugins.play.version;
 
 import java.io.File;
-import java.io.PrintStream;
 import java.util.List;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
-import com.google.common.io.NullOutputStream;
-
-import jenkins.model.Jenkins;
 import jenkins.plugins.play.PlayBuilder;
 import jenkins.plugins.play.ValidateProject;
 import jenkins.plugins.play.commands.PlayCommand;
