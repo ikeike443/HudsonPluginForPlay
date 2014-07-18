@@ -131,14 +131,12 @@ public class PlayBuilder extends Builder {
 		// add extension actions to command-line one by one
 		for (PlayCommand playExt : this.playVersion.getCommands()) {
 			
-			// Every command parameter is surrounded by quotes, have them
+			// Every command parameter can be surrounded by quotes, have them
 			// additional parameters or not.
-			// HOWEVER, the launcher already adds single quotes automatically
+			// HOWEVER, the launcher already adds quotes automatically
 			// whenever the parameter is composed of two or more strings.
 			// Therefore, no need to add the quotes here.
-			String commandPattern = "%s %s";
-			String command = String.format(commandPattern,
-					playExt.getCommand(), playExt.getParameter());
+			String command = playExt.getCommand() + " " + playExt.getParameter();
 
 			// Trim the String to remove leading and trailing whitespace (just
 			// esthetical reason)

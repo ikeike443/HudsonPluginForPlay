@@ -12,8 +12,9 @@ import hudson.util.FormValidation;
 public class PlayCustom extends PlayCommand {
 	
 	@DataBoundConstructor
-	public PlayCustom() {
+	public PlayCustom(String parameter) {
 		super();
+		this.parameter = parameter;
 	}
 	
 	@Override
