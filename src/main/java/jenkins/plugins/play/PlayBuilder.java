@@ -6,6 +6,7 @@ package jenkins.plugins.play;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import jenkins.model.Jenkins;
@@ -195,10 +196,16 @@ public class PlayBuilder extends Builder {
 			
 			// For each command...
 			for (String comm : commandParameters) {
+				// In Play1x, commands should not have quotes. Since the
+				// launcher automatically adds quotes if the command contains
+				// whitespace, it is necessary to split the command in the
+				// whitespaces first and provide them to the launcher as an
+				// array.
+				
 				// ... run it in a new process.
 				Proc proc = launcher
 						.launch()
-						.cmds(playExecutable, comm)
+						.cmds(playExecutable, comm.split(" "))
 						.pwd(this.getProjectPath())
 						.writeStdin().stdout(listener.getLogger())
 						.stderr(listener.getLogger()).start();
