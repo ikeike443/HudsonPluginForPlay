@@ -3,7 +3,7 @@
 
 	<f:entry>
 		<p style="font-size:10px">
-				Deletes all generated files (the <span style="font-family:courier;">target</span> directory).
+			Deletes all generated files (the <span style="font-family:courier;">target</span> directory).
 		</p>
 	</f:entry>
 

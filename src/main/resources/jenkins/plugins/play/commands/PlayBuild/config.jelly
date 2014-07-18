@@ -1,13 +1,11 @@
 <j:jelly xmlns:j="jelly:core" xmlns:d="jelly:define"
 	xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 
-<!-- 
 	<f:entry>
 		<p style="font-size:10px">
-				Deletes all generated files (the <span style="font-family:courier;">target</span> directory).
+			Build and package a module.
 		</p>
 	</f:entry>
-	 -->
 
 </j:jelly>
 
