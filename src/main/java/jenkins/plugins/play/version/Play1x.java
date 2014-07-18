@@ -25,7 +25,7 @@ public class Play1x extends PlayVersion {
 	@Extension
     public static class Play1xDescriptor extends PlayVersionDescriptor {
 
-		public static final String[] COMMAND_LIST = { "PLAY_CLEAN", "PLAY_AUTOTEST", "PLAY_BUILD", "PLAY_JAVADOC", "PLAY_PRECOMPILE", "PLAY_WAR" };
+		public static final String[] COMMAND_LIST = { "PLAY_CLEAN", "PLAY_AUTOTEST", "PLAY_BUILD", "PLAY_JAVADOC", "PLAY_PRECOMPILE", "PLAY_WAR", "PLAY_CUSTOM" };
 		
 		@Override
 		public String getDisplayName() {
