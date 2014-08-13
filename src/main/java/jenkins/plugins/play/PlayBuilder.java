@@ -6,7 +6,6 @@ package jenkins.plugins.play;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import jenkins.model.Jenkins;
@@ -239,7 +238,7 @@ public class PlayBuilder extends Builder {
 	 * Descriptor to capture and validate fields from the interface.
 	 */
 	@Extension
-	public static final class PlayDescriptor extends
+	public static class PlayDescriptor extends
 			BuildStepDescriptor<Builder> {
 
 		/**
@@ -248,6 +247,11 @@ public class PlayBuilder extends Builder {
 		public PlayDescriptor() {
 			load();
 		}
+		
+		public PlayDescriptor(Class<? extends Builder> clazz) {
+            super(clazz);
+            load();
+        }
 
 		/*
 		 * (non-Javadoc)
