@@ -5,6 +5,7 @@ package jenkins.plugins.play;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jenkins.model.Jenkins;
@@ -112,19 +113,19 @@ public final class PlayInstallation extends ToolInstallation implements NodeSpec
 		 * @param name Play installation ID.
 		 * @return Corresponding Play installation instance.
 		 */
-//		public PlayInstallation getInstallation(String name) {
-//			
-//			if (name == null || name.isEmpty())
-//				return null;
-//			
-//			for (PlayInstallation i: getInstallations()) {
-//				if (i.getName().equals(name))
-//					return i;
-//			}
-//			
-//			LOGGER.log(Level.WARNING, "Invalid play installation: ", name);
-//			return null;
-//		}
+		public PlayInstallation getInstallation(String name) {
+			
+			if (name == null || name.isEmpty())
+				return null;
+			
+			for (PlayInstallation i: getInstallations()) {
+				if (i.getName().equals(name))
+					return i;
+			}
+			
+			LOGGER.log(Level.WARNING, "Invalid play installation: ", name);
+			return null;
+		}
 	}
 
 }
