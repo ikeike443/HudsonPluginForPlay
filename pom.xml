@@ -7,7 +7,7 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>play-plugin</artifactId>
+	<artifactId>play-autotest-plugin</artifactId>
 	<name>Play!Framework plugin</name>
 	<version>0.1.0</version>
 	<packaging>hpi</packaging>
