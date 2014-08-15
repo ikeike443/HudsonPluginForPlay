@@ -18,6 +18,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Proc;
 import hudson.model.AbstractBuild;
@@ -167,8 +168,8 @@ public class PlayBuilder extends Builder {
 		}
 
 		// Create file from project path String
-		File projectFile = new File(this.getProjectPath());
-
+		FilePath projectFile = new FilePath(build.getWorkspace(), this.getProjectPath());
+		
 		// Check if project folder exists
 		if (!projectFile.exists()) {
 			listener.getLogger().println("ERROR! Project path not found!");
@@ -205,7 +206,7 @@ public class PlayBuilder extends Builder {
 				Proc proc = launcher
 						.launch()
 						.cmds(playExecutable, comm.split(" "))
-						.pwd(this.getProjectPath())
+						.pwd(projectFile)
 						.writeStdin().stdout(listener.getLogger())
 						.stderr(listener.getLogger()).start();
 				
@@ -226,7 +227,7 @@ public class PlayBuilder extends Builder {
 			Proc proc = launcher
 					.launch()
 					.cmds(playExecutable, commandParameters.toArray(new String[commandParameters.size()]))
-					.pwd(this.getProjectPath())
+					.pwd(projectFile)
 					.writeStdin().stdout(listener.getLogger())
 					.stderr(listener.getLogger()).start();
 	
