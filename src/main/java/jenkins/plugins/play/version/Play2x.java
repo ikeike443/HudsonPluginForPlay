@@ -62,6 +62,7 @@ public class Play2x extends PlayVersion {
 		 *            Project path
 		 * @return Form validation
 		 */
+		@Deprecated
 		public FormValidation doValidateProject(
 				@QueryParameter String playToolHome,
 				@QueryParameter String projectPath) {
