@@ -14,6 +14,7 @@ import jenkins.plugins.play.version.Play1x;
 import jenkins.plugins.play.version.PlayVersion;
 import jenkins.plugins.play.version.PlayVersionDescriptor;
 
+import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
@@ -167,8 +168,7 @@ public class PlayBuilder extends Builder {
 			return false;
 		}
 
-		// Create file from project path String
-		FilePath projectFile = new FilePath(build.getWorkspace(), this.getProjectPath());
+		FilePath projectFile = resolveProjectPath(build);
 		
 		// Check if project folder exists
 		if (!projectFile.exists()) {
@@ -236,6 +236,17 @@ public class PlayBuilder extends Builder {
 	}
 
 	/**
+	 * Resolves the project path according to the machine the build is running.
+	 * @param build PlayBuilder build object.
+	 * @return Resolved project path.
+	 */
+	private FilePath resolveProjectPath(AbstractBuild<?, ?> build) {
+		// Create file from project path String
+		FilePath projectFile = new FilePath(build.getWorkspace(), this.getProjectPath());
+		return projectFile;
+	}
+
+	/**
 	 * Descriptor to capture and validate fields from the interface.
 	 */
 	@Extension
@@ -300,20 +311,10 @@ public class PlayBuilder extends Builder {
 		 *            Project path
 		 * @return Form validation
 		 */
-		public FormValidation doCheckProjectPath(
-				@QueryParameter String projectPath) {
+		public FormValidation doCheckProjectPath(@QueryParameter String projectPath) {
 			
-			// If field is empty, call the required validator
-			if (projectPath.isEmpty())
-				return FormValidation.validateRequired(projectPath);
-			
-			// Otherwise, check if the project path is valid
-			File projectPathDir = new File(projectPath);
-			if (!projectPathDir.exists())
-				return FormValidation.error("Project path has not been found!");
-
-			return FormValidation.ok();
-
+			// If field is empty, notify
+			return FormValidation.validateRequired(projectPath);
 		}
 	}
 }
