@@ -31,25 +31,18 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
+ * These tests focus on the {@link PlayBuilder} method generatePlayParameters().
+ * 
  * @author rafaelrezende
  *
  */
 public class TestGenerateCommands {
 
 	/**
-	 * @throws java.lang.Exception
+	 * Checks if the command generator is adding the commands in the expected
+	 * order, obeying the special cases when a flag of additional parameter is
+	 * required.
 	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
 	@Test
 	public void generateCommands() {
 		
@@ -96,6 +89,10 @@ public class TestGenerateCommands {
 		assertEquals("war -o path", generatedCommands.get(i++));
 	}
 	
+	/**
+	 * Checks if the custom command option is placing the command properly in
+	 * the command line.
+	 */
 	@Test
 	public void generateCustomCommand() {
 		
@@ -112,6 +109,10 @@ public class TestGenerateCommands {
 		assertEquals("-Dsbt.log.noformat=true testing custom", playBuilderCommand);
 	}
 	
+	/**
+	 * Checks if the "testOnly" command of sbt is properly adding the test
+	 * class to the command line.
+	 */
 	@Test
 	public void generateTestOnlyCommand() {
 		

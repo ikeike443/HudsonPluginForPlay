@@ -42,6 +42,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
+ * These tests evaluate the execution of Play1x and Play2x (equivalent to Activator).
+ * 
  * @author rafaelrezende
  * 
  */
@@ -52,6 +54,13 @@ public class PlayCommandExecutionTest {
 	@Rule
 	public JenkinsRule j = new JenkinsRule();
 
+	/**
+	 * Checks if the play command is properly executed in Play2x mode. Commands
+	 * are concatenated in an expected order. Special commands should exhibits
+	 * parameters (testOnly, custom) between quotes.
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void Play2x() throws Exception {
 		
@@ -89,6 +98,13 @@ public class PlayCommandExecutionTest {
 		assertTrue(s.contains("echo -Dsbt.log.noformat=true clean dist package publish test \"testOnly com.package.Test\" install \"testOnly com.package.Test2\" custom \"custom double\""));
 	}
 	
+	/**
+	 * Checks if the command execution in Play1x mode is using a series of
+	 * independent commands for each chosen parameter (test, precompile etc).
+	 * Play1x does not support concatenated commands.
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void Play1x() throws Exception {
 		
