@@ -13,8 +13,8 @@ import jenkins.plugins.play.commands.PlayCommand;
 import jenkins.plugins.play.version.Play1x;
 import jenkins.plugins.play.version.PlayVersion;
 import jenkins.plugins.play.version.PlayVersionDescriptor;
+import jenkins.tasks.SimpleBuildStep;
 
-import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
@@ -22,9 +22,10 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Proc;
-import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.model.BuildListener;
+import hudson.model.Run;
+import hudson.model.Result;
+import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
@@ -35,7 +36,7 @@ import hudson.util.FormValidation;
  * configuration.
  * 
  */
-public class PlayBuilder extends Builder {
+public class PlayBuilder extends Builder implements SimpleBuildStep {
 
 	/** The Play installation path selected by the user. */
 	private final String playToolHome;
@@ -149,103 +150,6 @@ public class PlayBuilder extends Builder {
 		return commandParameters;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * hudson.tasks.BuildStepCompatibilityLayer#perform(hudson.model.AbstractBuild
-	 * , hudson.Launcher, hudson.model.BuildListener)
-	 */
-	@Override
-	public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
-			BuildListener listener) throws InterruptedException, IOException {
-
-		// Create file from play path String
-		File playExecutable = PlayBuilder.getPlayExecutable(this.playToolHome);
-
-		// Check if play executable exists
-		if (playExecutable == null) {
-			return false;
-		}
-
-		FilePath projectFile = resolveProjectPath(build);
-		
-		// Check if project folder exists
-		if (!projectFile.exists()) {
-			listener.getLogger().println("ERROR! Project path not found!");
-			return false;
-		}
-
-		// Creates the complete list of parameters including goals
-		List<String> commandParameters = generatePlayParameters();
-		
-		// Validated that there are commands set up
-		if (commandParameters == null) {
-			listener.getLogger().println("ERROR! No commands were provided.");
-			return false;
-		}
-
-		for (String comm : commandParameters) {
-			listener.getLogger().println("Command detected: " + comm);
-		}
-		
-		// Play 1.x is not able to execute several commands in sequence.
-		// Instead, it should call the 'play' executable for every command
-		// separately.
-		if (this.getPlayVersion() instanceof Play1x) {
-			
-			// For each command...
-			for (String comm : commandParameters) {
-				// In Play1x, commands should not have quotes. Since the
-				// launcher automatically adds quotes if the command contains
-				// whitespace, it is necessary to split the command in the
-				// whitespaces first and provide them to the launcher as an
-				// array.
-				
-				// ... run it in a new process.
-				Proc proc = launcher
-						.launch()
-						.cmds(playExecutable, comm.split(" "))
-						.pwd(projectFile)
-						.writeStdin().stdout(listener.getLogger())
-						.stderr(listener.getLogger()).start();
-				
-				int result = proc.join();
-				// Immediately stop the build process when a command results in error.
-				if (result != 0) {
-					listener.getLogger().println("ERROR! Failed to execute the Play! command.");
-					return false;
-				}
-			}
-			// Every command ran successfully
-			return true;
-		}
-		
-		// Play 2.x (sbt) is able to execute all commands at once
-		else {
-			// Launch Play!Framework
-			Proc proc = launcher
-					.launch()
-					.cmds(playExecutable, commandParameters.toArray(new String[commandParameters.size()]))
-					.pwd(projectFile)
-					.writeStdin().stdout(listener.getLogger())
-					.stderr(listener.getLogger()).start();
-	
-			return proc.join() == 0;
-		}
-	}
-
-	/**
-	 * Resolves the project path according to the machine the build is running.
-	 * @param build PlayBuilder build object.
-	 * @return Resolved project path.
-	 */
-	private FilePath resolveProjectPath(AbstractBuild<?, ?> build) {
-		// Create file from project path String
-		FilePath projectFile = new FilePath(build.getWorkspace(), this.getProjectPath());
-		return projectFile;
-	}
-
 	/**
 	 * Descriptor to capture and validate fields from the interface.
 	 */
@@ -316,5 +220,90 @@ public class PlayBuilder extends Builder {
 			// If field is empty, notify
 			return FormValidation.validateRequired(projectPath);
 		}
+	}
+
+	@Override
+	public void perform(Run<?, ?> run, FilePath filepath, Launcher launcher,
+			TaskListener listener) throws InterruptedException, IOException {
+
+		// Create file from play path String
+		File playExecutable = PlayBuilder.getPlayExecutable(this.playToolHome);
+		
+		filepath = new FilePath(filepath, projectPath);
+		
+		// Check if play executable exists
+		if (playExecutable == null) {
+			listener.getLogger().println("ERROR! Play executable not found!");
+			run.setResult(Result.FAILURE);
+		}
+
+		// Check if project folder exists
+		if (!filepath.exists()) {
+			listener.getLogger().println("ERROR! Project path not found!");
+			run.setResult(Result.FAILURE);
+		}
+
+		// Creates the complete list of parameters including goals
+		List<String> commandParameters = generatePlayParameters();
+
+		// Validated that there are commands set up
+		if (commandParameters == null) {
+			listener.getLogger().println("ERROR! No commands were provided.");
+			run.setResult(Result.FAILURE);
+		}
+
+		for (String comm : commandParameters) {
+			listener.getLogger().println("Command detected: " + comm);
+		}
+
+		// Play 1.x is not able to execute several commands in sequence.
+		// Instead, it should call the 'play' executable for every command
+		// separately.
+		if (this.getPlayVersion() instanceof Play1x) {
+
+			// For each command...
+			for (String comm : commandParameters) {
+				// In Play1x, commands should not have quotes. Since the
+				// launcher automatically adds quotes if the command contains
+				// whitespace, it is necessary to split the command in the
+				// whitespaces first and provide them to the launcher as an
+				// array.
+
+				// ... run it in a new process.
+				Proc proc = launcher.launch()
+						.cmds(playExecutable, comm.split(" ")).pwd(filepath)
+						.writeStdin().stdout(listener.getLogger())
+						.stderr(listener.getLogger()).start();
+
+				int result = proc.join();
+				// Immediately stop the build process when a command results in
+				// error.
+				if (result != 0) {
+					listener.getLogger().println(
+							"ERROR! Failed to execute the Play! command.");
+					run.setResult(Result.FAILURE);
+				}
+			}
+			// Every command ran successfully
+			run.setResult(Result.SUCCESS);
+		}
+
+		// Play 2.x (sbt) is able to execute all commands at once
+		else {
+			// Launch Play!Framework
+			Proc proc = launcher
+					.launch()
+					.cmds(playExecutable,
+							commandParameters
+									.toArray(new String[commandParameters
+											.size()])).pwd(filepath)
+					.writeStdin().stdout(listener.getLogger())
+					.stderr(listener.getLogger()).start();
+
+			if (proc.join() == 0)
+				run.setResult(Result.SUCCESS);
+			else run.setResult(Result.FAILURE);
+		}
+
 	}
 }

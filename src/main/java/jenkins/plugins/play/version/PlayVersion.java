@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jenkins.plugins.play.commands.PlayCommand;
-import org.kohsuke.stapler.DataBoundConstructor;
 import hudson.model.AbstractDescribableImpl;
 
 /**
@@ -19,7 +18,6 @@ public abstract class PlayVersion extends AbstractDescribableImpl<PlayVersion> {
 	/**
 	 * 
 	 */
-	@DataBoundConstructor
 	public PlayVersion(List<PlayCommand> commands) {
 		this.commands = commands == null ? new ArrayList<PlayCommand>() : new ArrayList<PlayCommand>(commands);
 	}
