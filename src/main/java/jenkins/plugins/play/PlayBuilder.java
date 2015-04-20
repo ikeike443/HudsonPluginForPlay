@@ -235,12 +235,14 @@ public class PlayBuilder extends Builder implements SimpleBuildStep {
 		if (playExecutable == null) {
 			listener.getLogger().println("ERROR! Play executable not found!");
 			run.setResult(Result.FAILURE);
+			return;
 		}
 
 		// Check if project folder exists
 		if (!filepath.exists()) {
 			listener.getLogger().println("ERROR! Project path not found!");
 			run.setResult(Result.FAILURE);
+			return;
 		}
 
 		// Creates the complete list of parameters including goals
@@ -250,6 +252,7 @@ public class PlayBuilder extends Builder implements SimpleBuildStep {
 		if (commandParameters == null) {
 			listener.getLogger().println("ERROR! No commands were provided.");
 			run.setResult(Result.FAILURE);
+			return;
 		}
 
 		for (String comm : commandParameters) {
@@ -282,6 +285,7 @@ public class PlayBuilder extends Builder implements SimpleBuildStep {
 					listener.getLogger().println(
 							"ERROR! Failed to execute the Play! command.");
 					run.setResult(Result.FAILURE);
+					return;
 				}
 			}
 			// Every command ran successfully
@@ -304,6 +308,5 @@ public class PlayBuilder extends Builder implements SimpleBuildStep {
 				run.setResult(Result.SUCCESS);
 			else run.setResult(Result.FAILURE);
 		}
-
 	}
 }
