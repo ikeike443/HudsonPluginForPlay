@@ -1,9 +1,0 @@
-<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
-    <f:optionalBlock title="Play! application path" name="holder"
-                     checked="${instance.isApplicationPathChecked()}"
-                     help="/plugin/play-autotest-plugin/help-application-path.html">
-        <f:entry title="path" field="applicationPath">
-            <f:textbox value="${instance.getApplicationPath()}"/>
-        </f:entry>
-    </f:optionalBlock>
-</j:jelly>

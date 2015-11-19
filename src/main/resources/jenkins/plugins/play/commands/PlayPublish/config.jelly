@@ -1,0 +1,13 @@
+<j:jelly xmlns:j="jelly:core" xmlns:d="jelly:define"
+	xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+	<f:entry>
+		<p style="font-size:10px">
+				Publishes artifacts (such as jars) to the repository defined by the <i>publishTo</i> setting, described in <a href="http://www.scala-sbt.org/release/docs/Detailed-Topics/Publishing.html"><i>Publishing</i></a>.
+		</p>
+		<p style="font-size:10px;color:green">
+				Note: Repository must be specified in the build file.
+		</p>
+	</f:entry>
+
+</j:jelly>

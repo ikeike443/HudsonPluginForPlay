@@ -3,13 +3,13 @@
 	<parent>
 		<groupId>org.jenkins-ci.plugins</groupId>
 		<artifactId>plugin</artifactId>
-		<version>1.409</version>
+		<version>1.580.1</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>play-autotest-plugin</artifactId>
-	<name>playframework-plugin</name>
-	<version>0.0.13-SNAPSHOT</version>
+	<name>Play!Framework plugin</name>
+	<version>0.2.1</version>
 	<packaging>hpi</packaging>
 	<url>https://wiki.jenkins-ci.org/display/JENKINS/play-plugin</url>
 	<distributionManagement>
@@ -21,9 +21,9 @@
 	</distributionManagement>
 	<developers>
 		<developer>
-			<id>ikeike443</id>
-			<name>Takafumi Ikeda</name>
-			<email>ikeike443@gmail.com</email>
+			<id>rafaelrezend</id>
+			<name>Rafael Rezende</name>
+			<email>rafaelrezend@gmail.com</email>
 		</developer>
 	</developers>
 	<build>
@@ -33,13 +33,13 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.7</source>
+					<target>1.7</target>
 					<encoding>UTF-8</encoding>
 					<verbose>true</verbose>
 					<fork>true</fork>
 					<!-- <executable>${JAVA_HOME}/bin/javac</executable> -->
-					<compilerVersion>1.6.0</compilerVersion>
+					<compilerVersion>1.7.0</compilerVersion>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -55,17 +55,8 @@
 		artifacts that we need -->
 	<repositories>
 		<repository>
-			<id>mavencentralrepo</id>
-			<url>http://repo1.maven.org/maven2/</url>
-		</repository>
-		<repository>
 			<id>repo.jenkins-ci.org</id>
 			<url>http://repo.jenkins-ci.org/public/</url>
-		</repository>
-
-		<repository>
-			<id>infradna</id>
-			<url>http://download.java.net/maven/2/</url>
 		</repository>
 	</repositories>
 
@@ -82,4 +73,19 @@
 		<url>https://github.com/jenkinsci/play-plugin</url>
 	</scm>
 
+	<description>This plugin allows Jenkins to execute several actions available in the Play!Framework command-line.</description>
+	<dependencies>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4</artifactId>
+			<version>1.5.4</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-api-mockito</artifactId>
+			<version>1.5.4</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 </project>

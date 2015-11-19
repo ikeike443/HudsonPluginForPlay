@@ -1,0 +1,12 @@
+<j:jelly xmlns:j="jelly:core" xmlns:d="jelly:define"
+	xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+	<f:entry>
+		<p style="font-size:10px">
+				Compile the application hosted at the app directory.
+				Compilation is done in PROD mode.
+		</p>
+	</f:entry>
+
+</j:jelly>
+

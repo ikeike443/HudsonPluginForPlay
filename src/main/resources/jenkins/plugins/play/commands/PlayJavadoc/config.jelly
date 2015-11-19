@@ -1,0 +1,11 @@
+<j:jelly xmlns:j="jelly:core" xmlns:d="jelly:define"
+	xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+	<f:entry>
+		<p style="font-size:10px">
+			Generate the Javadoc for your project, not including Play classes.
+		</p>
+	</f:entry>
+
+</j:jelly>
+

@@ -1,0 +1,45 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+	xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+	<f:entry>
+
+		<j:if test="${!empty(descriptor.installations)}">
+
+			<f:entry title="${%Play!Framework Installation}">
+				<select class="setting-input" name="playToolHome">
+					<j:forEach var="inst" items="${descriptor.installations}">
+						<f:option selected="${inst.home==instance.playToolHome}"
+							value="${inst.home}">${inst.name} (${inst.home})</f:option>
+					</j:forEach>
+				</select>
+			</f:entry>
+
+			<f:entry title="${%Project path}" field="projectPath"
+				description="Absolute path or relative to the build workspace">
+				<f:textbox />
+			</f:entry>
+			
+			<f:dropdownDescriptorSelector title="Command set"
+				field="playVersion" descriptors="${descriptor.playVersion}" />
+
+		</j:if>
+
+		<j:if test="${empty(descriptor.installations)}">
+			<div>
+				<p style="color:red">
+					<b>
+						No Play!Framework tools configured.
+					</b>
+				</p>
+				<p>
+					Please provide at least one Play!Framework tool in the Jenkins
+					global
+					configuration.
+				</p>
+			</div>
+		</j:if>
+
+	</f:entry>
+
+</j:jelly>

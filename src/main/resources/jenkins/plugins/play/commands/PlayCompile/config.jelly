@@ -1,0 +1,17 @@
+<j:jelly xmlns:j="jelly:core" xmlns:d="jelly:define"
+	xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+	<f:entry>
+		<p style="font-size:10px">
+			Compiles the main sources (in the <span style="font-family:courier;">src/main/scala</span> directory).
+		</p>
+	</f:entry>
+
+</j:jelly>
+
+
+
+
+
+
+

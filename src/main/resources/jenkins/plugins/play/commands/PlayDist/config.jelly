@@ -1,0 +1,10 @@
+<j:jelly xmlns:j="jelly:core" xmlns:d="jelly:define"
+	xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+	<f:entry>
+		<p style="font-size:10px">
+			Generates a ZIP file containing all JAR files needed to run your application in the <span style="font-family:courier;">target/universal</span> folder of your application.
+		</p>
+	</f:entry>
+
+</j:jelly>
