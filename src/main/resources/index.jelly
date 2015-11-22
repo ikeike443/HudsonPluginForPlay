@@ -4,6 +4,5 @@
   Since we don't really have anything dynamic here, let's just use static HTML. 
 -->
 <div>
-  Hudson plugin for Play! framework.<br />
-  It enables hudson to run play command and to generate test-result view per build looks like calimoucho.
+  This plugin allows Jenkins to execute several actions available in the Play!Framework command-line.
 </div>
