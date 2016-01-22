@@ -83,7 +83,7 @@ public class PlayCommandExecutionTest {
 		// Mock the function to retrieve the play executable, should return a file even if the play executable does not exist
 		PowerMockito.mockStatic(PlayBuilder.class);
 		// Play command isn't expected to exist in the test environment. Therefore call the echo command instead.
-		Mockito.when(PlayBuilder.getPlayExecutable(Mockito.anyString())).thenReturn(new File("echo"));
+		Mockito.when(PlayBuilder.getPlayExecutable(Mockito.anyString(),Mockito.anyString())).thenReturn(new File("echo"));
 		
 		FreeStyleProject project = j.createFreeStyleProject();
 		project.getBuildersList().add(new PlayBuilder(playFolder, projectFolder, play2x));
@@ -125,7 +125,7 @@ public class PlayCommandExecutionTest {
 		// Mock the function to retrieve the play executable, should return a file even if the play executable does not exist
 		PowerMockito.mockStatic(PlayBuilder.class);
 		// Play command isn't expected to exist in the test environment. Therefore call the echo command instead.
-		Mockito.when(PlayBuilder.getPlayExecutable(Mockito.anyString())).thenReturn(new File("echo"));
+		Mockito.when(PlayBuilder.getPlayExecutable(Mockito.anyString(),Mockito.anyString())).thenReturn(new File("echo"));
 		
 		FreeStyleProject project = j.createFreeStyleProject();
 		project.getBuildersList().add(new PlayBuilder(playFolder, projectFolder, play1x));

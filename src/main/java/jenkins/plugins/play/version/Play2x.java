@@ -67,7 +67,7 @@ public class Play2x extends PlayVersion {
 				@QueryParameter String playToolHome,
 				@QueryParameter String projectPath) {
 			
-			File playFile = PlayBuilder.getPlayExecutable(playToolHome);
+			File playFile = PlayBuilder.getPlayExecutable(playToolHome, "");
 			
 			// If the field is empty or invalid, silently return OK, because the
 			// validation is already performed by the doCheckProjectPath method in PlayBuilder.

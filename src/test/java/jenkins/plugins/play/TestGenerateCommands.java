@@ -26,8 +26,6 @@ import jenkins.plugins.play.commands.PlayWar;
 import jenkins.plugins.play.version.Play2x;
 
 import org.apache.commons.lang.StringUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 /**

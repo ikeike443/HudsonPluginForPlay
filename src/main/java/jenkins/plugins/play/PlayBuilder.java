@@ -88,17 +88,18 @@ public class PlayBuilder extends Builder implements SimpleBuildStep {
 	 * Get the complete path of the Play! executable. First looks for a 'play' executable, then 'activator'.
 	 * 
 	 * @param playToolHome Path of the Play tool home.
+	 * @param fileExtension Usually .bat for Windows. No extensions for Unix.
 	 * @return the Play! executable path.
 	 */
-	public static File getPlayExecutable(String playToolHome) {
+	public static File getPlayExecutable(String playToolHome, String fileExtension) {
 		
 		// Try play executable first
-		File playExecutable = new File(playToolHome + "/play");
+		File playExecutable = new File(playToolHome + "/play" + fileExtension);
 		if (playExecutable.exists())
 			return playExecutable;
 		
 		// Try activator executable
-		playExecutable = new File(playToolHome + "/activator");
+		playExecutable = new File(playToolHome + "/activator" + fileExtension);
 		if (playExecutable.exists())
 			return playExecutable;
 		
@@ -227,7 +228,8 @@ public class PlayBuilder extends Builder implements SimpleBuildStep {
 			TaskListener listener) throws InterruptedException, IOException {
 
 		// Create file from play path String
-		File playExecutable = PlayBuilder.getPlayExecutable(this.playToolHome);
+		String fileExtension = launcher.isUnix() ? "" : ".bat";
+		File playExecutable = PlayBuilder.getPlayExecutable(this.playToolHome, fileExtension);
 		
 		filepath = new FilePath(filepath, projectPath);
 		
