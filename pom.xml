@@ -9,7 +9,7 @@
 
 	<artifactId>play-autotest-plugin</artifactId>
 	<name>Play!Framework plugin</name>
-	<version>1.0.1</version>
+	<version>1.0.2-SNAPSHOT</version>
 	<packaging>hpi</packaging>
 	<url>https://wiki.jenkins-ci.org/display/JENKINS/play-plugin</url>
 	<distributionManagement>
@@ -71,7 +71,7 @@
 		<connection>scm:git:git://github.com:jenkinsci/play-plugin.git</connection>
 		<developerConnection>scm:git:git@github.com:jenkinsci/play-plugin.git</developerConnection>
 		<url>https://github.com/jenkinsci/play-plugin</url>
-	  <tag>play-autotest-plugin-1.0.1</tag>
+	  <tag>HEAD</tag>
   </scm>
 
 	<description>This plugin allows Jenkins to execute several actions available in the Play!Framework command-line.</description>
