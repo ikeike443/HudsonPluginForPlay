@@ -85,7 +85,7 @@ public final class PlayInstallation extends ToolInstallation implements NodeSpec
 		 */
 		@Override
 		public String getDisplayName() {
-			return "Play!";
+			return "Play";
 		}
 		
 		/* (non-Javadoc)

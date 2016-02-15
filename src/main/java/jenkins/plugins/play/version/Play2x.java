@@ -51,13 +51,13 @@ public class Play2x extends PlayVersion {
 		
 		/**
 		 * Retrieve information about the project by running the 'play about'
-		 * command. Helps to identify that the project is a Play! project and
-		 * that the chosen Play! version is compliant with it. Also helpful to
-		 * check if the Play! installation is valid.
+		 * command. Helps to identify that the project is a Play project and
+		 * that the chosen Play version is compliant with it. Also helpful to
+		 * check if the Play installation is valid.
 		 * This method is invoked by a button in the Jenkins jelly interface.
 		 * 
 		 * @param playToolHome
-		 *            Chosen Play! installation
+		 *            Chosen Play installation
 		 * @param projectPath
 		 *            Project path
 		 * @return Form validation
@@ -81,7 +81,7 @@ public class Play2x extends PlayVersion {
 			// Check if play executable exists
 			if (!playFile.exists()) {
 				return FormValidation
-						.error("Cannot validate project! The assigned Play!Framework installation is invalid!");
+						.error("Cannot validate project! The assigned Play Framework installation is invalid!");
 			}
 
 			// Generate informational content for the user
@@ -90,7 +90,7 @@ public class Play2x extends PlayVersion {
 
 			// Oops, there is no information. Project isn't a Play project.
 			if (aboutProject == null)
-				return FormValidation.error("Not recognized as a valid project for the selected Play! tool.");
+				return FormValidation.error("Not recognized as a valid project for the selected Play tool.");
 
 			return FormValidation.okWithMarkup(aboutProject);
 		}

@@ -31,8 +31,8 @@ import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 
 /**
- * Provides the several of the functionalities of Play!Framework in a Jenkins
- * plugin. This class is responsible for the Play!Framework module in the job
+ * Provides the several of the functionalities of Play Framework in a Jenkins
+ * plugin. This class is responsible for the Play Framework module in the job
  * configuration.
  * 
  */
@@ -46,9 +46,9 @@ public class PlayBuilder extends Builder implements SimpleBuildStep {
 	private PlayVersion playVersion;
 	
 	/**
-	 * Constructor used by Jenkins to handle the Play! job.
+	 * Constructor used by Jenkins to handle the Play job.
 	 * 
-	 * @param playToolHome Path of Play! installation.
+	 * @param playToolHome Path of Play installation.
 	 * @param projectPath Project path.
 	 * @param playVersion Play version.
 	 */
@@ -60,7 +60,7 @@ public class PlayBuilder extends Builder implements SimpleBuildStep {
 	}
 	
 	/**
-	 * Get the path of the Play! installation.
+	 * Get the path of the Play installation.
 	 * 
 	 * @return the playToolHome
 	 */
@@ -85,11 +85,11 @@ public class PlayBuilder extends Builder implements SimpleBuildStep {
 	}
 	
 	/**
-	 * Get the complete path of the Play! executable. First looks for a 'play' executable, then 'activator'.
+	 * Get the complete path of the Play executable. First looks for a 'play' executable, then 'activator'.
 	 * 
 	 * @param playToolHome Path of the Play tool home.
 	 * @param fileExtension Usually .bat for Windows. No extensions for Unix.
-	 * @return the Play! executable path.
+	 * @return the Play executable path.
 	 */
 	public static File getPlayExecutable(String playToolHome, String fileExtension) {
 		
@@ -187,11 +187,11 @@ public class PlayBuilder extends Builder implements SimpleBuildStep {
 		 */
 		@Override
 		public String getDisplayName() {
-			return "Invoke Play!Framework";
+			return "Invoke Play Framework";
 		}
 
 		/**
-		 * Get available Play! installations.
+		 * Get available Play installations.
 		 * 
 		 * @return Array of Play installations
 		 */
@@ -202,7 +202,7 @@ public class PlayBuilder extends Builder implements SimpleBuildStep {
 		}
 		
         /**
-         * Retrieve list of Play! versions.
+         * Retrieve list of Play versions.
          * @return
          */
         public List<PlayVersionDescriptor> getPlayVersion() {
@@ -285,7 +285,7 @@ public class PlayBuilder extends Builder implements SimpleBuildStep {
 				// error.
 				if (result != 0) {
 					listener.getLogger().println(
-							"ERROR! Failed to execute the Play! command.");
+							"ERROR! Failed to execute the Play command.");
 					run.setResult(Result.FAILURE);
 					return;
 				}
@@ -296,7 +296,7 @@ public class PlayBuilder extends Builder implements SimpleBuildStep {
 
 		// Play 2.x (sbt) is able to execute all commands at once
 		else {
-			// Launch Play!Framework
+			// Launch Play Framework
 			Proc proc = launcher
 					.launch()
 					.cmds(playExecutable,

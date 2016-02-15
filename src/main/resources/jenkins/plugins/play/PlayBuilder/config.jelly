@@ -6,7 +6,7 @@
 
 		<j:if test="${!empty(descriptor.installations)}">
 
-			<f:entry title="${%Play!Framework Installation}">
+			<f:entry title="${%Play Framework Installation}">
 				<select class="setting-input" name="playToolHome">
 					<j:forEach var="inst" items="${descriptor.installations}">
 						<f:option selected="${inst.home==instance.playToolHome}"
@@ -29,11 +29,11 @@
 			<div>
 				<p style="color:red">
 					<b>
-						No Play!Framework tools configured.
+						No Play Framework tools configured.
 					</b>
 				</p>
 				<p>
-					Please provide at least one Play!Framework tool in the Jenkins
+					Please provide at least one Play Framework tool in the Jenkins
 					global
 					configuration.
 				</p>

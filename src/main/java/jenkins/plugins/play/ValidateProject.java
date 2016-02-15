@@ -36,15 +36,15 @@ public final class ValidateProject {
 	/**
 	 * Generates the Project information shown in the job configuration. This
 	 * function should be invoked only when the project path exists. It
-	 * validates if the project path is a Play! project. If yes, it returns the
+	 * validates if the project path is a Play project. If yes, it returns the
 	 * composed HTML containing the project information. Null otherwise.
 	 * 
 	 * @param playExecutable
-	 *            Path of the selected Play!Framework installation.
+	 *            Path of the selected Play Framework installation.
 	 * @param projectPath
-	 *            Path of the Play! project.
+	 *            Path of the Play project.
 	 * @return The HTML-formatted project information. It returns null if the
-	 *         path is not a Play!Project.
+	 *         path is not a Play project.
 	 * @throws IOException 
 	 */
 	public static String formattedInfo(File playExecutable, String projectPath) {
