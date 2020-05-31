@@ -1,7 +1,7 @@
 Play!Framework plugin for Jenkins
 =================================
 
-This plugin allows Jenkins to execute several actions available in the Play!Framework command-line. It supports Play!1.X, Play!2.X and Activator.
+This plugin allows Jenkins to execute several actions available in the Play!Framework command-line. It supports Play!1.X, Play!2.X up to 2.4, and Activator.
 
 For more information, please refer to the plugin's [website].
 
